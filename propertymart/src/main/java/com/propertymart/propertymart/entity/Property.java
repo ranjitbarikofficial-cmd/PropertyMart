@@ -29,7 +29,7 @@ public class Property {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    private User seller;
+    private Seller seller;
 
     public Property() {
     }
@@ -114,11 +114,11 @@ public class Property {
         this.status = status;
     }
 
-    public User getSeller() {
+    public Seller getSeller() {
         return seller;
     }
 
-    public void setSeller(User seller) {
+    public void setSeller(Seller seller) {
         this.seller = seller;
     }
 }
