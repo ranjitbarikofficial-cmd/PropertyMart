@@ -1,0 +1,104 @@
+<!-- src/app/auth/register/register.component.html -->
+<main class="auth-page">
+  <div class="auth-page__backdrop" aria-hidden="true"></div>
+
+  <section class="auth-card" aria-labelledby="register-heading">
+    <a routerLink="/" class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Property<strong>Mart</strong></span>
+    </a>
+
+    <h1 id="register-heading" class="auth-card__title">Create your account</h1>
+    <p class="auth-card__subtitle">
+      Join PropertyMart to list, discover and manage properties in one place.
+    </p>
+
+    <form class="auth-form" novalidate>
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input
+          id="fullName"
+          name="fullName"
+          type="text"
+          placeholder="e.g. Ananya Sharma"
+          autocomplete="name"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          placeholder="+91 98765 43210"
+          autocomplete="tel"
+          required
+        />
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            placeholder="Re-enter password"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="role">I want to</label>
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Select your role</option>
+          <option value="buyer">Buy property</option>
+          <option value="seller">Sell property</option>
+        </select>
+      </div>
+
+      <div class="field field--checkbox">
+        <input id="terms" name="terms" type="checkbox" required />
+        <label for="terms">
+          I agree to the <a href="#" class="inline-link">Terms of Service</a> and
+          <a href="#" class="inline-link">Privacy Policy</a>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn--primary">Create Account</button>
+    </form>
+
+    <p class="auth-card__footer">
+      Already have an account?
+      <a routerLink="/login" class="footer-link">Login</a>
+    </p>
+  </section>
+</main>

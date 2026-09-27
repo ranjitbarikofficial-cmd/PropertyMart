@@ -56,12 +56,4 @@ public class UserService {
     public void deleteUser(Long id) {
         ur.deleteById(id);
     }
-
-    public User login(String email,String password){
-        Optional<User> vu=ur.findByEmailAndPassword(email,password);
-        if(vu.isPresent()){
-            return vu.get();
-        }
-        return null;
-    }
 }

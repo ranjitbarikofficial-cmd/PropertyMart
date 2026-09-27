@@ -2,9 +2,6 @@ package com.propertymart.propertymart.controller;
 
 import com.propertymart.propertymart.entity.User;
 import com.propertymart.propertymart.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,16 +64,4 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<User> verify(@RequestBody User user, HttpSession s){
-        User vu=us.login(user.getEmail(),user.getPassword());
-        if(vu!=null){
-            s.setAttribute("id",vu.getId());
-            return ResponseEntity.status(HttpStatus.OK).body(vu);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-
 }
