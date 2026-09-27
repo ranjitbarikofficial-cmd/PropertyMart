@@ -23,7 +23,6 @@ public class AuctionService {
 
     public Auction addAuction(Auction auction) {
 
-
         if (auction.getProperty() != null) {
 
             Long propertyId = auction.getProperty().getId();
@@ -80,22 +79,6 @@ public class AuctionService {
             return ar.save(a);
         }
 
-        return null;
-    }
-
-
-    public Auction updateAuction(Auction auction,Long id){
-        Optional<Auction> fa=ar.findById(id);
-        if(fa.isPresent()){
-            Auction a=fa.get();
-            a.setStartTime(auction.getStartTime());
-            a.setEndTime(auction.getEndTime());
-            a.setStartingPrice(auction.getStartingPrice());
-            a.setStatus(auction.getStatus());
-            a.setProperty(auction.getProperty());
-
-            return a;
-        }
         return null;
     }
 
