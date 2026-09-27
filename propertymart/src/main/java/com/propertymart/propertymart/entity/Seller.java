@@ -3,7 +3,7 @@ package com.propertymart.propertymart.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "sellers")
+@Table(name = "seller")
 public class Seller {
 
     @Id
@@ -12,7 +12,7 @@ public class Seller {
 
     @OneToOne
     @JoinColumn(
-            name = "user_id",
+            name = "id",
             nullable = false,
             unique = true
     )
