@@ -16,22 +16,22 @@ public class SellerService {
         sr = sellerRepo;
     }
 
-    // Create seller
+
     public Seller addSeller(Seller seller) {
         return sr.save(seller);
     }
 
-    // Get all sellers
+
     public List<Seller> findAllSellers() {
         return sr.findAll();
     }
 
-    // Get seller by ID
+
     public Optional<Seller> findSellerById(Long id) {
         return sr.findById(id);
     }
 
-    // Update seller
+
     public Seller updateSeller(Long id, Seller seller) {
 
         Optional<Seller> existingSeller = sr.findById(id);
@@ -50,7 +50,7 @@ public class SellerService {
         return null;
     }
 
-    // Delete seller
+
     public void deleteSeller(Long id) {
         sr.deleteById(id);
     }

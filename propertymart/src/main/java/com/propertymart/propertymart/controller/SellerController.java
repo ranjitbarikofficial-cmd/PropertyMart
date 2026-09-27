@@ -18,7 +18,6 @@ public class SellerController {
         ss = sellerService;
     }
 
-    // Create seller
     @PostMapping("/create")
     public ResponseEntity<Seller> addSeller(@RequestBody Seller seller) {
 
@@ -27,7 +26,6 @@ public class SellerController {
         return ResponseEntity.ok(savedSeller);
     }
 
-    // Get all sellers
     @GetMapping("/allseller")
     public ResponseEntity<List<Seller>> findAllSellers() {
 
@@ -36,7 +34,7 @@ public class SellerController {
         return ResponseEntity.ok(sellers);
     }
 
-    // Get seller by ID
+
     @GetMapping("/find/{id}")
     public ResponseEntity<Seller> findSellerById(@PathVariable Long id) {
 
@@ -49,7 +47,7 @@ public class SellerController {
         return ResponseEntity.notFound().build();
     }
 
-    // Update seller
+
     @PutMapping("/update/{id}")
     public ResponseEntity<Seller> updateSeller(
             @PathVariable Long id,
@@ -64,7 +62,7 @@ public class SellerController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete seller
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id) {
 
