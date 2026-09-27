@@ -16,7 +16,7 @@ public class AuctionController {
     @Autowired
     private AuctionService as;
 
-    public ResponseEntity<Auction> createAuction(@RequestBody  Auction auction){
+    public ResponseEntity<Auction> createAuction(@RequestBody Auction auction) {
         return null;
     }
 
