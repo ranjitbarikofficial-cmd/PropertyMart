@@ -18,21 +18,18 @@ public class UserController {
         us = userService;
     }
 
-    // Create
     @PostMapping("/create")
     public ResponseEntity<User> addUser(@RequestBody User u) {
         User uu = us.adduser(u);
         return ResponseEntity.ok().body(uu);
     }
 
-    // Find all
     @GetMapping("/alluser")
     public ResponseEntity<List<User>> findAllUsers() {
         List<User> users = us.findAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
-    // Find by ID
     @GetMapping("/find/{id}")
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
 
@@ -45,7 +42,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Update
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
@@ -60,7 +56,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
