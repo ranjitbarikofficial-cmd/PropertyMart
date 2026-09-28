@@ -1,0 +1,375 @@
+<!-- src/app/homepage/body/body.html -->
+<main class="pm-body">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__content">
+        <h1 class="hero__title">Find a place you'll love to call home.</h1>
+        <p class="hero__subtitle">
+          Discover properties that match your lifestyle, budget and location.
+        </p>
+
+        <form class="search-box" novalidate>
+          <div class="search-box__row">
+            <div class="search-field search-field--wide">
+              <label for="searchLocation">Location</label>
+              <input id="searchLocation" type="text" placeholder="City, locality or landmark" />
+            </div>
+            <div class="search-field">
+              <label for="propertyType">Property Type</label>
+              <select id="propertyType">
+                <option value="apartment">Apartment</option>
+                <option value="house">House</option>
+                <option value="villa">Villa</option>
+                <option value="plot">Plot</option>
+                <option value="commercial">Commercial</option>
+              </select>
+            </div>
+            <div class="search-field">
+              <label for="purpose">Purpose</label>
+              <select id="purpose">
+                <option value="buy">Buy</option>
+                <option value="rent">Rent</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-box__row">
+            <div class="search-field">
+              <label for="minPrice">Min Price</label>
+              <input id="minPrice" type="text" placeholder="e.g. 20 Lakh" />
+            </div>
+            <div class="search-field">
+              <label for="maxPrice">Max Price</label>
+              <input id="maxPrice" type="text" placeholder="e.g. 1.5 Crore" />
+            </div>
+            <button type="submit" class="btn btn--primary search-box__submit">
+              Search Properties
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="hero__card hero__card--main">
+          <div class="hero__card-tag">For Sale</div>
+          <div class="hero__card-price">₹1.45 Cr</div>
+          <div class="hero__card-meta">Luxury Villa · Bengaluru</div>
+        </div>
+        <div class="hero__card hero__card--float">
+          <div class="hero__card-price">₹75 L</div>
+          <div class="hero__card-meta">3BHK · Bhubaneswar</div>
+        </div>
+        <div class="hero__blob"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROPERTIES -->
+  <section class="section container">
+    <div class="section__header">
+      <h2>Featured Properties</h2>
+      <p>Explore some of the best properties available on PropertyMart.</p>
+    </div>
+
+    <div class="property-grid">
+      <article class="property-card">
+        <div class="property-card__media property-card__media--a">
+          <span class="property-card__badge">Featured</span>
+          <button class="fav-btn" type="button" aria-label="Save property to favorites">♡</button>
+        </div>
+        <div class="property-card__body">
+          <p class="property-card__type">Apartment</p>
+          <h3>Modern 3BHK Apartment</h3>
+          <p class="property-card__location">📍 Bhubaneswar, Odisha</p>
+          <p class="property-card__price">₹75 Lakh</p>
+          <ul class="property-card__meta">
+            <li>🛏 3 Beds</li>
+            <li>🛁 2 Baths</li>
+            <li>📐 1,450 sq.ft</li>
+          </ul>
+          <a routerLink="/home" class="btn btn--outline btn--full">View Details</a>
+        </div>
+      </article>
+
+      <article class="property-card">
+        <div class="property-card__media property-card__media--b">
+          <span class="property-card__badge">Featured</span>
+          <button class="fav-btn" type="button" aria-label="Save property to favorites">♡</button>
+        </div>
+        <div class="property-card__body">
+          <p class="property-card__type">Villa</p>
+          <h3>Luxury Villa</h3>
+          <p class="property-card__location">📍 Bangalore, Karnataka</p>
+          <p class="property-card__price">₹1.45 Crore</p>
+          <ul class="property-card__meta">
+            <li>🛏 4 Beds</li>
+            <li>🛁 3 Baths</li>
+            <li>📐 2,400 sq.ft</li>
+          </ul>
+          <a routerLink="/home" class="btn btn--outline btn--full">View Details</a>
+        </div>
+      </article>
+
+      <article class="property-card">
+        <div class="property-card__media property-card__media--c">
+          <span class="property-card__badge">Featured</span>
+          <button
+            class="fav-btn fav-btn--active"
+            type="button"
+            aria-label="Remove property from favorites"
+          >
+            ♥
+          </button>
+        </div>
+        <div class="property-card__body">
+          <p class="property-card__type">Apartment</p>
+          <h3>Premium Apartment</h3>
+          <p class="property-card__location">📍 Hyderabad, Telangana</p>
+          <p class="property-card__price">₹92 Lakh</p>
+          <ul class="property-card__meta">
+            <li>🛏 3 Beds</li>
+            <li>🛁 2 Baths</li>
+            <li>📐 1,750 sq.ft</li>
+          </ul>
+          <a routerLink="/home" class="btn btn--outline btn--full">View Details</a>
+        </div>
+      </article>
+
+      <article class="property-card">
+        <div class="property-card__media property-card__media--d">
+          <span class="property-card__badge">Featured</span>
+          <button class="fav-btn" type="button" aria-label="Save property to favorites">♡</button>
+        </div>
+        <div class="property-card__body">
+          <p class="property-card__type">House</p>
+          <h3>Independent House</h3>
+          <p class="property-card__location">📍 Pune, Maharashtra</p>
+          <p class="property-card__price">₹1.10 Crore</p>
+          <ul class="property-card__meta">
+            <li>🛏 4 Beds</li>
+            <li>🛁 3 Baths</li>
+            <li>📐 2,100 sq.ft</li>
+          </ul>
+          <a routerLink="/home" class="btn btn--outline btn--full">View Details</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROPERTY CATEGORIES -->
+  <section class="section section--tinted">
+    <div class="container">
+      <div class="section__header">
+        <h2>Explore Properties</h2>
+      </div>
+
+      <div class="category-grid">
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🏷</span>
+          <div>
+            <h3>Buy</h3>
+            <p>Find your dream property to purchase.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🔑</span>
+          <div>
+            <h3>Rent</h3>
+            <p>Discover rental homes that fit your budget.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🏢</span>
+          <div>
+            <h3>Apartments</h3>
+            <p>Modern apartments in prime locations.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🏡</span>
+          <div>
+            <h3>Villas</h3>
+            <p>Spacious villas with premium amenities.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🏠</span>
+          <div>
+            <h3>Houses</h3>
+            <p>Independent houses for growing families.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🌳</span>
+          <div>
+            <h3>Plots</h3>
+            <p>Residential and agricultural land plots.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+        <a routerLink="/home" class="category-card">
+          <span class="category-card__icon">🏭</span>
+          <div>
+            <h3>Commercial</h3>
+            <p>Office spaces and commercial properties.</p>
+          </div>
+          <span class="category-card__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY PROPERTYMART -->
+  <section class="section container">
+    <div class="section__header">
+      <h2>Why choose PropertyMart?</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-card__icon">✔</span>
+        <h3>Verified Properties</h3>
+        <p>Discover verified property listings from trusted sellers.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-card__icon">🔍</span>
+        <h3>Smart Search</h3>
+        <p>Find properties quickly using location, budget and property type.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-card__icon">🤝</span>
+        <h3>Trusted Sellers</h3>
+        <p>Connect with verified property sellers and agents.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-card__icon">🔒</span>
+        <h3>Secure Transactions</h3>
+        <p>Experience secure and transparent property transactions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section section--tinted">
+    <div class="container">
+      <div class="section__header">
+        <h2>How it works</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step__circle">1</span>
+          <h3>Search</h3>
+          <p>Find properties based on your location, budget and requirements.</p>
+        </div>
+        <div class="step">
+          <span class="step__circle">2</span>
+          <h3>Connect</h3>
+          <p>Contact sellers and schedule property visits.</p>
+        </div>
+        <div class="step">
+          <span class="step__circle">3</span>
+          <h3>Buy or Rent</h3>
+          <p>Complete your property journey with confidence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELL YOUR PROPERTY CTA -->
+  <section class="section container">
+    <div class="sell-cta">
+      <div>
+        <h2>Have a property to sell?</h2>
+        <p>List your property on PropertyMart and connect with genuine buyers.</p>
+      </div>
+      <a routerLink="/register" class="btn btn--white">List Your Property</a>
+    </div>
+  </section>
+
+  <!-- STATISTICS -->
+  <section class="section container">
+    <div class="stats">
+      <div class="stat">
+        <p class="stat__value">10,000+</p>
+        <p class="stat__label">Properties Listed</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">7,500+</p>
+        <p class="stat__label">Happy Users</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">2,500+</p>
+        <p class="stat__label">Verified Sellers</p>
+      </div>
+      <div class="stat">
+        <p class="stat__value">50+</p>
+        <p class="stat__label">Cities</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section section--tinted">
+    <div class="container">
+      <div class="section__header">
+        <h2>What our users say</h2>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+          <p>"PropertyMart made finding my new apartment incredibly easy."</p>
+          <div class="testimonial-card__author">
+            <span class="avatar">RS</span>
+            <div>
+              <p class="testimonial-card__name">Rahul Sharma</p>
+              <p class="testimonial-card__role">Home Buyer</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+          <p>"Listing my property was simple and I received genuine enquiries."</p>
+          <div class="testimonial-card__author">
+            <span class="avatar">PD</span>
+            <div>
+              <p class="testimonial-card__name">Priya Das</p>
+              <p class="testimonial-card__role">Property Seller</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars" aria-label="5 out of 5 stars">★★★★★</div>
+          <p>"The platform provides a clean and easy way to manage property listings."</p>
+          <div class="testimonial-card__author">
+            <span class="avatar">AK</span>
+            <div>
+              <p class="testimonial-card__name">Amit Kumar</p>
+              <p class="testimonial-card__role">Property Owner</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container final-cta__inner">
+      <h2>Ready to find your next property?</h2>
+      <p>Start exploring thousands of properties on PropertyMart.</p>
+      <div class="final-cta__actions">
+        <a routerLink="/home" class="btn btn--white">Explore Properties</a>
+        <a routerLink="/register" class="btn btn--outline-white">Create Account</a>
+      </div>
+    </div>
+  </section>
+</main>
