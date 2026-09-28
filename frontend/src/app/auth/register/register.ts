@@ -43,7 +43,6 @@ export class Register {
 
         alert('Registration successful! Please login.');
 
-        // After registration → Login page
         this.router.navigate(['/login']);
       },
 

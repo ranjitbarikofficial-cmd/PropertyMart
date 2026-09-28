@@ -25,6 +25,8 @@ export class Login {
       next: (response) => {
         console.log('Login successful:', response);
 
+        localStorage.setItem('loggedInUser', JSON.stringify(response));
+
         if (response.role === 'BUYER') {
           this.router.navigate(['/user-dashboard']);
         } else if (response.role === 'SELLER') {
