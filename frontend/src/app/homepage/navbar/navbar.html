@@ -1,0 +1,48 @@
+<!-- src/app/homepage/navbar/navbar.html -->
+<header class="navbar" [class.navbar--scrolled]="isScrolled">
+  <div class="navbar__inner">
+    <a routerLink="/home" class="navbar__brand" (click)="closeMobileMenu()">
+      <span class="navbar__mark" aria-hidden="true"></span>
+      <span class="navbar__brand-text">Property<strong>Mart</strong></span>
+    </a>
+
+    <nav class="navbar__links" aria-label="Primary navigation">
+      <a routerLink="/home" class="navbar__link">Home</a>
+      <a routerLink="/home" class="navbar__link">Buy</a>
+      <a routerLink="/home" class="navbar__link">Rent</a>
+      <a routerLink="/home" class="navbar__link">Sell</a>
+      <a routerLink="/home" class="navbar__link">About Us</a>
+    </nav>
+
+    <div class="navbar__actions">
+      <a routerLink="/login" class="btn btn--ghost">Login</a>
+      <a routerLink="/register" class="btn btn--primary">Register</a>
+    </div>
+
+    <button
+      type="button"
+      class="navbar__toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-label="Toggle navigation menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="navbar__mobile" [class.navbar__mobile--open]="isMobileMenuOpen">
+    <nav aria-label="Mobile navigation" class="navbar__mobile-links">
+      <a routerLink="/home" (click)="closeMobileMenu()">Home</a>
+      <a routerLink="/home" (click)="closeMobileMenu()">Buy</a>
+      <a routerLink="/home" (click)="closeMobileMenu()">Rent</a>
+      <a routerLink="/home" (click)="closeMobileMenu()">Sell</a>
+      <a routerLink="/home" (click)="closeMobileMenu()">About Us</a>
+    </nav>
+    <div class="navbar__mobile-actions">
+      <a routerLink="/login" class="btn btn--ghost btn--full" (click)="closeMobileMenu()">Login</a>
+      <a routerLink="/register" class="btn btn--primary btn--full" (click)="closeMobileMenu()"
+        >Register</a
+      >
+    </div>
+  </div>
+</header>
