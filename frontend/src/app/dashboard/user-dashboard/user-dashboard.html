@@ -1,0 +1,61 @@
+<!-- src/app/dashboard/user-dashboard/user-dashboard.html -->
+<div class="dashboard-layout">
+  <input type="checkbox" id="navToggle" class="nav-toggle" />
+
+  <header class="topbar">
+    <div class="topbar__left">
+      <label for="navToggle" class="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+      <a routerLink="/user-dashboard" class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Property<strong>Mart</strong></span>
+      </a>
+    </div>
+
+    <div class="topbar__search">
+      <label for="topSearch" class="visually-hidden">Search properties</label>
+      <input id="topSearch" type="search" placeholder="Search by city, locality or project..." />
+    </div>
+
+    <div class="topbar__right">
+      <button class="icon-btn" aria-label="View notifications" type="button">
+        <span class="icon-bell" aria-hidden="true"></span>
+        <span class="badge-dot" aria-hidden="true"></span>
+      </button>
+
+      <div class="profile-menu">
+        <button class="profile-trigger" type="button" aria-haspopup="true">
+          <span class="avatar">AS</span>
+          <span class="profile-name">Ananya Sharma</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </button>
+        <div class="profile-dropdown">
+          <a routerLink="/profile">My Profile</a>
+          <a routerLink="/user-dashboard/settings">Settings</a>
+          <a routerLink="/login" class="danger">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"></label>
+
+  <aside class="sidebar" aria-label="Primary navigation">
+    <nav class="sidebar__nav">
+      <a routerLink="/user-dashboard" class="nav-item nav-item--active">
+        <span class="nav-icon" aria-hidden="true">🏠</span> Dashboard
+      </a>
+      <a routerLink="/user-dashboard/explore" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🔍</span> Explore Properties
+      </a>
+      <a routerLink="/user-dashboard/favorites" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">❤</span> My Favorites
+      </a>
+      <a routerLink="/user-dashboard/applications" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">📄</span> My Applications
+      </a>
+      <a routerLink="/user-dashboard/bookings" class="nav-item"> <span class="nav-icon"></span></a>
+    </nav>
+  </aside>
+</div>
