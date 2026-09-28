@@ -41,8 +41,9 @@ export class Register {
       next: (response) => {
         console.log('Registration successful:', response);
 
-        alert('Registration successful!');
+        alert('Registration successful! Please login.');
 
+        // After registration → Login page
         this.router.navigate(['/login']);
       },
 
