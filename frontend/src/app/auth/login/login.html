@@ -12,7 +12,6 @@
     <p class="auth-card__subtitle">Login to your PropertyMart account</p>
 
     <form class="auth-form" (ngSubmit)="login()" #loginForm="ngForm" novalidate>
-      <!-- Email -->
       <div class="field">
         <label for="email">Email address</label>
 
@@ -27,7 +26,6 @@
         />
       </div>
 
-      <!-- Password -->
       <div class="field">
         <label for="password">Password</label>
 
@@ -42,7 +40,6 @@
         />
       </div>
 
-      <!-- Remember + Forgot -->
       <div class="field-inline">
         <label class="checkbox-label" for="rememberMe">
           <input id="rememberMe" name="rememberMe" type="checkbox" />
@@ -52,7 +49,6 @@
         <a routerLink="/forgot-password" class="inline-link"> Forgot Password? </a>
       </div>
 
-      <!-- Login -->
       <button type="submit" class="btn btn--primary" [disabled]="loginForm.invalid">Login</button>
     </form>
 
@@ -60,7 +56,6 @@
       <span>OR</span>
     </div>
 
-    <!-- Social Login UI -->
     <div class="social-row">
       <button type="button" class="btn btn--social">
         <span class="social-icon social-icon--google" aria-hidden="true"></span>
@@ -75,7 +70,6 @@
       </button>
     </div>
 
-    <!-- Register -->
     <p class="auth-card__footer">
       Don't have an account?
 
