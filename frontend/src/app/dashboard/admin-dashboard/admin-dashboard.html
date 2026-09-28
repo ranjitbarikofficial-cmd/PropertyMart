@@ -1,0 +1,273 @@
+<!-- src/app/dashboard/admin-dashboard/admin-dashboard.html -->
+<div class="dashboard-layout">
+  <input type="checkbox" id="navToggle" class="nav-toggle" />
+
+  <header class="topbar">
+    <div class="topbar__left">
+      <label for="navToggle" class="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+      <a routerLink="/admin-dashboard" class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Property<strong>Mart</strong></span>
+      </a>
+    </div>
+
+    <div class="topbar__search">
+      <label for="topSearch" class="visually-hidden">Global search</label>
+      <input id="topSearch" type="search" placeholder="Search users, sellers, properties..." />
+    </div>
+
+    <div class="topbar__right">
+      <button class="icon-btn" aria-label="View notifications" type="button">
+        <span class="icon-bell" aria-hidden="true"></span>
+        <span class="badge-dot" aria-hidden="true"></span>
+      </button>
+      <div class="profile-menu">
+        <button class="profile-trigger" type="button" aria-haspopup="true">
+          <span class="avatar">SD</span>
+          <span class="profile-name">Sneha Deshpande</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </button>
+        <div class="profile-dropdown">
+          <a routerLink="/profile">My Profile</a>
+          <a routerLink="/admin-dashboard/settings">Settings</a>
+          <a routerLink="/login" class="danger">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"></label>
+
+  <aside class="sidebar" aria-label="Primary navigation">
+    <nav class="sidebar__nav">
+      <a routerLink="/admin-dashboard" class="nav-item nav-item--active">
+        <span class="nav-icon" aria-hidden="true">🏠</span> Dashboard
+      </a>
+      <a routerLink="/admin-dashboard/users" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">👥</span> Users
+      </a>
+      <a routerLink="/admin-dashboard/sellers" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🏷</span> Sellers
+      </a>
+      <a routerLink="/admin-dashboard/properties" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🏢</span> Properties
+      </a>
+      <a routerLink="/admin-dashboard/applications" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">📄</span> Applications
+      </a>
+      <a routerLink="/admin-dashboard/transactions" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">💳</span> Transactions
+      </a>
+      <a routerLink="/admin-dashboard/reports" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">📊</span> Reports
+      </a>
+      <a routerLink="/admin-dashboard/complaints" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">⚠</span> Complaints
+      </a>
+      <a routerLink="/admin-dashboard/notifications" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🔔</span> Notifications
+      </a>
+      <a routerLink="/admin-dashboard/settings" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">⚙</span> Settings
+      </a>
+    </nav>
+    <a routerLink="/login" class="nav-item nav-item--logout">
+      <span class="nav-icon" aria-hidden="true">⏻</span> Logout
+    </a>
+  </aside>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Platform-wide overview and moderation queue.</p>
+      </div>
+    </section>
+
+    <section class="stat-grid stat-grid--6" aria-label="Platform overview">
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">👥</span>
+        <div>
+          <p class="stat-card__value">8,214</p>
+          <p class="stat-card__label">Total Users</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🏷</span>
+        <div>
+          <p class="stat-card__value">642</p>
+          <p class="stat-card__label">Total Sellers</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">🏢</span>
+        <div>
+          <p class="stat-card__value">3,120</p>
+          <p class="stat-card__label">Total Properties</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--amber" aria-hidden="true">✅</span>
+        <div>
+          <p class="stat-card__value">2,458</p>
+          <p class="stat-card__label">Active Listings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">💳</span>
+        <div>
+          <p class="stat-card__value">1,096</p>
+          <p class="stat-card__label">Total Transactions</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--danger" aria-hidden="true">⏳</span>
+        <div>
+          <p class="stat-card__value">27</p>
+          <p class="stat-card__label">Pending Approvals</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-block__header">
+        <h2>User Management</h2>
+        <a routerLink="/admin-dashboard/users" class="link-more">View all</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Role</th>
+              <th scope="col">Registered</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="User">
+                <div class="table-property">
+                  <span class="avatar avatar--sm">AS</span>Ananya Sharma
+                </div>
+              </td>
+              <td data-label="Email">ananya.sharma@example.com</td>
+              <td data-label="Phone">+91 98765 43210</td>
+              <td data-label="Role">Buyer</td>
+              <td data-label="Registered">12 Jan 2026</td>
+              <td data-label="Status"><span class="badge badge--success">● Active</span></td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View user">👁</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Suspend user"
+                  >
+                    ⛔
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="User">
+                <div class="table-property">
+                  <span class="avatar avatar--sm">RK</span>Ravi Kumar
+                </div>
+              </td>
+              <td data-label="Email">ravi.kumar@example.com</td>
+              <td data-label="Phone">+91 91234 56789</td>
+              <td data-label="Role">Seller</td>
+              <td data-label="Registered">3 Mar 2026</td>
+              <td data-label="Status"><span class="badge badge--success">● Active</span></td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View user">👁</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Suspend user"
+                  >
+                    ⛔
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="User">
+                <div class="table-property">
+                  <span class="avatar avatar--sm">PM</span>Priya Menon
+                </div>
+              </td>
+              <td data-label="Email">priya.menon@example.com</td>
+              <td data-label="Phone">+91 99887 66554</td>
+              <td data-label="Role">Buyer</td>
+              <td data-label="Registered">28 Jun 2026</td>
+              <td data-label="Status"><span class="badge badge--neutral">● Suspended</span></td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View user">👁</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Suspend user"
+                  >
+                    ⛔
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-block__header">
+        <h2>Seller Verification</h2>
+        <a routerLink="/admin-dashboard/sellers" class="link-more">View all</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Seller</th>
+              <th scope="col">Email</th>
+              <th scope="col">Properties</th>
+              <th scope="col">Verification</th>
+              <th scope="col">Registered</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Seller">Karthik Iyer</td>
+              <td data-label="Email">karthik.iyer@example.com</td>
+              <td data-label="Properties">6</td>
+              <td data-label="Verification"><span class="badge badge--warning">● Pending</span></td>
+              <td data-label="Registered">14 Sep 2026</td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="btn btn--outline btn--sm">View</button>
+                  <button type="button" class="btn btn--primary btn--sm">Approve</button>
+                  <button type="button" class="btn btn--danger btn--sm">Reject</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Seller">Meera Nair</td>
+              <td data-label="Email">meera.nair@example.com</td>
+              <td data-label="Properties">3</td>
+              <td data-label="Verification"><span class="badge badge--success">●</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>

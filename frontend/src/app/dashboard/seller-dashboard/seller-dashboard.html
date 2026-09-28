@@ -1,0 +1,337 @@
+<!-- src/app/dashboard/seller-dashboard/seller-dashboard.html -->
+<div class="dashboard-layout">
+  <input type="checkbox" id="navToggle" class="nav-toggle" />
+
+  <header class="topbar">
+    <div class="topbar__left">
+      <label for="navToggle" class="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
+      <a routerLink="/seller-dashboard" class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text">Property<strong>Mart</strong></span>
+      </a>
+    </div>
+
+    <div class="topbar__search">
+      <label for="topSearch" class="visually-hidden">Search</label>
+      <input id="topSearch" type="search" placeholder="Search your listings..." />
+    </div>
+
+    <div class="topbar__right">
+      <button class="icon-btn" aria-label="View notifications" type="button">
+        <span class="icon-bell" aria-hidden="true"></span>
+        <span class="badge-dot" aria-hidden="true"></span>
+      </button>
+      <div class="profile-menu">
+        <button class="profile-trigger" type="button" aria-haspopup="true">
+          <span class="avatar">RK</span>
+          <span class="profile-name">Ravi Kumar</span>
+          <span class="chevron" aria-hidden="true"></span>
+        </button>
+        <div class="profile-dropdown">
+          <a routerLink="/profile">My Profile</a>
+          <a routerLink="/seller-dashboard/settings">Settings</a>
+          <a routerLink="/login" class="danger">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"></label>
+
+  <aside class="sidebar" aria-label="Primary navigation">
+    <nav class="sidebar__nav">
+      <a routerLink="/seller-dashboard" class="nav-item nav-item--active">
+        <span class="nav-icon" aria-hidden="true">🏠</span> Dashboard
+      </a>
+      <a routerLink="/seller-dashboard/properties" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🏢</span> My Properties
+      </a>
+      <a routerLink="/seller-dashboard/add-property" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">➕</span> Add Property
+      </a>
+      <a routerLink="/seller-dashboard/enquiries" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">💬</span> Property Enquiries
+      </a>
+      <a routerLink="/seller-dashboard/leads" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🎯</span> Leads
+      </a>
+      <a routerLink="/seller-dashboard/appointments" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">📅</span> Appointments
+      </a>
+      <a routerLink="/seller-dashboard/messages" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">✉</span> Messages
+      </a>
+      <a routerLink="/seller-dashboard/analytics" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">📊</span> Analytics
+      </a>
+      <a routerLink="/seller-dashboard/profile" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">👤</span> Profile
+      </a>
+    </nav>
+    <a routerLink="/login" class="nav-item nav-item--logout">
+      <span class="nav-icon" aria-hidden="true">⏻</span> Logout
+    </a>
+  </aside>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <h1>Good morning, Seller!</h1>
+        <p>Here's how your listings are performing today.</p>
+      </div>
+      <a routerLink="/seller-dashboard/add-property" class="btn btn--primary">+ Add Property</a>
+    </section>
+
+    <section class="stat-grid" aria-label="Overview">
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">🏢</span>
+        <div>
+          <p class="stat-card__value">18</p>
+          <p class="stat-card__label">Total Properties</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">✅</span>
+        <div>
+          <p class="stat-card__value">12</p>
+          <p class="stat-card__label">Active Listings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">👁</span>
+        <div>
+          <p class="stat-card__value">4,532</p>
+          <p class="stat-card__label">Total Views</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__icon stat-card__icon--amber" aria-hidden="true">💬</span>
+        <div>
+          <p class="stat-card__value">86</p>
+          <p class="stat-card__label">Total Enquiries</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-block__header">
+        <h2>My Properties</h2>
+        <a routerLink="/seller-dashboard/add-property" class="btn btn--outline btn--sm"
+          >+ Add Property</a
+        >
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Property</th>
+              <th scope="col">Location</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+              <th scope="col">Views</th>
+              <th scope="col">Enquiries</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Property">
+                <div class="table-property">
+                  <span
+                    class="table-property__thumb table-property__thumb--a"
+                    aria-hidden="true"
+                  ></span>
+                  Sunrise Meadows Villa
+                </div>
+              </td>
+              <td data-label="Location">Whitefield, Bengaluru</td>
+              <td data-label="Price">₹1.45 Cr</td>
+              <td data-label="Status"><span class="badge badge--success">● Active</span></td>
+              <td data-label="Views">1,204</td>
+              <td data-label="Enquiries">18</td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View property">👁</button>
+                  <button type="button" class="icon-action" aria-label="Edit property">✎</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Delete property"
+                  >
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Property">
+                <div class="table-property">
+                  <span
+                    class="table-property__thumb table-property__thumb--b"
+                    aria-hidden="true"
+                  ></span>
+                  Lakeview Residency 2BHK
+                </div>
+              </td>
+              <td data-label="Location">Hebbal, Bengaluru</td>
+              <td data-label="Price">₹32,000 / mo</td>
+              <td data-label="Status"><span class="badge badge--warning">● Pending</span></td>
+              <td data-label="Views">874</td>
+              <td data-label="Enquiries">11</td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View property">👁</button>
+                  <button type="button" class="icon-action" aria-label="Edit property">✎</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Delete property"
+                  >
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Property">
+                <div class="table-property">
+                  <span
+                    class="table-property__thumb table-property__thumb--c"
+                    aria-hidden="true"
+                  ></span>
+                  Palm Grove Apartments
+                </div>
+              </td>
+              <td data-label="Location">Kondapur, Hyderabad</td>
+              <td data-label="Price">₹78.5 L</td>
+              <td data-label="Status"><span class="badge badge--neutral">● Sold</span></td>
+              <td data-label="Views">2,310</td>
+              <td data-label="Enquiries">34</td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View property">👁</button>
+                  <button type="button" class="icon-action" aria-label="Edit property">✎</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Delete property"
+                  >
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-label="Property">
+                <div class="table-property">
+                  <span
+                    class="table-property__thumb table-property__thumb--d"
+                    aria-hidden="true"
+                  ></span>
+                  Cedar Court Plots
+                </div>
+              </td>
+              <td data-label="Location">Sarjapur Road, Bengaluru</td>
+              <td data-label="Price">₹52 L</td>
+              <td data-label="Status"><span class="badge badge--info">● Draft</span></td>
+              <td data-label="Views">0</td>
+              <td data-label="Enquiries">0</td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-action" aria-label="View property">👁</button>
+                  <button type="button" class="icon-action" aria-label="Edit property">✎</button>
+                  <button
+                    type="button"
+                    class="icon-action icon-action--danger"
+                    aria-label="Delete property"
+                  >
+                    🗑
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-block__header"><h2>Analytics</h2></div>
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <p class="analytics-card__label">Property Views</p>
+          <p class="analytics-card__value">4,532</p>
+          <div class="bar-chart">
+            <span style="--h: 40%"></span><span style="--h: 65%"></span
+            ><span style="--h: 50%"></span> <span style="--h: 80%"></span
+            ><span style="--h: 60%"></span><span style="--h: 90%"></span
+            ><span style="--h: 70%"></span>
+          </div>
+        </div>
+        <div class="analytics-card">
+          <p class="analytics-card__label">Enquiries</p>
+          <p class="analytics-card__value">86</p>
+          <div class="bar-chart bar-chart--blue">
+            <span style="--h: 30%"></span><span style="--h: 55%"></span
+            ><span style="--h: 45%"></span> <span style="--h: 70%"></span
+            ><span style="--h: 50%"></span><span style="--h: 65%"></span
+            ><span style="--h: 85%"></span>
+          </div>
+        </div>
+        <div class="analytics-card">
+          <p class="analytics-card__label">Leads</p>
+          <p class="analytics-card__value">42</p>
+          <div class="progress-ring" style="--pct: 68"><span>68%</span></div>
+        </div>
+        <div class="analytics-card">
+          <p class="analytics-card__label">Conversion</p>
+          <p class="analytics-card__value">12.4%</p>
+          <div class="progress-ring progress-ring--green" style="--pct: 24"><span>24%</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-block__header"><h2>Recent Enquiries</h2></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Buyer</th>
+              <th scope="col">Property</th>
+              <th scope="col">Date</th>
+              <th scope="col">Message</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Buyer">Ananya Sharma</td>
+              <td data-label="Property">Sunrise Meadows Villa</td>
+              <td data-label="Date">24 Sep 2026</td>
+              <td data-label="Message">Is the price negotiable?</td>
+              <td data-label="Status"><span class="badge badge--info">New</span></td>
+            </tr>
+            <tr>
+              <td data-label="Buyer">Priya Menon</td>
+              <td data-label="Property">Lakeview Residency</td>
+              <td data-label="Date">22 Sep 2026</td>
+              <td data-label="Message">Can I schedule a visit this weekend?</td>
+              <td data-label="Status"><span class="badge badge--success">Replied</span></td>
+            </tr>
+            <tr>
+              <td data-label="Buyer">Karthik Iyer</td>
+              <td data-label="Property">Palm Grove Apartments</td>
+              <td data-label="Date">19 Sep 2026</td>
+              <td data-label="Message">Interested — please share the brochure.</td>
+              <td data-label="Status"><span class="badge badge--neutral">Closed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>

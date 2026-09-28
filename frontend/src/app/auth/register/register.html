@@ -1,4 +1,3 @@
-<!-- src/app/auth/register/register.component.html -->
 <main class="auth-page">
   <div class="auth-page__backdrop" aria-hidden="true"></div>
 
@@ -9,47 +8,55 @@
     </a>
 
     <h1 id="register-heading" class="auth-card__title">Create your account</h1>
+
     <p class="auth-card__subtitle">
       Join PropertyMart to list, discover and manage properties in one place.
     </p>
 
-    <form class="auth-form" novalidate>
+    <form class="auth-form" (ngSubmit)="register()" #registerForm="ngForm" novalidate>
+      <!-- Full Name -->
       <div class="field">
         <label for="fullName">Full name</label>
         <input
           id="fullName"
-          name="fullName"
+          name="name"
           type="text"
+          [(ngModel)]="user.name"
           placeholder="e.g. Ananya Sharma"
           autocomplete="name"
           required
         />
       </div>
 
+      <!-- Email -->
       <div class="field">
         <label for="email">Email address</label>
         <input
           id="email"
           name="email"
           type="email"
+          [(ngModel)]="user.email"
           placeholder="you@example.com"
           autocomplete="email"
           required
         />
       </div>
 
+      <!-- Phone -->
       <div class="field">
         <label for="phone">Phone number</label>
         <input
           id="phone"
           name="phone"
           type="tel"
+          [(ngModel)]="user.phone"
           placeholder="+91 98765 43210"
           autocomplete="tel"
           required
         />
       </div>
 
+      <!-- Password -->
       <div class="field-row">
         <div class="field">
           <label for="password">Password</label>
@@ -57,18 +64,21 @@
             id="password"
             name="password"
             type="password"
+            [(ngModel)]="user.password"
             placeholder="Create a password"
             autocomplete="new-password"
             required
           />
         </div>
 
+        <!-- Confirm Password -->
         <div class="field">
           <label for="confirmPassword">Confirm password</label>
           <input
             id="confirmPassword"
             name="confirmPassword"
             type="password"
+            [(ngModel)]="confirmPassword"
             placeholder="Re-enter password"
             autocomplete="new-password"
             required
@@ -76,24 +86,32 @@
         </div>
       </div>
 
+      <!-- Role -->
       <div class="field">
         <label for="role">I want to</label>
-        <select id="role" name="role" required>
-          <option value="" disabled selected>Select your role</option>
-          <option value="buyer">Buy property</option>
-          <option value="seller">Sell property</option>
+
+        <select id="role" name="role" [(ngModel)]="user.role" required>
+          <option value="" disabled>Select your role</option>
+          <option value="BUYER">Buy property</option>
+          <option value="SELLER">Sell property</option>
         </select>
       </div>
 
+      <!-- Terms -->
       <div class="field field--checkbox">
-        <input id="terms" name="terms" type="checkbox" required />
+        <input id="terms" name="terms" type="checkbox" [(ngModel)]="termsAccepted" required />
+
         <label for="terms">
-          I agree to the <a href="#" class="inline-link">Terms of Service</a> and
+          I agree to the
+          <a href="#" class="inline-link">Terms of Service</a>
+          and
           <a href="#" class="inline-link">Privacy Policy</a>
         </label>
       </div>
 
-      <button type="submit" class="btn btn--primary">Create Account</button>
+      <button type="submit" class="btn btn--primary" [disabled]="registerForm.invalid">
+        Create Account
+      </button>
     </form>
 
     <p class="auth-card__footer">
