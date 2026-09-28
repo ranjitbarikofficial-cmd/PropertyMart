@@ -1,26 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
+import { App } from './app/app';
+import { config } from './app/app.config.server';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthService {
-  private apiUrl = 'http://localhost:8080';
+const bootstrap = (context: BootstrapContext) =>
+  bootstrapApplication(App, config, context);
 
-  constructor(private http: HttpClient) {}
-
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, userData);
-  }
-
-  login(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials);
-  }
-
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, {
-      email: email,
-    });
-  }
-}
+export default bootstrap;
