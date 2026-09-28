@@ -13,4 +13,8 @@ export class Auth {
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, userData);
   }
+
+  login(credentials: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, credentials);
+  }
 }

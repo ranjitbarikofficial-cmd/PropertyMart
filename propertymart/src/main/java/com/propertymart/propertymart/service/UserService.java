@@ -56,4 +56,16 @@ public class UserService {
     public void deleteUser(Long id) {
         ur.deleteById(id);
     }
+
+    // Login
+    public Optional<User> login(String email, String password) {
+
+        Optional<User> user = ur.findByEmail(email);
+
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user;
+        }
+
+        return Optional.empty();
+    }
 }

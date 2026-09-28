@@ -8,62 +8,78 @@
     </a>
 
     <h1 id="login-heading" class="auth-card__title">Welcome back</h1>
+
     <p class="auth-card__subtitle">Login to your PropertyMart account</p>
 
-    <form class="auth-form" novalidate>
+    <form class="auth-form" (ngSubmit)="login()" #loginForm="ngForm" novalidate>
+      <!-- Email -->
       <div class="field">
         <label for="email">Email address</label>
+
         <input
           id="email"
           name="email"
           type="email"
+          [(ngModel)]="credentials.email"
           placeholder="you@example.com"
           autocomplete="email"
           required
         />
       </div>
 
+      <!-- Password -->
       <div class="field">
         <label for="password">Password</label>
+
         <input
           id="password"
           name="password"
           type="password"
+          [(ngModel)]="credentials.password"
           placeholder="Enter your password"
           autocomplete="current-password"
           required
         />
       </div>
 
+      <!-- Remember + Forgot -->
       <div class="field-inline">
         <label class="checkbox-label" for="rememberMe">
           <input id="rememberMe" name="rememberMe" type="checkbox" />
           Remember me
         </label>
-        <a routerLink="/forgot-password" class="inline-link">Forgot Password?</a>
+
+        <a routerLink="/forgot-password" class="inline-link"> Forgot Password? </a>
       </div>
 
-      <button type="submit" class="btn btn--primary">Login</button>
+      <!-- Login -->
+      <button type="submit" class="btn btn--primary" [disabled]="loginForm.invalid">Login</button>
     </form>
 
     <div class="divider">
       <span>OR</span>
     </div>
 
+    <!-- Social Login UI -->
     <div class="social-row">
       <button type="button" class="btn btn--social">
         <span class="social-icon social-icon--google" aria-hidden="true"></span>
+
         Continue with Google
       </button>
+
       <button type="button" class="btn btn--social">
         <span class="social-icon social-icon--github" aria-hidden="true"></span>
+
         Continue with GitHub
       </button>
     </div>
 
+    <!-- Register -->
     <p class="auth-card__footer">
       Don't have an account?
-      <a routerLink="/register" class="footer-link">Register</a>
+
+      <a routerLink="/register" class="footer-link"> Register </a>
     </p>
   </section>
 </main>

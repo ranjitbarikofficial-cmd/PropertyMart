@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -63,5 +64,33 @@ public class UserController {
         us.deleteUser(id);
 
         return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
+
+        Optional<User> user = us.login(
+                loginUser.getEmail(),
+                loginUser.getPassword()
+        );
+
+        if (user.isPresent()) {
+
+            User loggedInUser = user.get();
+
+            return ResponseEntity.ok().body(
+                    java.util.Map.of(
+                            "id", loggedInUser.getId(),
+                            "name", loggedInUser.getName(),
+                            "email", loggedInUser.getEmail(),
+                            "role", loggedInUser.getRole()
+                    )
+            );
+        }
+
+        return ResponseEntity.status(401).body(
+                java.util.Map.of(
+                        "message", "Invalid email or password"
+                )
+        );
     }
 }
