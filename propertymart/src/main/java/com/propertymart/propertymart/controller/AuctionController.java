@@ -43,4 +43,19 @@ public class AuctionController {
 
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Auction> updateauction(@PathVariable Long id,@RequestBody Auction auction){
+        Auction a=as.updateAuction(id,auction);
+        if(a!=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(a);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteauction(@PathVariable Long id){
+        as.deleteAuction(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.propertymart.propertymart.entity;
 
 import jakarta.persistence.*;
+import lombok.ToString;
+
+@ToString
 
 @Entity
 public class User {
