@@ -1,9 +1,10 @@
 package com.propertymart.propertymart.entity;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
-
+@ToString
 @Entity
 public class Auction {
 
