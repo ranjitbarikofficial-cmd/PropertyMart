@@ -2,6 +2,7 @@ package com.propertymart.propertymart.controller;
 
 import com.propertymart.propertymart.entity.User;
 import com.propertymart.propertymart.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,8 +66,11 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginUser) {
+    public ResponseEntity<?> login(
+            @RequestBody User loginUser,
+            HttpSession session) {
 
         Optional<User> user = us.login(
                 loginUser.getEmail(),
@@ -76,6 +80,7 @@ public class UserController {
         if (user.isPresent()) {
 
             User loggedInUser = user.get();
+            session.setAttribute("id",loggedInUser.getId());
 
             return ResponseEntity.ok().body(
                     java.util.Map.of(
