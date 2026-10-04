@@ -18,7 +18,7 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private double ammount;
+    private double amount;
     private LocalDateTime bidTime;
     @ManyToOne
     @JoinColumn(name = "buyer_id")
