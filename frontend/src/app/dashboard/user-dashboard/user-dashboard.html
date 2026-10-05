@@ -1,78 +1,383 @@
-<!-- src/app/dashboard/user-dashboard/user-dashboard.html -->
+
 <div class="dashboard-layout">
+
   <input type="checkbox" id="navToggle" class="nav-toggle" />
 
   <header class="topbar">
+
     <div class="topbar__left">
+
       <label for="navToggle" class="hamburger" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </label>
 
       <a routerLink="/user-dashboard" class="brand">
         <span class="brand__mark" aria-hidden="true"></span>
-        <span class="brand__text">Property<strong>Mart</strong></span>
+
+        <span class="brand__text">
+          Property<strong>Mart</strong>
+        </span>
       </a>
+
     </div>
 
     <div class="topbar__search">
-      <label for="topSearch" class="visually-hidden"> Search properties </label>
 
-      <input id="topSearch" type="search" placeholder="Search by city, locality or project..." />
+      <label for="topSearch" class="visually-hidden">
+        Search properties
+      </label>
+
+      <input
+        id="topSearch"
+        type="search"
+        placeholder="Search by city, locality or project..."
+      />
+
     </div>
 
     <div class="topbar__right">
-      <button class="icon-btn" aria-label="View notifications" type="button">
+
+      <button
+        class="icon-btn"
+        type="button"
+        aria-label="View notifications"
+      >
         <span class="icon-bell" aria-hidden="true"></span>
         <span class="badge-dot" aria-hidden="true"></span>
       </button>
 
       <div class="profile-menu">
-        <button class="profile-trigger" type="button" aria-haspopup="true">
-          <!-- Dynamic initials -->
-          <span class="avatar">{{ userInitials }}</span>
 
-          <!-- Dynamic username -->
-          <span class="profile-name">{{ userName }}</span>
+        <button
+          class="profile-trigger"
+          type="button"
+          aria-haspopup="true"
+          (click)="toggleProfileMenu()"
+        >
+
+          <span class="avatar">
+            {{ userInitials }}
+          </span>
+
+          <span class="profile-name">
+            {{ userName }}
+          </span>
 
           <span class="chevron" aria-hidden="true"></span>
+
         </button>
 
-        <div class="profile-dropdown">
-          <a routerLink="/profile">My Profile</a>
-          <a routerLink="/user-dashboard/settings">Settings</a>
-          <a routerLink="/login" class="danger">Logout</a>
-        </div>
+        @if (profileMenuOpen) {
+
+          <div class="profile-dropdown">
+
+            <a routerLink="/user/profile">
+              My Profile
+            </a>
+
+            <a routerLink="/user/settings">
+              Settings
+            </a>
+
+            <button
+              type="button"
+              class="danger logout-btn"
+              (click)="logout()"
+            >
+              Logout
+            </button>
+
+          </div>
+
+        }
+
       </div>
+
     </div>
+
   </header>
 
-  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"></label>
+  <label
+    for="navToggle"
+    class="sidebar-backdrop"
+    aria-hidden="true">
+  </label>
 
-  <aside class="sidebar" aria-label="Primary navigation">
+  <aside
+    class="sidebar"
+    aria-label="Primary navigation">
+
     <nav class="sidebar__nav">
-      <a routerLink="/user-dashboard" class="nav-item nav-item--active">
-        <span class="nav-icon" aria-hidden="true">🏠</span>
+
+      <a
+        routerLink="/user-dashboard"
+        class="nav-item nav-item--active">
+
+        <span class="nav-icon">🏠</span>
+
         Dashboard
+
       </a>
 
-      <a routerLink="/user-dashboard/explore" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">🔍</span>
+      <a
+        routerLink="/user-dashboard/explore"
+        class="nav-item">
+
+        <span class="nav-icon">🔍</span>
+
         Explore Properties
+
       </a>
 
-      <a routerLink="/user-dashboard/favorites" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">❤</span>
+      <a
+        routerLink="/user-dashboard/favorites"
+        class="nav-item">
+
+        <span class="nav-icon">❤</span>
+
         My Favorites
+
       </a>
 
-      <a routerLink="/user-dashboard/applications" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">📄</span>
+      <a
+        routerLink="/user-dashboard/applications"
+        class="nav-item">
+
+        <span class="nav-icon">📄</span>
+
         My Applications
+
       </a>
 
-      <a routerLink="/user-dashboard/bookings" class="nav-item">
-        <span class="nav-icon"></span>
+      <a
+        routerLink="/user-dashboard/bookings"
+        class="nav-item">
+
+        <span class="nav-icon">📅</span>
+
+        My Bookings
+
       </a>
+
+      <a
+        routerLink="/user/profile"
+        class="nav-item">
+
+        <span class="nav-icon">👤</span>
+
+        My Profile
+
+      </a>
+
+      <a
+        routerLink="/user/settings"
+        class="nav-item">
+
+        <span class="nav-icon">⚙️</span>
+
+        Settings
+
+      </a>
+
     </nav>
+
   </aside>
+
+  <main class="dashboard-content">
+
+    <section class="welcome-section">
+
+      <div>
+
+        <p class="welcome-label">
+          PropertyMart Dashboard
+        </p>
+
+        <h1>
+          Welcome, {{ userName }} 👋
+        </h1>
+
+        <p class="welcome-text">
+          Find your perfect property and manage your activities
+          from one place.
+        </p>
+
+      </div>
+
+      <div class="welcome-profile">
+
+        <div class="welcome-avatar">
+          {{ userInitials }}
+        </div>
+
+        <div>
+
+          <strong>{{ userName }}</strong>
+
+          <span>{{ userEmail }}</span>
+
+          <small>{{ userRole }}</small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="dashboard-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <h2>Quick Actions</h2>
+
+          <p>
+            Access your most important PropertyMart features.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="quick-actions">
+
+        <a
+          routerLink="/user-dashboard/explore"
+          class="action-card">
+
+          <div class="action-icon">
+            🔍
+          </div>
+
+          <div>
+
+            <h3>Explore Properties</h3>
+
+            <p>
+              Discover properties based on your preferences.
+            </p>
+
+          </div>
+
+          <span class="action-arrow">
+            →
+          </span>
+
+        </a>
+
+        <a
+          routerLink="/user-dashboard/favorites"
+          class="action-card">
+
+          <div class="action-icon">
+            ❤️
+          </div>
+
+          <div>
+
+            <h3>My Favorites</h3>
+
+            <p>
+              View the properties you have saved.
+            </p>
+
+          </div>
+
+          <span class="action-arrow">
+            →
+          </span>
+
+        </a>
+
+        <a
+          routerLink="/user-dashboard/applications"
+          class="action-card">
+
+          <div class="action-icon">
+            📄
+          </div>
+
+          <div>
+
+            <h3>My Applications</h3>
+
+            <p>
+              Track your property applications.
+            </p>
+
+          </div>
+
+          <span class="action-arrow">
+            →
+          </span>
+
+        </a>
+
+        <a
+          routerLink="/user-dashboard/bookings"
+          class="action-card">
+
+          <div class="action-icon">
+            📅
+          </div>
+
+          <div>
+
+            <h3>My Bookings</h3>
+
+            <p>
+              Manage your property bookings.
+            </p>
+
+          </div>
+
+          <span class="action-arrow">
+            →
+          </span>
+
+        </a>
+
+      </div>
+
+    </section>
+
+    <section class="getting-started">
+
+      <div class="getting-started__content">
+
+        <span class="getting-started__icon">
+          🏠
+        </span>
+
+        <div>
+
+          <h2>
+            Ready to find your next property?
+          </h2>
+
+          <p>
+            Explore available properties and discover
+            something that matches your requirements.
+          </p>
+
+          <a
+            routerLink="/user-dashboard/explore"
+            class="primary-action">
+
+            Explore Properties
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
 </div>
+
