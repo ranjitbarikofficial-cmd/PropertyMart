@@ -1,0 +1,73 @@
+<div class="details-page">
+
+  @if (property) {
+
+    <div class="details-header">
+
+      <span class="property-type">
+        {{ property.propertyType }}
+      </span>
+
+      <h1>{{ property.title }}</h1>
+
+      <p class="location">
+        📍 {{ property.location }}
+      </p>
+
+    </div>
+
+    <div class="details-content">
+
+      <div class="details-image">
+        🏠
+      </div>
+
+      <div class="details-info">
+
+        <h2>
+          ₹{{ property.basePrice.toLocaleString('en-IN') }}
+        </h2>
+
+        <p class="description">
+          {{ property.description }}
+        </p>
+
+        <div class="property-info">
+
+          <div>
+            <strong>{{ property.area }}</strong>
+            <span>sq.ft</span>
+          </div>
+
+          @if (property.bedrooms !== null) {
+            <div>
+              <strong>{{ property.bedrooms }}</strong>
+              <span>Bedrooms</span>
+            </div>
+          }
+
+          @if (property.bathrooms !== null) {
+            <div>
+              <strong>{{ property.bathrooms }}</strong>
+              <span>Bathrooms</span>
+            </div>
+          }
+
+        </div>
+
+        <div class="property-status">
+          <strong>Status</strong>
+          <span>{{ property.status }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    <p>Loading property details...</p>
+
+  }
+
+</div>

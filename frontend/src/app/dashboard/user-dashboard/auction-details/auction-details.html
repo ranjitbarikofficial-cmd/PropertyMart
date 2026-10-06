@@ -1,0 +1,77 @@
+<div class="auction-details-page">
+
+  @if (auction) {
+
+    <div class="auction-header">
+
+      <span class="auction-status">
+        {{ auction.status }}
+      </span>
+
+      <h1>{{ auction.property.title }}</h1>
+
+      <p>
+        📍 {{ auction.property.location }}
+      </p>
+
+    </div>
+
+    <div class="auction-content">
+
+      <div class="auction-image">
+        🏠
+      </div>
+
+      <div class="auction-info">
+
+        <h2>
+          Starting Price:
+          ₹{{ auction.startingPrice.toLocaleString('en-IN') }}
+        </h2>
+
+        <div class="property-info">
+
+          <div>
+            <strong>{{ auction.property.propertyType }}</strong>
+            <span>Property Type</span>
+          </div>
+
+          <div>
+            <strong>{{ auction.property.area }}</strong>
+            <span>sq.ft</span>
+          </div>
+
+        </div>
+
+        <p class="description">
+          {{ auction.property.description }}
+        </p>
+
+      <div class="bid-section">
+
+  <label for="bidAmount">Enter your bid amount</label>
+
+  <input
+    type="number"
+    id="bidAmount"
+    placeholder="Enter bid amount"
+    [(ngModel)]="bidAmount"
+  >
+
+  <button type="button" (click)="placeBid()">
+    Place Bid
+  </button>
+
+</div>
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    <p>Loading auction details...</p>
+
+  }
+
+</div>

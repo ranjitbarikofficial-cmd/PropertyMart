@@ -1,0 +1,62 @@
+<div class="auctions-page">
+
+  <div class="auctions-header">
+    <div>
+      <p class="page-label">PropertyMart</p>
+      <h1>Property Auctions</h1>
+      <p>Explore properties currently available for auction.</p>
+    </div>
+
+    @if (loaded) {
+  <div class="auction-count">
+    {{ auctions.length }} Auctions
+  </div>
+}
+  </div>
+
+  <div class="auction-grid">
+
+    @for (auction of auctions; track auction.id) {
+
+      <div class="auction-card">
+
+        <div class="auction-image">
+          🏠
+        </div>
+
+        <div class="auction-content">
+
+          <span class="auction-status">
+            {{ auction.status }}
+          </span>
+
+          <h2>
+            {{ auction.property.title }}
+          </h2>
+
+          <p>
+            📍 {{ auction.property.location }}
+          </p>
+
+          <p>
+            Starting Price:
+            <strong>
+              ₹{{ auction.startingPrice.toLocaleString('en-IN') }}
+            </strong>
+          </p>
+
+         <button
+  type="button"
+  [routerLink]="['/user-dashboard/auction', auction.id]"
+>
+  View Auction
+</button>
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
