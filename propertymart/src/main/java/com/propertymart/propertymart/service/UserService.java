@@ -1,8 +1,12 @@
 package com.propertymart.propertymart.service;
 
+import com.propertymart.propertymart.entity.Role;
+import com.propertymart.propertymart.entity.Seller;
 import com.propertymart.propertymart.entity.User;
+import com.propertymart.propertymart.repository.SellerRepo;
 import com.propertymart.propertymart.repository.UserRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,14 +15,41 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepo ur;
+    private final SellerRepo sr;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, SellerRepo sellerRepo) {
         ur = userRepo;
+        sr = sellerRepo;
     }
 
-    // Create
+    // Create User
+    @Transactional
     public User adduser(User u) {
-        return ur.save(u);
+
+        // Save User first
+        User savedUser = ur.save(u);
+
+        // If registered as SELLER,
+        // automatically create Seller profile
+        if (savedUser.getRole() == Role.SELLER) {
+
+            Optional<Seller> existingSeller =
+                    sr.findByUserId(savedUser.getId());
+
+            if (existingSeller.isEmpty()) {
+
+                Seller seller = new Seller();
+
+                seller.setUser(savedUser);
+                seller.setName(savedUser.getName());
+                seller.setEmail(savedUser.getEmail());
+                seller.setPhone(savedUser.getPhone());
+
+                sr.save(seller);
+            }
+        }
+
+        return savedUser;
     }
 
     // Find all users
@@ -62,7 +93,9 @@ public class UserService {
 
         Optional<User> user = ur.findByEmail(email);
 
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
+        if (user.isPresent()
+                && user.get().getPassword().equals(password)) {
+
             return user;
         }
 

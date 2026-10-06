@@ -1,1 +1,215 @@
-<p>add-property works!</p>
+<div class="add-property-page">
+  <div class="page-container">
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <a routerLink="/seller-dashboard" class="back-link"> ← Back to Dashboard </a>
+
+        <h1>Add Property</h1>
+
+        <p>Add a new property to your listings.</p>
+      </div>
+    </div>
+
+    <!-- Error -->
+    @if (errorMessage) {
+      <div class="alert alert-error">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <!-- Success -->
+    @if (successMessage) {
+      <div class="alert alert-success">
+        {{ successMessage }}
+      </div>
+    }
+
+    <!-- Form -->
+    <form class="property-form" (ngSubmit)="addProperty()">
+      <!-- Basic Information -->
+      <div class="form-card">
+        <h2>Property Information</h2>
+
+        <p class="section-description">Enter the basic details of your property.</p>
+
+        <div class="form-grid">
+          <!-- Title -->
+          <div class="form-group full-width">
+            <label for="title"> Property Title * </label>
+
+            <input
+              id="title"
+              type="text"
+              name="title"
+              [(ngModel)]="property.title"
+              placeholder="e.g. Beautiful 2BHK Apartment"
+              required
+            />
+          </div>
+
+          <!-- Property Type -->
+          <div class="form-group">
+            <label for="propertyType"> Property Type * </label>
+
+            <select
+              id="propertyType"
+              name="propertyType"
+              [(ngModel)]="property.propertyType"
+              required
+            >
+              <option value="">Select property type</option>
+
+              <option value="RESIDENTIAL">Residential</option>
+
+              <option value="APARTMENT">Apartment</option>
+
+              <option value="LAND">Land</option>
+
+              <option value="COMMERCIAL">Commercial</option>
+            </select>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group">
+            <label for="location"> Location * </label>
+
+            <input
+              id="location"
+              type="text"
+              name="location"
+              [(ngModel)]="property.location"
+              placeholder="e.g. Bhubaneswar, Odisha"
+              required
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="form-group full-width">
+            <label for="description"> Description * </label>
+
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="property.description"
+              rows="5"
+              placeholder="Describe your property..."
+              required
+            >
+            </textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Details -->
+      <div class="form-card">
+        <h2>Property Details</h2>
+
+        <p class="section-description">Provide size and room information.</p>
+
+        <div class="form-grid">
+          <!-- Area -->
+          <div class="form-group">
+            <label for="area"> Area (sq ft) * </label>
+
+            <input
+              id="area"
+              type="number"
+              name="area"
+              [(ngModel)]="property.area"
+              placeholder="1200"
+              min="1"
+              required
+            />
+          </div>
+
+          <!-- Bedrooms -->
+          <div class="form-group">
+            <label for="bedrooms"> Bedrooms </label>
+
+            <input
+              id="bedrooms"
+              type="number"
+              name="bedrooms"
+              [(ngModel)]="property.bedrooms"
+              placeholder="2"
+              min="0"
+            />
+          </div>
+
+          <!-- Bathrooms -->
+          <div class="form-group">
+            <label for="bathrooms"> Bathrooms </label>
+
+            <input
+              id="bathrooms"
+              type="number"
+              name="bathrooms"
+              [(ngModel)]="property.bathrooms"
+              placeholder="2"
+              min="0"
+            />
+          </div>
+
+          <!-- Price -->
+          <div class="form-group">
+            <label for="basePrice"> Price (₹) * </label>
+
+            <input
+              id="basePrice"
+              type="number"
+              name="basePrice"
+              [(ngModel)]="property.basePrice"
+              placeholder="4500000"
+              min="1"
+              required
+            />
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label for="status"> Status </label>
+
+            <select id="status" name="status" [(ngModel)]="property.status">
+              <option value="AVAILABLE">Available</option>
+
+              <option value="PENDING">Pending</option>
+
+              <option value="DRAFT">Draft</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seller Information -->
+      <div class="form-card seller-info">
+        <h2>Seller Information</h2>
+
+        <p class="section-description">
+          Your seller profile is automatically attached to this property.
+        </p>
+
+        <div class="seller-id">
+          <span> Seller ID </span>
+
+          <strong>
+            {{ sellerId || 'Loading...' }}
+          </strong>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          @if (loading) {
+            Adding Property...
+          } @else {
+            Add Property
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

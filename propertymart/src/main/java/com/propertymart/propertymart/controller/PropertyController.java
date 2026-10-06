@@ -20,11 +20,16 @@ public class PropertyController {
 
     // Create property
     @PostMapping("/create")
-    public ResponseEntity<Property> addProperty(@RequestBody Property property) {
+    public ResponseEntity<Property> addProperty(
+            @RequestBody Property property) {
 
         Property savedProperty = ps.addProperty(property);
 
-        return ResponseEntity.ok(savedProperty);
+        if (savedProperty != null) {
+            return ResponseEntity.ok(savedProperty);
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
     // Get all properties
@@ -38,9 +43,11 @@ public class PropertyController {
 
     // Get property by ID
     @GetMapping("/find/{id}")
-    public ResponseEntity<Property> findPropertyById(@PathVariable Long id) {
+    public ResponseEntity<Property> findPropertyById(
+            @PathVariable Long id) {
 
-        Optional<Property> property = ps.findPropertyById(id);
+        Optional<Property> property =
+                ps.findPropertyById(id);
 
         if (property.isPresent()) {
             return ResponseEntity.ok(property.get());
@@ -55,7 +62,8 @@ public class PropertyController {
             @PathVariable Long id,
             @RequestBody Property property) {
 
-        Property updatedProperty = ps.updateProperty(id, property);
+        Property updatedProperty =
+                ps.updateProperty(id, property);
 
         if (updatedProperty != null) {
             return ResponseEntity.ok(updatedProperty);
@@ -66,10 +74,21 @@ public class PropertyController {
 
     // Delete property
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProperty(
+            @PathVariable Long id) {
 
         ps.deleteProperty(id);
 
         return ResponseEntity.noContent().build();
+    }
+    // Get properties of a seller
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<Property>> findPropertiesBySeller(
+            @PathVariable Long sellerId) {
+
+        List<Property> properties =
+                ps.findPropertiesBySellerId(sellerId);
+
+        return ResponseEntity.ok(properties);
     }
 }
