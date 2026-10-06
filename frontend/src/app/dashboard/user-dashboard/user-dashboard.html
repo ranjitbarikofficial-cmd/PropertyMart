@@ -1,8 +1,8 @@
-
 <div class="dashboard-layout">
 
   <input type="checkbox" id="navToggle" class="nav-toggle" />
 
+  <!-- TOP BAR -->
   <header class="topbar">
 
     <div class="topbar__left">
@@ -15,7 +15,6 @@
 
       <a routerLink="/user-dashboard" class="brand">
         <span class="brand__mark" aria-hidden="true"></span>
-
         <span class="brand__text">
           Property<strong>Mart</strong>
         </span>
@@ -23,6 +22,7 @@
 
     </div>
 
+    <!-- SEARCH -->
     <div class="topbar__search">
 
       <label for="topSearch" class="visually-hidden">
@@ -37,6 +37,7 @@
 
     </div>
 
+    <!-- RIGHT SIDE -->
     <div class="topbar__right">
 
       <button
@@ -54,7 +55,6 @@
           class="profile-trigger"
           type="button"
           aria-haspopup="true"
-          (click)="toggleProfileMenu()"
         >
 
           <span class="avatar">
@@ -69,29 +69,25 @@
 
         </button>
 
-        @if (profileMenuOpen) {
+        <div class="profile-dropdown">
 
-          <div class="profile-dropdown">
+          <a routerLink="/user/profile">
+            My Profile
+          </a>
 
-            <a routerLink="/user/profile">
-              My Profile
-            </a>
+          <a routerLink="/user/settings">
+            Settings
+          </a>
 
-            <a routerLink="/user/settings">
-              Settings
-            </a>
+          <button
+            type="button"
+            class="danger logout-btn"
+            (click)="logout()"
+          >
+            Logout
+          </button>
 
-            <button
-              type="button"
-              class="danger logout-btn"
-              (click)="logout()"
-            >
-              Logout
-            </button>
-
-          </div>
-
-        }
+        </div>
 
       </div>
 
@@ -99,12 +95,16 @@
 
   </header>
 
+
+  <!-- MOBILE BACKDROP -->
   <label
     for="navToggle"
     class="sidebar-backdrop"
     aria-hidden="true">
   </label>
 
+
+  <!-- SIDEBAR -->
   <aside
     class="sidebar"
     aria-label="Primary navigation">
@@ -121,6 +121,7 @@
 
       </a>
 
+
       <a
         routerLink="/user-dashboard/explore"
         class="nav-item">
@@ -130,6 +131,7 @@
         Explore Properties
 
       </a>
+
 
       <a
         routerLink="/user-dashboard/favorites"
@@ -141,6 +143,7 @@
 
       </a>
 
+
       <a
         routerLink="/user-dashboard/applications"
         class="nav-item">
@@ -150,6 +153,7 @@
         My Applications
 
       </a>
+
 
       <a
         routerLink="/user-dashboard/bookings"
@@ -161,6 +165,7 @@
 
       </a>
 
+
       <a
         routerLink="/user/profile"
         class="nav-item">
@@ -170,6 +175,7 @@
         My Profile
 
       </a>
+
 
       <a
         routerLink="/user/settings"
@@ -185,8 +191,11 @@
 
   </aside>
 
+
+  <!-- MAIN CONTENT -->
   <main class="dashboard-content">
 
+    <!-- WELCOME -->
     <section class="welcome-section">
 
       <div>
@@ -226,6 +235,8 @@
 
     </section>
 
+
+    <!-- QUICK ACTIONS -->
     <section class="dashboard-section">
 
       <div class="section-heading">
@@ -242,8 +253,11 @@
 
       </div>
 
+
       <div class="quick-actions">
 
+
+        <!-- EXPLORE -->
         <a
           routerLink="/user-dashboard/explore"
           class="action-card">
@@ -268,6 +282,8 @@
 
         </a>
 
+
+        <!-- FAVORITES -->
         <a
           routerLink="/user-dashboard/favorites"
           class="action-card">
@@ -292,6 +308,8 @@
 
         </a>
 
+
+        <!-- APPLICATIONS -->
         <a
           routerLink="/user-dashboard/applications"
           class="action-card">
@@ -316,6 +334,8 @@
 
         </a>
 
+
+        <!-- BOOKINGS -->
         <a
           routerLink="/user-dashboard/bookings"
           class="action-card">
@@ -344,6 +364,8 @@
 
     </section>
 
+
+    <!-- GETTING STARTED -->
     <section class="getting-started">
 
       <div class="getting-started__content">
@@ -380,4 +402,3 @@
   </main>
 
 </div>
-
