@@ -10,6 +10,7 @@ import { Auth } from '../auth';
   styleUrl: './login.css',
 })
 export class Login {
+
   credentials = {
     email: '',
     password: '',
@@ -17,7 +18,7 @@ export class Login {
 
   constructor(
     private auth: Auth,
-    private router: Router,
+    private router: Router
   ) {}
 
   login() {
@@ -25,7 +26,10 @@ export class Login {
       next: (response) => {
         console.log('Login successful:', response);
 
-        localStorage.setItem('loggedInUser', JSON.stringify(response));
+        localStorage.setItem(
+          'loggedInUser',
+          JSON.stringify(response)
+        );
 
         if (response.role === 'BUYER') {
           this.router.navigate(['/user-dashboard']);
@@ -46,7 +50,7 @@ export class Login {
         } else {
           alert('Login failed. Please try again.');
         }
-      },
+      }
     });
   }
 }
