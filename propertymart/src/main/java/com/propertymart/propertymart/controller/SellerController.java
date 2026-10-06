@@ -70,4 +70,16 @@ public class SellerController {
 
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Seller> findSellerByUserId(
+            @PathVariable Long userId) {
+
+        Optional<Seller> seller = ss.findSellerByUserId(userId);
+
+        if (seller.isPresent()) {
+            return ResponseEntity.ok(seller.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 }

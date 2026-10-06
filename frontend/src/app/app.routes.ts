@@ -11,6 +11,7 @@ import { Explore } from './dashboard/user-dashboard/explore/explore';
 import { PropertyDetails } from './dashboard/user-dashboard/property-details/property-details';
 import { AuctionDetails } from './dashboard/user-dashboard/auction-details/auction-details';
 import { Auctions } from './dashboard/user-dashboard/auctions/auctions';
+import { AddProperty } from './seller/add-property/add-property';
 
 export const routes: Routes = [
   // Authentication
@@ -51,20 +52,23 @@ export const routes: Routes = [
     component: AdminDashboard,
   },
   {
-    path:'user-dashboard/explore',
-    component:Explore
+    path: 'user-dashboard/explore',
+    component: Explore,
   },
   {
-  path: 'user-dashboard/property/:id',
-  component: PropertyDetails
-}
-,
-{
-  path: 'user-dashboard/auction/:id',
-  component: AuctionDetails
-},
-{
-  path: 'user-dashboard/auctions',
-  component: Auctions
-}
+    path: 'user-dashboard/property/:id',
+    component: PropertyDetails,
+  },
+  {
+    path: 'user-dashboard/auction/:id',
+    component: AuctionDetails,
+  },
+  {
+    path: 'user-dashboard/auctions',
+    component: Auctions,
+  },
+  {
+    path: 'seller-dashboard/add-property',
+    component: AddProperty,
+  },
 ];

@@ -9,25 +9,31 @@ public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String email;
+
     private String phone;
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     @OneToOne
     @JoinColumn(
-            name = "id",
+            name = "user_id",
             nullable = false,
             unique = true
     )
     private User user;
+
+    public Seller() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -45,15 +51,12 @@ public class Seller {
         this.email = email;
     }
 
-    public Seller() {
+    public String getPhone() {
+        return phone;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public User getUser() {
