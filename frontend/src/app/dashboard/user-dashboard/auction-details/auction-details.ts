@@ -13,6 +13,7 @@ export class AuctionDetails implements OnInit {
 
   auction: any;
   bidAmount: number | null = null;
+  highestBid: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +27,7 @@ export class AuctionDetails implements OnInit {
     this.auctionService.getAuctionById(id).subscribe({
       next: (data) => {
         this.auction = data;
+        this.loadHighestBid(id);
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -34,9 +36,37 @@ export class AuctionDetails implements OnInit {
     });
   }
 
+  loadHighestBid(auctionId: number): void {
+    this.auctionService.getHighestBid(auctionId).subscribe({
+      next: (amount) => {
+        this.highestBid = amount;
+        this.bidAmount = amount;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.highestBid = this.auction.startingPrice;
+        this.bidAmount = this.highestBid;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  increaseBid(amount: number): void {
+    if (this.bidAmount === null || this.bidAmount < this.highestBid) {
+      this.bidAmount = this.highestBid;
+    }
+
+    this.bidAmount += amount;
+  }
+
   placeBid(): void {
     if (!this.bidAmount || this.bidAmount <= 0) {
       alert('Please enter a valid bid amount.');
+      return;
+    }
+
+    if (this.bidAmount <= this.highestBid) {
+      alert('Your bid must be higher than the current highest bid.');
       return;
     }
 
@@ -45,7 +75,11 @@ export class AuctionDetails implements OnInit {
     this.auctionService.placeBid(auctionId, this.bidAmount).subscribe({
       next: () => {
         alert('Bid placed successfully!');
-        this.bidAmount = null;
+
+        this.highestBid = this.bidAmount!;
+        this.bidAmount = this.highestBid;
+
+        this.cdr.detectChanges();
       },
       error: () => {
         alert('Failed to place bid.');

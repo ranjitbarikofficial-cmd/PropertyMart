@@ -72,6 +72,12 @@
         My Properties
       </a>
 
+      
+<a routerLink="/seller-dashboard/auctions" class="nav-item">
+  <span class="nav-icon" aria-hidden="true"> 🔨 </span>
+  My Auctions
+</a>
+
       <a routerLink="/seller-dashboard/add-property" class="nav-item">
         <span class="nav-icon" aria-hidden="true"> ➕ </span>
 
@@ -297,24 +303,37 @@
 
                   <!-- ACTIONS -->
                   <td data-label="Actions">
-                    <div class="row-actions">
-                      <button type="button" class="icon-action" aria-label="View property">
-                        👁
-                      </button>
+  <div class="row-actions">
 
-                      <button type="button" class="icon-action" aria-label="Edit property">
-                        ✎
-                      </button>
+    <button
+      type="button"
+      class="icon-action"
+      aria-label="View property">
+      👁
+    </button>
 
-                      <button
-                        type="button"
-                        class="icon-action icon-action--danger"
-                        aria-label="Delete property"
-                      >
-                        🗑
-                      </button>
-                    </div>
-                  </td>
+    <button
+      type="button"
+      class="icon-action"
+      aria-label="Edit property">
+      ✎
+    </button>
+
+    <button
+      type="button"
+      class="icon-action icon-action--danger"
+      aria-label="Delete property">
+      🗑
+    </button>
+
+    <a
+      [routerLink]="['/seller-dashboard/create-auction', property.id]"
+      class="create-auction-button">
+      🔨 Create Auction
+    </a>
+
+  </div>
+</td>
                 </tr>
               }
             }

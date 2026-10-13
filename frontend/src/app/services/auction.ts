@@ -32,4 +32,22 @@ placeBid(auctionId: number, amount: number): Observable<any> {
   );
 }
 
+getHighestBid(auctionId: number): Observable<number> {
+  return this.http.get<number>(
+    `http://localhost:8080/api/bid/highest/${auctionId}`,
+    {
+      withCredentials: true
+    }
+  );
+}
+
+
+getAuctionBySellerUserId(userId: number): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/user/${userId}`,
+    {
+      withCredentials: true
+    }
+  );
+}
 }
