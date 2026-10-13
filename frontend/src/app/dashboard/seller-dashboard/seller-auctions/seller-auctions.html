@@ -1,0 +1,39 @@
+
+<h2>My Auctions</h2>
+
+@if (loading) {
+  <p>Loading your auctions...</p>
+}
+
+@if (errorMessage) {
+  <p>{{ errorMessage }}</p>
+}
+
+@if (!loading && !errorMessage && auctions.length === 0) {
+  <p>You haven't created any auctions yet.</p>
+}
+
+@if (!loading && auctions.length > 0) {
+  <div class="auction-list">
+    @for (auction of auctions; track auction.id) {
+      <div class="auction-card">
+        <h3>{{ auction.property?.title }}</h3>
+
+        <p><strong>Auction ID:</strong> {{ auction.id }}</p>
+        <p><strong>Location:</strong> {{ auction.property?.location }}</p>
+        <p><strong>Starting Price:</strong> ₹{{ auction.startingPrice }}</p>
+        <p><strong>Status:</strong> {{ auction.status }}</p>
+        <p><strong>Start Time:</strong> {{ auction.startTime }}</p>
+        <p><strong>End Time:</strong> {{ auction.endTime }}</p>
+
+          <button [routerLink]="['/seller-dashboard/auctions', auction.id, 'bids']">
+  View Bids
+  </button>
+      </div>
+    }
+  </div>
+
+
+}
+
+

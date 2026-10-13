@@ -12,6 +12,9 @@ import { PropertyDetails } from './dashboard/user-dashboard/property-details/pro
 import { AuctionDetails } from './dashboard/user-dashboard/auction-details/auction-details';
 import { Auctions } from './dashboard/user-dashboard/auctions/auctions';
 import { AddProperty } from './seller/add-property/add-property';
+import { CreateAuction } from './dashboard/seller-dashboard/create-auction/create-auction';
+import { SellerAuctions } from './dashboard/seller-dashboard/seller-auctions/seller-auctions';
+import { AuctionBids } from './dashboard/seller-dashboard/auction-bids/auction-bids';
 
 export const routes: Routes = [
   // Authentication
@@ -71,4 +74,16 @@ export const routes: Routes = [
     path: 'seller-dashboard/add-property',
     component: AddProperty,
   },
+  {
+  path: 'seller-dashboard/create-auction/:id',
+  component: CreateAuction
+},
+{
+  path:'seller-dashboard/auctions',
+  component:SellerAuctions
+},
+{
+  path: 'seller-dashboard/auctions/:id/bids',
+  component: AuctionBids
+}
 ];
