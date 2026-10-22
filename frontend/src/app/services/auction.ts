@@ -50,4 +50,11 @@ getAuctionBySellerUserId(userId: number): Observable<any[]> {
     }
   );
 }
+
+getWonAuctionsByBuyerId(buyerId: number): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/won/${buyerId}`,
+    { withCredentials: true }
+  );
+}
 }

@@ -1,6 +1,5 @@
 
 <div class="explore-page">
-
   <div class="explore-header">
     <div>
       <p class="page-label">PropertyMart</p>
@@ -14,77 +13,73 @@
   </div>
 
   <div class="search-section">
-  <input
-    type="search"
-    placeholder="Search by location, property type or title..."
-    (input)="searchProperties($any($event.target).value)"
-  >
-</div>
+    <input
+      type="search"
+      placeholder="Search by location, property type or title..."
+      (input)="searchProperties($any($event.target).value)"
+    >
+  </div>
 
-<div class="property-grid">
+  <div class="property-grid">
+    @for (property of filteredProperties; track property.id) {
+      <div class="property-card">
+        <div class="property-image">
+          🏠
+        </div>
 
-  @for (property of filteredProperties; track property.title) {
-
-    <div class="property-card">
-
-      <div class="property-image">
-        🏠
-      </div>
-
-      <div class="property-content">
-
-        <span class="property-type">
-          {{ property.propertyType }}
-        </span>
-
-        <h2>{{ property.title }}</h2>
-
-        <p class="property-location">
-          📍 {{ property.location }}
-        </p>
-
-        <p class="property-description">
-          {{ property.description }}
-        </p>
-
-        <div class="property-info">
-
-          <span>
-            {{ property.area }} sq.ft
+        <div class="property-content">
+          <span class="property-type">
+            {{ property.propertyType }}
           </span>
 
-          @if (property.bedrooms !== null) {
-            <span>
-              {{ property.bedrooms }} Beds
-            </span>
-          }
+          <h2>{{ property.title }}</h2>
 
-          @if (property.bathrooms !== null) {
-            <span>
-              {{ property.bathrooms }} Baths
-            </span>
-          }
+          <p class="property-location">
+            📍 {{ property.location }}
+          </p>
 
+          <p class="property-description">
+            {{ property.description }}
+          </p>
+
+          <div class="property-info">
+            <span>{{ property.area }} sq.ft</span>
+
+            @if (property.bedrooms !== null) {
+              <span>{{ property.bedrooms }} Beds</span>
+            }
+
+            @if (property.bathrooms !== null) {
+              <span>{{ property.bathrooms }} Baths</span>
+            }
+          </div>
+
+          <div class="property-footer">
+            <strong>
+              ₹{{ property.basePrice.toLocaleString('en-IN') }}
+            </strong>
+
+            <div class="property-actions">
+              <button
+                type="button"
+                class="favorite-btn"
+                [class.active]="isFavorite(property)"
+                (click)="toggleFavorite(property)"
+                [attr.aria-label]="isFavorite(property) ? 'Remove from favorites' : 'Add to favorites'"
+              >
+                {{ isFavorite(property) ? '♥' : '♡' }}
+              </button>
+
+              <button
+                type="button"
+                [routerLink]="['/user-dashboard/property', property.id]"
+              >
+                View Details
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div class="property-footer">
-
-          <strong>
-            ₹{{ property.basePrice.toLocaleString('en-IN') }}
-          </strong>
-
-          <button type="button" [routerLink]="['/user-dashboard/property', property.id]">
->
-            View Details
-          </button>
-
-        </div>
-
       </div>
-
-    </div>
-
-  }
-
+    }
+  </div>
 </div>
-

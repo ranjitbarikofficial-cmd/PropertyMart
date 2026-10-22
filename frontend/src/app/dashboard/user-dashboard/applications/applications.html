@@ -1,0 +1,81 @@
+
+<div class="applications-page">
+  <div class="applications-header">
+    <div>
+      <p class="page-label">PropertyMart</p>
+      <h1>My Bids</h1>
+      <p>Track your bids and auction details.</p>
+    </div>
+
+    <div class="bid-count">
+      {{ bids.length }} Bids
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="empty-state">
+      <p>Loading your bids...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="empty-state">
+      <p>{{ errorMessage }}</p>
+    </div>
+  } @else if (bids.length === 0) {
+    <div class="empty-state">
+      <h2>No bids yet</h2>
+      <p>Explore auctions and place your first bid to see it here.</p>
+      <a routerLink="/user-dashboard/auctions" class="primary-btn">
+        Explore Auctions
+      </a>
+    </div>
+  } @else {
+    <div class="bids-grid">
+      @for (bid of bids; track bid.id) {
+        <div class="bid-card">
+          <div class="bid-card-header">
+            <span class="auction-label">
+              Auction #{{ bid.auction.id }}
+            </span>
+
+            <span class="auction-status">
+              {{ bid.auction.status }}
+            </span>
+          </div>
+
+          <div class="bid-card-content">
+            <h2>{{ bid.auction.property.title }}</h2>
+
+            <p class="property-location">
+              📍 {{ bid.auction.property.location }}
+            </p>
+
+            <div class="bid-details">
+              <div>
+                <span>Starting Price</span>
+                <strong>
+                  ₹{{ bid.auction.startingPrice.toLocaleString('en-IN') }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Your Bid</span>
+                <strong class="bid-amount">
+                  ₹{{ bid.amount.toLocaleString('en-IN') }}
+                </strong>
+              </div>
+            </div>
+
+            <p class="bid-time">
+              Bid placed: {{ bid.bidTime | date:'medium' }}
+            </p>
+
+            <p class="auction-end">
+              Auction ends: {{ bid.auction.endTime | date:'medium' }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+

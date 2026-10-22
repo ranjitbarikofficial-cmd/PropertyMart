@@ -1,1 +1,43 @@
-<p>auction-bids works!</p>
+
+<div class="bids-container">
+  <h2>Auction Bids</h2>
+
+  <p class="auction-id">Auction ID: {{ auctionId }}</p>
+
+  @if (loading) {
+    <p class="message">Loading bids...</p>
+  }
+
+  @if (errorMessage) {
+    <p class="error-message">{{ errorMessage }}</p>
+  }
+
+  @if (!loading && !errorMessage && bids.length === 0) {
+    <p class="message">No bids have been placed on this auction yet.</p>
+  }
+
+  @if (!loading && !errorMessage && bids.length > 0) {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Bid ID</th>
+            <th>Buyer</th>
+            <th>Bid Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (bid of bids; track bid.id) {
+            <tr>
+              <td>{{ bid.id }}</td>
+              <td>{{ bid.buyer?.name || 'Buyer' }}</td>
+              <td class="bid-amount">₹{{ bid.amount }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+
