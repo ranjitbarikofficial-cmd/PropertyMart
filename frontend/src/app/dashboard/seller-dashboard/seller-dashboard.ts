@@ -1,7 +1,7 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 interface Seller {
   id: number;
@@ -35,10 +35,13 @@ interface Property {
 export class SellerDashboard implements OnInit {
 
   private http = inject(HttpClient);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
 
   seller: Seller | null = null;
   properties: Property[] = [];
+  filteredProperties: Property[] = [];
 
   loading = true;
   errorMessage = '';
@@ -90,7 +93,7 @@ export class SellerDashboard implements OnInit {
         id: 0,
         name: user.name,
         email: user.email,
-        phone: '',
+        phone: user.phone || '',
         user: {
           id: user.id
         }
@@ -130,6 +133,7 @@ export class SellerDashboard implements OnInit {
 
         this.errorMessage = 'Seller profile not found.';
         this.loading = false;
+        this.cdr.detectChanges();
 
       }
 
@@ -145,10 +149,12 @@ export class SellerDashboard implements OnInit {
       next: (properties) => {
 
         this.properties = properties;
+        this.filteredProperties = properties;
 
         console.log('Seller properties:', properties);
 
         this.loading = false;
+        this.cdr.detectChanges();
 
       },
 
@@ -158,9 +164,46 @@ export class SellerDashboard implements OnInit {
 
         this.errorMessage = 'Failed to load properties.';
         this.loading = false;
+        this.cdr.detectChanges();
 
       }
 
     });
+  }
+
+  searchListings(searchText: string): void {
+    const text = (searchText || '').toLowerCase().trim();
+    if (!text) {
+      this.filteredProperties = this.properties;
+      return;
+    }
+    this.filteredProperties = this.properties.filter(p =>
+      (p.title || '').toLowerCase().includes(text) ||
+      (p.location || '').toLowerCase().includes(text) ||
+      (p.propertyType || '').toLowerCase().includes(text)
+    );
+  }
+
+  deleteProperty(propertyId: number): void {
+    if (!confirm('Are you sure you want to delete this property?')) {
+      return;
+    }
+
+    this.http.delete(`http://localhost:8080/api/property/delete/${propertyId}`).subscribe({
+      next: () => {
+        this.properties = this.properties.filter(p => p.id !== propertyId);
+        this.filteredProperties = this.filteredProperties.filter(p => p.id !== propertyId);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Delete property failed:', err);
+        alert('Failed to delete property. It may be linked to an active auction.');
+      }
+    });
+  }
+
+  logout(): void {
+    localStorage.removeItem('loggedInUser');
+    this.router.navigate(['/login']);
   }
 }

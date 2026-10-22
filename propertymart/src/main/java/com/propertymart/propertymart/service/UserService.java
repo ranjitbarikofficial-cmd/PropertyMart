@@ -63,6 +63,7 @@ public class UserService {
     }
 
     // Update user
+    @Transactional
     public User updateUser(Long id, User u) {
 
         Optional<User> existingUser = ur.findById(id);
@@ -71,13 +72,27 @@ public class UserService {
 
             User user = existingUser.get();
 
-            user.setName(u.getName());
-            user.setEmail(u.getEmail());
-            user.setPassword(u.getPassword());
-            user.setPhone(u.getPhone());
-            user.setRole(u.getRole());
+            if (u.getName() != null) user.setName(u.getName());
+            if (u.getEmail() != null) user.setEmail(u.getEmail());
+            if (u.getPassword() != null && !u.getPassword().isBlank()) {
+                user.setPassword(u.getPassword());
+            }
+            if (u.getPhone() != null) user.setPhone(u.getPhone());
+            if (u.getRole() != null) user.setRole(u.getRole());
 
-            return ur.save(user);
+            User saved = ur.save(user);
+
+            // Sync Seller profile if user is SELLER
+            if (saved.getRole() == Role.SELLER) {
+                sr.findByUserId(saved.getId()).ifPresent(seller -> {
+                    seller.setName(saved.getName());
+                    seller.setEmail(saved.getEmail());
+                    seller.setPhone(saved.getPhone());
+                    sr.save(seller);
+                });
+            }
+
+            return saved;
         }
 
         return null;
@@ -100,5 +115,16 @@ public class UserService {
         }
 
         return Optional.empty();
+    }
+
+    public boolean resetPassword(String email, String newPassword) {
+        Optional<User> userOpt = ur.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(newPassword);
+            ur.save(user);
+            return true;
+        }
+        return false;
     }
 }

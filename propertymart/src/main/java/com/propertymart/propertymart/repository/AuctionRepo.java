@@ -1,7 +1,14 @@
 package com.propertymart.propertymart.repository;
 
 import com.propertymart.propertymart.entity.Auction;
+import com.propertymart.propertymart.entity.AuctionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AuctionRepo extends JpaRepository<Auction,Long> {
+import java.util.List;
+
+public interface AuctionRepo extends JpaRepository<Auction, Long> {
+    List<Auction> findByPropertySellerUserId(Long userId);
+    List<Auction> findByWinnerBuyerId(Long buyerId);
+    List<Auction> findByStatus(AuctionStatus status);
 }
+

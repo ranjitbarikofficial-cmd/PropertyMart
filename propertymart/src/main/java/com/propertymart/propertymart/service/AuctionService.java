@@ -1,11 +1,15 @@
 package com.propertymart.propertymart.service;
 
 import com.propertymart.propertymart.entity.Auction;
+import com.propertymart.propertymart.entity.AuctionStatus;
+import com.propertymart.propertymart.entity.Bid;
 import com.propertymart.propertymart.entity.Property;
 import com.propertymart.propertymart.repository.AuctionRepo;
+import com.propertymart.propertymart.repository.BidRepo;
 import com.propertymart.propertymart.repository.PropertyRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +18,12 @@ public class AuctionService {
 
     private final AuctionRepo ar;
     private final PropertyRepo pr;
+    private final BidRepo br;
 
-    public AuctionService(AuctionRepo auctionRepo, PropertyRepo propertyRepo) {
+    public AuctionService(AuctionRepo auctionRepo, PropertyRepo propertyRepo, BidRepo bidRepo) {
         ar = auctionRepo;
         pr = propertyRepo;
+        br = bidRepo;
     }
 
 
@@ -86,4 +92,29 @@ public class AuctionService {
     public void deleteAuction(Long id) {
         ar.deleteById(id);
     }
+
+    public List<Auction> findAuctionsBySellerUserId(Long userId) {
+        return ar.findByPropertySellerUserId(userId);
+    }
+
+    public List<Auction> findWonAuctionsByBuyerId(Long buyerId) {
+        // First ensure any ENDED auctions without winnerBuyer recorded are populated
+        List<Auction> endedAuctions = ar.findByStatus(AuctionStatus.ENDED);
+        for (Auction auction : endedAuctions) {
+            if (auction.getWinnerBuyer() == null) {
+                Optional<Bid> highestBid = br.findTopByAuctionIdOrderByAmountDesc(auction.getId());
+                if (highestBid.isPresent()) {
+                    auction.setWinnerBuyer(highestBid.get().getBuyer());
+                    auction.setWinningBid(highestBid.get().getAmount());
+                    if (auction.getProperty() != null) {
+                        auction.getProperty().setStatus("SOLD");
+                        pr.save(auction.getProperty());
+                    }
+                    ar.save(auction);
+                }
+            }
+        }
+        return ar.findByWinnerBuyerId(buyerId);
+    }
 }
+

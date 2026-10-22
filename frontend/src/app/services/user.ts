@@ -14,4 +14,22 @@ export class User {
       withCredentials: true
     });
   }
+
+  getAllUsers() {
+    return this.http.get<any[]>(`${this.apiUrl}/alluser`, {
+      withCredentials: true
+    });
+  }
+
+  getUserById(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/find/${id}`, {
+      withCredentials: true
+    });
+  }
+
+  deleteUser(id: number) {
+    return this.http.delete(`${this.apiUrl}/delete/${id}`, {
+      withCredentials: true
+    });
+  }
 }

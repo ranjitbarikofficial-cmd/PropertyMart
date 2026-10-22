@@ -26,16 +26,23 @@ public class BidService {
     private UserRepo uur;
 
     public Bid placeBid(Long buyerId, Long auctionId, Double amount) {
-        Optional<User> u =uur.findById(buyerId);
+        if (buyerId == null) {
+            throw new BidException("Please log in as a buyer to place a bid");
+        }
 
-        if(!u.isPresent()){
+        Optional<User> u = uur.findById(buyerId);
 
+        if (!u.isPresent()) {
             throw new BidException("Buyer not found");
         }
-        Optional<Auction> a=ar.findById(auctionId);
+        Optional<Auction> a = ar.findById(auctionId);
 
-        if(a.isEmpty()){
+        if (a.isEmpty()) {
             throw new BidException("Auction not found");
+        }
+
+        if (a.get().getStatus() != AuctionStatus.ACTIVE) {
+            throw new BidException("Auction not Active Yet");
         }
 
         Optional<Bid> highestamount =
@@ -54,10 +61,6 @@ public class BidService {
             }
         }
 
-        if(a.get().getStatus()!= AuctionStatus.ACTIVE){
-            throw new BidException("Auction not Active Yet");
-        }
-
         Bid bid = new Bid();
 
         bid.setAmount(amount);
@@ -68,11 +71,21 @@ public class BidService {
         return br.save(bid);
     }
 
+    public Double getHighestBidAmount(Long auctionId) {
+        Optional<Bid> highestBid = br.findTopByAuctionIdOrderByAmountDesc(auctionId);
+        if (highestBid.isPresent()) {
+            return highestBid.get().getAmount();
+        }
+        Optional<Auction> auction = ar.findById(auctionId);
+        return auction.map(Auction::getStartingPrice).orElse(0.0);
+    }
+
     public List<Bid> getBidsByAuction(Long auctionId) {
         return br.findByAuctionId(auctionId);
     }
 
-    public List<Bid> getBidsByBuyer(long buyerId){
+    public List<Bid> getBidsByBuyer(long buyerId) {
         return br.findByBuyerId(buyerId);
     }
 }
+

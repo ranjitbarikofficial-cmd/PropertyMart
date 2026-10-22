@@ -21,11 +21,15 @@ public class BidController {
     public ResponseEntity<Bid> placeBid(
             HttpSession session,
             @RequestParam Long auctionId,
-            @RequestParam Double amount) {
+            @RequestParam Double amount,
+            @RequestParam(required = false) Long buyerId) {
 
-        Long buyerId=(Long)session.getAttribute("id");
+        Long resolvedBuyerId = (Long) session.getAttribute("id");
+        if (resolvedBuyerId == null) {
+            resolvedBuyerId = buyerId;
+        }
 
-        Bid bid = bs.placeBid(buyerId, auctionId, amount);
+        Bid bid = bs.placeBid(resolvedBuyerId, auctionId, amount);
 
         if (bid != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(bid);
@@ -34,16 +38,22 @@ public class BidController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @GetMapping("/highest/{auctionId}")
+    public ResponseEntity<Double> getHighestBid(@PathVariable Long auctionId) {
+        Double highest = bs.getHighestBidAmount(auctionId);
+        return ResponseEntity.ok(highest);
+    }
+
     @GetMapping("/findbyauctionid/{auctionId}")
-    public ResponseEntity<List<Bid>> getByAuctionId(@PathVariable Long auctionId){
-        List<Bid> bids =bs.getBidsByAuction(auctionId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(bids);
+    public ResponseEntity<List<Bid>> getByAuctionId(@PathVariable Long auctionId) {
+        List<Bid> bids = bs.getBidsByAuction(auctionId);
+        return ResponseEntity.ok(bids);
     }
 
     @GetMapping("/findbybuyerid/{buyerId}")
-    public ResponseEntity<List<Bid>> getByBuyerId(@PathVariable Long buyerId){
-        List<Bid> bids=bs.getBidsByBuyer(buyerId);
-        return ResponseEntity.status(HttpStatus.FOUND).body(bids);
+    public ResponseEntity<List<Bid>> getByBuyerId(@PathVariable Long buyerId) {
+        List<Bid> bids = bs.getBidsByBuyer(buyerId);
+        return ResponseEntity.ok(bids);
     }
-
 }
+

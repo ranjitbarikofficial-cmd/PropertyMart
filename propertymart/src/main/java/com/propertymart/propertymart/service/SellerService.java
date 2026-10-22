@@ -55,7 +55,21 @@ public class SellerService {
     }
 
     public Optional<Seller> findSellerByUserId(Long userId) {
-        return sr.findByUserId(userId);
+        Optional<Seller> existing = sr.findByUserId(userId);
+        if (existing.isPresent()) {
+            return existing;
+        }
+        Optional<User> userOpt = ur.findById(userId);
+        if (userOpt.isPresent() && userOpt.get().getRole() == Role.SELLER) {
+            User user = userOpt.get();
+            Seller seller = new Seller();
+            seller.setUser(user);
+            seller.setName(user.getName());
+            seller.setEmail(user.getEmail());
+            seller.setPhone(user.getPhone());
+            return Optional.of(sr.save(seller));
+        }
+        return Optional.empty();
     }
 
     public Seller updateSeller(Long id, Seller seller) {

@@ -21,7 +21,7 @@
     <div class="topbar__search">
       <label for="topSearch" class="visually-hidden"> Search </label>
 
-      <input id="topSearch" type="search" placeholder="Search your listings..." />
+      <input id="topSearch" type="search" placeholder="Search your listings..." (input)="searchListings($any($event.target).value)" />
     </div>
 
     <div class="topbar__right">
@@ -48,7 +48,7 @@
 
           <a routerLink="/seller-dashboard/settings"> Settings </a>
 
-          <a routerLink="/login" class="danger"> Logout </a>
+          <a routerLink="/login" (click)="logout()" class="danger"> Logout </a>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
         Dashboard
       </a>
 
-      <a routerLink="/seller-dashboard/properties" class="nav-item">
+      <a routerLink="/seller-dashboard" class="nav-item">
         <span class="nav-icon" aria-hidden="true"> 🏢 </span>
 
         My Properties
@@ -121,7 +121,7 @@
       </a>
     </nav>
 
-    <a routerLink="/login" class="nav-item nav-item--logout">
+    <a routerLink="/login" (click)="logout()" class="nav-item nav-item--logout">
       <span class="nav-icon" aria-hidden="true"> ⏻ </span>
 
       Logout
@@ -242,7 +242,7 @@
             }
 
             <!-- NO PROPERTIES -->
-            @else if (properties.length === 0) {
+            @else if (filteredProperties.length === 0) {
               <tr>
                 <td colspan="7" style="text-align: center; padding: 30px">
                   <strong> You haven't added any properties yet. </strong>
@@ -256,7 +256,7 @@
 
             <!-- REAL PROPERTIES -->
             @else {
-              @for (property of properties; track property.id) {
+              @for (property of filteredProperties; track property.id) {
                 <tr>
                   <!-- PROPERTY -->
                   <td data-label="Property">
@@ -305,23 +305,24 @@
                   <td data-label="Actions">
   <div class="row-actions">
 
-    <button
-      type="button"
+    <a
+      [routerLink]="['/user-dashboard/property', property.id]"
       class="icon-action"
       aria-label="View property">
       👁
-    </button>
+    </a>
 
-    <button
-      type="button"
+    <a
+      [routerLink]="['/seller-dashboard/edit-property', property.id]"
       class="icon-action"
       aria-label="Edit property">
       ✎
-    </button>
+    </a>
 
     <button
       type="button"
       class="icon-action icon-action--danger"
+      (click)="deleteProperty(property.id)"
       aria-label="Delete property">
       🗑
     </button>

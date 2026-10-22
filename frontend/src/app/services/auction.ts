@@ -23,8 +23,11 @@ getAuctionById(id: number): Observable<any> {
 }
 
 placeBid(auctionId: number, amount: number): Observable<any> {
+  const userStr = typeof localStorage !== 'undefined' ? localStorage.getItem('loggedInUser') : null;
+  const user = userStr ? JSON.parse(userStr) : null;
+  const buyerParam = user?.id ? `&buyerId=${user.id}` : '';
   return this.http.post<any>(
-    `http://localhost:8080/api/bid/place?auctionId=${auctionId}&amount=${amount}`,
+    `http://localhost:8080/api/bid/place?auctionId=${auctionId}&amount=${amount}${buyerParam}`,
     {},
     {
       withCredentials: true

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -80,14 +79,15 @@ public class UserController {
         if (user.isPresent()) {
 
             User loggedInUser = user.get();
-            session.setAttribute("id",loggedInUser.getId());
+            session.setAttribute("id", loggedInUser.getId());
 
             return ResponseEntity.ok().body(
                     java.util.Map.of(
                             "id", loggedInUser.getId(),
-                            "name", loggedInUser.getName(),
-                            "email", loggedInUser.getEmail(),
-                            "role", loggedInUser.getRole()
+                            "name", loggedInUser.getName() != null ? loggedInUser.getName() : "",
+                            "email", loggedInUser.getEmail() != null ? loggedInUser.getEmail() : "",
+                            "phone", loggedInUser.getPhone() != null ? loggedInUser.getPhone() : "",
+                            "role", loggedInUser.getRole() != null ? loggedInUser.getRole() : ""
                     )
             );
         }
@@ -97,5 +97,21 @@ public class UserController {
                         "message", "Invalid email or password"
                 )
         );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody java.util.Map<String, String> payload) {
+        String email = payload.get("email");
+        String newPassword = payload.get("newPassword");
+
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Email is required"));
+        }
+
+        boolean updated = us.resetPassword(email, newPassword != null && !newPassword.isBlank() ? newPassword : "password123");
+        if (updated) {
+            return ResponseEntity.ok(java.util.Map.of("message", "Password reset instructions / new password applied successfully"));
+        }
+        return ResponseEntity.status(404).body(java.util.Map.of("message", "No user found with this email"));
     }
 }

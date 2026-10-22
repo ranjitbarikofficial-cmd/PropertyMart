@@ -69,4 +69,27 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "property_id")
     private Property property;
+
+    private Double winningBid;
+
+    @ManyToOne
+    @JoinColumn(name = "winner_buyer_id")
+    private User winnerBuyer;
+
+    public Double getWinningBid() {
+        return winningBid;
+    }
+
+    public void setWinningBid(Double winningBid) {
+        this.winningBid = winningBid;
+    }
+
+    public User getWinnerBuyer() {
+        return winnerBuyer;
+    }
+
+    public void setWinnerBuyer(User winnerBuyer) {
+        this.winnerBuyer = winnerBuyer;
+    }
 }
+

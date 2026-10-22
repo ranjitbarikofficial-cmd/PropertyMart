@@ -22,7 +22,7 @@ public class PropertyService {
         ss = sellerService;
     }
 
-    // Create property
+
     public Property addProperty(Property property) {
 
         if (property.getSeller() == null ||
@@ -83,11 +83,11 @@ public class PropertyService {
         p.setBasePrice(property.getBasePrice());
         p.setStatus(property.getStatus());
 
-        // Do NOT change seller during update
+
         return pr.save(p);
     }
 
-    // Delete property
+
     public void deleteProperty(Long id) {
         pr.deleteById(id);
     }

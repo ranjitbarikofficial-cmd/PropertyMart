@@ -12,6 +12,7 @@ import { PropertyDetails } from './dashboard/user-dashboard/property-details/pro
 import { AuctionDetails } from './dashboard/user-dashboard/auction-details/auction-details';
 import { Auctions } from './dashboard/user-dashboard/auctions/auctions';
 import { AddProperty } from './seller/add-property/add-property';
+import { EditProperty } from './seller/edit-property/edit-property';
 import { CreateAuction } from './dashboard/seller-dashboard/create-auction/create-auction';
 import { SellerAuctions } from './dashboard/seller-dashboard/seller-auctions/seller-auctions';
 import { AuctionBids } from './dashboard/seller-dashboard/auction-bids/auction-bids';
@@ -79,29 +80,48 @@ export const routes: Routes = [
     component: AddProperty,
   },
   {
-  path: 'seller-dashboard/create-auction/:id',
-  component: CreateAuction
-},
-{
-  path:'seller-dashboard/auctions',
-  component:SellerAuctions
-},
-{
-  path: 'seller-dashboard/auctions/:id/bids',
-  component: AuctionBids
-},
-{
-  path:'user-dashboard/favorites',
-  component:Favorites
-},
-{ path: 'user-dashboard/applications',
-   component: Applications },
-{
-    path:'user-dashboard/bookings',
-    component:Bookings
-},
-{
-  path:'user-dashboard/profile',
-  component:Profile
-}
+    path: 'seller-dashboard/edit-property/:id',
+    component: EditProperty,
+  },
+  {
+    path: 'seller-dashboard/profile',
+    component: Profile,
+  },
+  {
+    path: 'seller-dashboard/settings',
+    component: Profile,
+  },
+  {
+    path: 'seller-dashboard/create-auction/:id',
+    component: CreateAuction,
+  },
+  {
+    path: 'seller-dashboard/auctions',
+    component: SellerAuctions,
+  },
+  {
+    path: 'seller-dashboard/auctions/:id/bids',
+    component: AuctionBids,
+  },
+  {
+    path: 'user-dashboard/favorites',
+    component: Favorites,
+  },
+  {
+    path: 'user-dashboard/applications',
+    component: Applications,
+  },
+  {
+    path: 'user-dashboard/bookings',
+    component: Bookings,
+  },
+  {
+    path: 'user-dashboard/profile',
+    component: Profile,
+  },
+  {
+    path: 'user/settings',
+    component: Profile,
+  }
 ];
+
