@@ -1,0 +1,48 @@
+```html
+<div class="favorites-container">
+  <div class="favorites-header">
+    <div>
+      <h2>My Favorites</h2>
+      <p>View the properties you've saved for later.</p>
+    </div>
+    <a routerLink="/user-dashboard/explore" class="explore-btn">
+      Explore Properties
+    </a>
+  </div>
+
+  @if (favoriteProperties.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">♡</div>
+      <h3>No favorite properties yet</h3>
+      <p>Explore properties and save the ones you like to find them here.</p>
+      <a routerLink="/user-dashboard/explore" class="primary-btn">
+        Explore Properties
+      </a>
+    </div>
+  }
+
+  @if (favoriteProperties.length > 0) {
+    <div class="favorites-grid">
+      @for (property of favoriteProperties; track property.id) {
+        <div class="property-card">
+          <div class="property-content">
+            <h3>{{ property.title }}</h3>
+            <p>{{ property.location }}</p>
+            <p class="property-price">₹{{ property.basePrice }}</p>
+            <a
+              [routerLink]="['/user-dashboard/property-details', property.id]"
+              class="view-btn">
+              View Details
+            </a>
+            <button
+  type="button"
+  (click)="removeFavorite(property.id)">
+  Remove Favorite
+</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+```

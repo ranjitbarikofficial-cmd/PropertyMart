@@ -1,0 +1,39 @@
+<div class="bookings-page">
+  <div class="bookings-header">
+    <h1>My Won Properties</h1>
+    <p>View the properties you have won through auctions.</p>
+  </div>
+
+  @if (loading) {
+    <div class="message">
+      Loading your won properties...
+    </div>
+  }
+
+  @if (!loading && errorMessage) {
+    <div class="message error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (!loading && !errorMessage && wonAuctions.length === 0) {
+    <div class="message">
+      You haven't won any properties yet.
+    </div>
+  }
+
+  @if (!loading && !errorMessage && wonAuctions.length > 0) {
+    <div class="property-list">
+      @for (auction of wonAuctions; track auction.id) {
+        <div class="property-card">
+          <h2>{{ auction.property?.title || 'Property' }}</h2>
+          <p><strong>Location:</strong> {{ auction.property?.location || 'Not available' }}</p>
+          <p><strong>Auction ID:</strong> {{ auction.id }}</p>
+          <p><strong>Winning Bid:</strong> {{ auction.winningBid | currency:'INR':'symbol':'1.0-0' }}</p>
+          <p><strong>Auction End Date:</strong> {{ auction.endTime | date:'medium' }}</p>
+          <p class="won-status">Auction Won</p>
+        </div>
+      }
+    </div>
+  }
+</div>
