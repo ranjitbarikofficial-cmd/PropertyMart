@@ -26,6 +26,10 @@ public class Auction {
     private AuctionStatus status;
     private Double startingPrice;
 
+    @ManyToOne
+    @JoinColumn(name = "winner_id")
+    private User winner;
+
     public Property getProperty() {
         return property;
     }
@@ -69,4 +73,12 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "property_id")
     private Property property;
+
+    public User getWinner() {
+        return winner;
+    }
+
+    public void setWinner(User winner) {
+        this.winner = winner;
+    }
 }

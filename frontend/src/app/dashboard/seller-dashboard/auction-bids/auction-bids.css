@@ -1,0 +1,154 @@
+.bids-container {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+}
+
+/* ============ HEADER ============ */
+.bids-container > h2 {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.bids-container .auction-id {
+  display: inline-block;
+  margin: 0 0 28px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+}
+
+/* ============ MESSAGES ============ */
+.bids-container .message {
+  margin: 0 0 20px;
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.bids-container .error-message {
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+/* ============ TABLE ============ */
+.bids-container .table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.bids-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.bids-container thead th {
+  padding: 14px 24px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #64748b;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bids-container tbody td {
+  padding: 16px 24px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bids-container tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.bids-container tbody tr {
+  transition: background 0.15s;
+}
+
+.bids-container tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Bid ID column */
+.bids-container tbody td:first-child {
+  width: 100px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.bids-container tbody td:first-child::before {
+  content: "#";
+  color: #cbd5e1;
+}
+
+/* Buyer column */
+.bids-container tbody td:nth-child(2) {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Amount column, right aligned */
+.bids-container thead th:last-child,
+.bids-container tbody td.bid-amount {
+  text-align: right;
+}
+
+.bids-container .bid-amount {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  font-variant-numeric: tabular-nums;
+  color: #1d4ed8;
+}
+
+/* Highest bid (first row) gets a subtle highlight */
+.bids-container tbody tr:first-child {
+  background: #f0fdf4;
+}
+
+.bids-container tbody tr:first-child:hover {
+  background: #dcfce7;
+}
+
+.bids-container tbody tr:first-child .bid-amount {
+  color: #166534;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 640px) {
+  .bids-container > h2 {
+    font-size: 24px;
+  }
+
+  .bids-container thead th,
+  .bids-container tbody td {
+    padding: 12px 16px;
+  }
+}

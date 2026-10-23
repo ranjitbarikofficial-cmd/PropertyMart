@@ -9,10 +9,16 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(
+        origins = "http://localhost:4200",
+        allowCredentials = "true"
+)
 @RequestMapping("/api/auction")
 public class AuctionController {
 
@@ -27,17 +33,16 @@ public class AuctionController {
     }
 
     @GetMapping("/allauction")
-    public ResponseEntity<List<Auction>> allAuction(){
-
-        List<Auction> auctions=as.findAllAuctions();
-        return ResponseEntity.status(HttpStatus.FOUND).body(auctions);
+    public ResponseEntity<List<Auction>> allAuction() {
+        List<Auction> auctions = as.findAllAuctions();
+        return ResponseEntity.ok(auctions);
     }
 
-    @GetMapping("findbyid/{id}")
+    @GetMapping("find/{id}")
     public ResponseEntity<Auction> oneAuction(@PathVariable Long id){
         Optional<Auction> auction=as.findAuctionById(id);
         if(auction.isPresent()){
-            return ResponseEntity.status(HttpStatus.FOUND).body(auction.get());
+            return ResponseEntity.ok(auction.get());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
@@ -56,6 +61,36 @@ public class AuctionController {
     public ResponseEntity<Void> deleteauction(@PathVariable Long id){
         as.deleteAuction(id);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Auction>> getauction(@PathVariable Long id){
+        List<Auction> auctions=as.getauctionbyuserid(id);
+        return ResponseEntity.status(HttpStatus.OK).body(auctions);
+    }
+
+    @GetMapping("/won/{buyerId}")
+    public ResponseEntity<List<Map<String, Object>>> getWonAuctions(
+            @PathVariable Long buyerId) {
+
+        List<Auction> auctions = as.getWonAuctionsByBuyerId(buyerId);
+
+        List<Map<String, Object>> result = auctions.stream()
+                .map(auction -> {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", auction.getId());
+                    item.put("startTime", auction.getStartTime());
+                    item.put("endTime", auction.getEndTime());
+                    item.put("status", auction.getStatus());
+                    item.put("startingPrice", auction.getStartingPrice());
+                    item.put("property", auction.getProperty());
+                    item.put("winningBid",
+                            as.getWinningBidAmount(auction.getId()));
+                    return item;
+                })
+                .toList();
+
+        return ResponseEntity.ok(result);
     }
 
 }

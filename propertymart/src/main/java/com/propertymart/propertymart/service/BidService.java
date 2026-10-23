@@ -75,4 +75,8 @@ public class BidService {
     public List<Bid> getBidsByBuyer(long buyerId){
         return br.findByBuyerId(buyerId);
     }
+
+    public Optional<Bid> getHighestBid(Long auctionId) {
+        return br.findTopByAuctionIdOrderByAmountDesc(auctionId);
+    }
 }

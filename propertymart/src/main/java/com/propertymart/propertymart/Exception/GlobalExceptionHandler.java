@@ -14,4 +14,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBidException(BidException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(SellerNotFoundException.class)
+    public ResponseEntity<String> heisnotseller(SellerNotFoundException s){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(s.getMessage());
+    }
 }

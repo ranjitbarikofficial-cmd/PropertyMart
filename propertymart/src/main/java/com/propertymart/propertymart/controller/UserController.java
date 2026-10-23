@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200",
+        allowCredentials = "true")
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -81,6 +82,8 @@ public class UserController {
 
             User loggedInUser = user.get();
             session.setAttribute("id",loggedInUser.getId());
+
+
 
             return ResponseEntity.ok().body(
                     java.util.Map.of(

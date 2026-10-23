@@ -9,8 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(
+        origins = "http://localhost:4200",
+        allowCredentials = "true"
+)
 @RequestMapping("/api/property")
 public class PropertyController {
+
 
     private final PropertyService ps;
 
@@ -18,7 +23,6 @@ public class PropertyController {
         ps = propertyService;
     }
 
-    // Create property
     @PostMapping("/create")
     public ResponseEntity<Property> addProperty(
             @RequestBody Property property) {
@@ -32,7 +36,6 @@ public class PropertyController {
         return ResponseEntity.badRequest().build();
     }
 
-    // Get all properties
     @GetMapping("/allproperty")
     public ResponseEntity<List<Property>> findAllProperties() {
 
@@ -41,7 +44,6 @@ public class PropertyController {
         return ResponseEntity.ok(properties);
     }
 
-    // Get property by ID
     @GetMapping("/find/{id}")
     public ResponseEntity<Property> findPropertyById(
             @PathVariable Long id) {
@@ -56,7 +58,6 @@ public class PropertyController {
         return ResponseEntity.notFound().build();
     }
 
-    // Update property
     @PutMapping("/update/{id}")
     public ResponseEntity<Property> updateProperty(
             @PathVariable Long id,
@@ -72,7 +73,6 @@ public class PropertyController {
         return ResponseEntity.notFound().build();
     }
 
-    // Delete property
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProperty(
             @PathVariable Long id) {
@@ -81,7 +81,7 @@ public class PropertyController {
 
         return ResponseEntity.noContent().build();
     }
-    // Get properties of a seller
+
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<List<Property>> findPropertiesBySeller(
             @PathVariable Long sellerId) {

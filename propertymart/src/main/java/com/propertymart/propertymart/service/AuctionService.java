@@ -1,9 +1,12 @@
 package com.propertymart.propertymart.service;
 
-import com.propertymart.propertymart.entity.Auction;
-import com.propertymart.propertymart.entity.Property;
+import com.propertymart.propertymart.Exception.SellerNotFoundException;
+import com.propertymart.propertymart.entity.*;
 import com.propertymart.propertymart.repository.AuctionRepo;
+import com.propertymart.propertymart.repository.BidRepo;
 import com.propertymart.propertymart.repository.PropertyRepo;
+import com.propertymart.propertymart.repository.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,10 @@ public class AuctionService {
 
     private final AuctionRepo ar;
     private final PropertyRepo pr;
+    @Autowired
+    private UserRepo ur;
+    @Autowired
+    private BidRepo br;
 
     public AuctionService(AuctionRepo auctionRepo, PropertyRepo propertyRepo) {
         ar = auctionRepo;
@@ -85,5 +92,23 @@ public class AuctionService {
 
     public void deleteAuction(Long id) {
         ar.deleteById(id);
+    }
+
+    public List<Auction> getauctionbyuserid(Long id){
+        Optional<User> u=ur.findById(id);
+        if(u.get().getRole()!= Role.SELLER){
+           throw new SellerNotFoundException(id+" is not a seller.");
+        }
+        return ar.findByPropertySellerUserId(id);
+    }
+
+    public List<Auction> getWonAuctionsByBuyerId(Long buyerId) {
+        return ar.findByWinnerIdAndStatus(buyerId, AuctionStatus.ENDED);
+    }
+
+    public Double getWinningBidAmount(Long auctionId) {
+        return br.findTopByAuctionIdOrderByAmountDesc(auctionId)
+                .map(Bid::getAmount)
+                .orElse(null);
     }
 }

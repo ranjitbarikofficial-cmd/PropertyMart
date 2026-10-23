@@ -1,0 +1,195 @@
+:host {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+}
+
+/* ============ TITLE BANNER ============ */
+:host > h2 {
+  margin: 0 0 32px;
+  padding: 32px 36px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(circle at 95% 0%, rgba(59, 130, 246, 0.4), transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: auto, 20px 20px;
+  border-radius: 16px;
+}
+
+/* ============ LOADING / ERROR / EMPTY ============ */
+:host > p {
+  margin: 0 0 20px;
+  padding: 56px 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+}
+
+/* ============ GRID ============ */
+.auction-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 28px;
+}
+
+/* ============ CARD ============ */
+.auction-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 0;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.auction-card:hover {
+  transform: translateY(-5px);
+  border-color: #bfdbfe;
+  box-shadow: 0 22px 44px rgba(29, 78, 216, 0.14);
+}
+
+.auction-card h3 {
+  grid-column: 1 / -1;
+  order: 0;
+  margin: 0;
+  padding: 22px 24px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+  background: #f8fafc;
+  border-top: 4px solid #1d4ed8;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* ============ DETAIL BLOCKS ============ */
+.auction-card p {
+  margin: 0;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.auction-card p strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* Order: ID, Status, Location, Price, Start, End */
+.auction-card p:nth-of-type(1) { order: 1; }
+.auction-card p:nth-of-type(4) { order: 2; }
+.auction-card p:nth-of-type(2) { order: 3; grid-column: 1 / -1; }
+.auction-card p:nth-of-type(3) { order: 4; grid-column: 1 / -1; }
+.auction-card p:nth-of-type(5) { order: 5; }
+.auction-card p:nth-of-type(6) { order: 6; }
+
+/* Status */
+.auction-card p:nth-of-type(4) {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #15803d;
+}
+
+.auction-card p:nth-of-type(4)::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.auction-card p:nth-of-type(4) strong {
+  display: block;
+  margin-left: 0;
+}
+
+/* Price highlight */
+.auction-card p:nth-of-type(3) {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-bottom: 1px solid #dbeafe;
+}
+
+.auction-card p:nth-of-type(3) strong {
+  color: #60a5fa;
+}
+
+/* Dates */
+.auction-card p:nth-of-type(5),
+.auction-card p:nth-of-type(6) {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  border-bottom: none;
+}
+
+.auction-card p:nth-of-type(5) {
+  border-right: 1px solid #f1f5f9;
+}
+
+/* ============ BUTTON ============ */
+.auction-card button {
+  grid-column: 1 / -1;
+  order: 7;
+  margin: 8px 24px 24px;
+  padding: 12px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #ffffff;
+  border: 1.5px solid #1d4ed8;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.auction-card button:hover {
+  color: #ffffff;
+  background: #1d4ed8;
+  box-shadow: 0 6px 16px rgba(29, 78, 216, 0.28);
+}
+
+.auction-card button:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 640px) {
+  :host > h2 {
+    padding: 24px 22px;
+    font-size: 24px;
+  }
+
+  .auction-list {
+    grid-template-columns: 1fr;
+  }
+}

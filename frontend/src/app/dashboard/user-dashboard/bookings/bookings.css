@@ -1,0 +1,186 @@
+.bookings-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+}
+
+/* ============ HEADER ============ */
+.bookings-page .bookings-header {
+  margin-bottom: 32px;
+  padding-left: 18px;
+  border-left: 4px solid #1d4ed8;
+}
+
+.bookings-page .bookings-header h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.bookings-page .bookings-header p {
+  margin: 0;
+  font-size: 15px;
+  color: #64748b;
+}
+
+/* ============ MESSAGES ============ */
+.bookings-page .message {
+  padding: 64px 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #64748b;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+}
+
+.bookings-page .message.error {
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+}
+
+/* ============ GRID ============ */
+.bookings-page .property-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 28px;
+}
+
+/* ============ CARD ============ */
+.bookings-page .property-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.bookings-page .property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
+}
+
+/* Dark header */
+.bookings-page .property-card h2 {
+  order: 1;
+  margin: 0;
+  padding: 62px 24px 48px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(circle at 90% 0%, rgba(59, 130, 246, 0.35), transparent 55%),
+    radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: auto, 18px 18px;
+}
+
+/* Won badge (floats on the header) */
+.bookings-page .property-card .won-status {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  margin: 0;
+  padding: 5px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  border-radius: 999px;
+}
+
+.bookings-page .property-card .won-status::before {
+  content: "✓";
+  font-size: 12px;
+}
+
+/* ============ DETAIL ROWS ============ */
+.bookings-page .property-card p {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0;
+  padding: 15px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bookings-page .property-card p strong {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #64748b;
+}
+
+/* Row order: title, winning bid, location, auction id, end date */
+.bookings-page .property-card p:nth-of-type(3) { order: 2; }
+.bookings-page .property-card p:nth-of-type(1) { order: 3; }
+.bookings-page .property-card p:nth-of-type(2) { order: 4; }
+.bookings-page .property-card p:nth-of-type(4) {
+  order: 5;
+  border-bottom: none;
+  padding-bottom: 22px;
+}
+
+/* Winning bid: floating box over the header */
+.bookings-page .property-card p:nth-of-type(3) {
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: -26px 20px 8px;
+  padding: 16px 20px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  color: #15803d;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+}
+
+.bookings-page .property-card p:nth-of-type(3) strong {
+  color: #64748b;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 640px) {
+  .bookings-page .bookings-header h1 {
+    font-size: 24px;
+  }
+
+  .bookings-page .property-list {
+    grid-template-columns: 1fr;
+  }
+}
