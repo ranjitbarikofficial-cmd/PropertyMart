@@ -1,0 +1,112 @@
+
+<div class="property-page">
+  <div class="property-header">
+    <div>
+      <h2>Manage Properties</h2>
+      <p>Review property listings and manage approval requests.</p>
+    </div>
+    <button class="refresh-btn" (click)="loadProperties()">Refresh</button>
+  </div>
+
+  <div class="property-stats">
+    <div class="stat-card">
+      <span>Total Properties</span>
+      <h3>{{ properties.length }}</h3>
+    </div>
+    <div class="stat-card">
+      <span>Pending Approvals</span>
+      <h3>{{ pendingProperties }}</h3>
+    </div>
+    <div class="stat-card">
+      <span>Approved</span>
+      <h3>{{ approvedProperties }}</h3>
+    </div>
+    <div class="stat-card">
+      <span>Rejected</span>
+      <h3>{{ rejectedProperties }}</h3>
+    </div>
+  </div>
+
+  <div class="property-toolbar">
+    <input
+      type="text"
+      placeholder="Search by property, location, or seller..."
+      [(ngModel)]="searchText"
+      (ngModelChange)="filterProperties()"
+    />
+  </div>
+
+  @if (loading) {
+    <div class="message">Loading properties...</div>
+  } @else if (errorMessage) {
+    <div class="message error">{{ errorMessage }}</div>
+    <button class="refresh-btn" (click)="loadProperties()">Try Again</button>
+  } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Property</th>
+            <th>Location</th>
+            <th>Price</th>
+            <th>Seller</th>
+            <th>Approval Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (property of filteredProperties; track property.id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>{{ property.title ?? property.propertyName ?? property.name ?? '—' }}</td>
+              <td>{{ property.location ?? property.address ?? '—' }}</td>
+              <td>{{ property.price ?? property.expectedPrice ?? '—' }}</td>
+              <td>
+                {{ property.seller?.user?.name ?? property.seller?.name ?? '—' }}
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.status-pending]="(property.approvalStatus ?? 'PENDING').toUpperCase() === 'PENDING'"
+                  [class.status-approved]="property.approvalStatus?.toUpperCase() === 'APPROVED'"
+                  [class.status-rejected]="property.approvalStatus?.toUpperCase() === 'REJECTED'"
+                >
+                  {{ property.approvalStatus ?? 'PENDING' }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button
+                    class="view-btn"
+                    (click)="viewProperty(property)"
+                  >
+                    View
+                  </button>
+                  <button
+                    class="approve-btn"
+                    [disabled]="processingPropertyIds.includes(property.id) || property.approvalStatus === 'APPROVED'"
+                    (click)="updatePropertyApproval(property.id, 'APPROVED')"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    class="reject-btn"
+                    [disabled]="processingPropertyIds.includes(property.id) || property.approvalStatus === 'REJECTED'"
+                    (click)="updatePropertyApproval(property.id, 'REJECTED')"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">No properties found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

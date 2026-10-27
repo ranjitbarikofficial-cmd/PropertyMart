@@ -2,6 +2,7 @@ package com.propertymart.propertymart.controller;
 
 import com.propertymart.propertymart.entity.Property;
 import com.propertymart.propertymart.service.PropertyService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,12 +75,15 @@ public class PropertyController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProperty(
-            @PathVariable Long id) {
-
-        ps.deleteProperty(id);
-
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteProperty(@PathVariable Long id) {
+        try {
+            ps.deleteProperty(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/seller/{sellerId}")
@@ -90,5 +94,33 @@ public class PropertyController {
                 ps.findPropertiesBySellerId(sellerId);
 
         return ResponseEntity.ok(properties);
+    }
+
+    @PutMapping("/approval/{id}")
+    public ResponseEntity<Property> updatePropertyApproval(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> request) {
+
+        String status = request.get("approvalStatus");
+
+        if (status == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            com.propertymart.propertymart.entity.ApprovalStatus approvalStatus =
+                    com.propertymart.propertymart.entity.ApprovalStatus.valueOf(status.toUpperCase());
+
+            Property updatedProperty = ps.updatePropertyApproval(id, approvalStatus);
+
+            if (updatedProperty != null) {
+                return ResponseEntity.ok(updatedProperty);
+            }
+
+            return ResponseEntity.notFound().build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

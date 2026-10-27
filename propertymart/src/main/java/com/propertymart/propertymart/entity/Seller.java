@@ -24,6 +24,9 @@ public class Seller {
     )
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus verificationStatus = ApprovalStatus.PENDING;
+
     public Seller() {
     }
 
@@ -65,5 +68,13 @@ public class Seller {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ApprovalStatus getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(ApprovalStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 }

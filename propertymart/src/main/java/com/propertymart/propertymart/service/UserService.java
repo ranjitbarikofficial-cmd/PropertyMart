@@ -1,5 +1,6 @@
 package com.propertymart.propertymart.service;
 
+import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.Role;
 import com.propertymart.propertymart.entity.Seller;
 import com.propertymart.propertymart.entity.User;
@@ -27,6 +28,7 @@ public class UserService {
     public User adduser(User u) {
 
         // Save User first
+        u.setVerificationStatus(ApprovalStatus.PENDING);
         User savedUser = ur.save(u);
 
         // If registered as SELLER,
@@ -44,6 +46,7 @@ public class UserService {
                 seller.setName(savedUser.getName());
                 seller.setEmail(savedUser.getEmail());
                 seller.setPhone(savedUser.getPhone());
+                seller.setVerificationStatus(ApprovalStatus.PENDING);
 
                 sr.save(seller);
             }
@@ -101,4 +104,24 @@ public class UserService {
 
         return Optional.empty();
     }
+
+
+    public User updateUserApproval(Long id, ApprovalStatus approvalStatus) {
+
+        Optional<User> existingUser = ur.findById(id);
+
+        if (existingUser.isEmpty()) {
+            return null;
+        }
+
+        if (approvalStatus == null) {
+            throw new IllegalArgumentException("Approval status is required");
+        }
+
+        User user = existingUser.get();
+        user.setVerificationStatus(approvalStatus);
+
+        return ur.save(user);
+    }
+
 }

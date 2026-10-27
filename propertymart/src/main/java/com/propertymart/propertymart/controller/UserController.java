@@ -1,5 +1,6 @@
 package com.propertymart.propertymart.controller;
 
+import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.User;
 import com.propertymart.propertymart.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -23,6 +24,7 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<User> addUser(@RequestBody User u) {
+
         User uu = us.adduser(u);
         return ResponseEntity.ok().body(uu);
     }
@@ -101,4 +103,30 @@ public class UserController {
                 )
         );
     }
+
+
+    @PutMapping("/approval/{id}")
+    public ResponseEntity<User> updateUserApproval(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> request) {
+
+        ApprovalStatus approvalStatus;
+
+        try {
+            approvalStatus = ApprovalStatus.valueOf(
+                    request.get("approvalStatus")
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User updatedUser = us.updateUserApproval(id, approvalStatus);
+
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 }

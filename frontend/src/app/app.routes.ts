@@ -19,6 +19,15 @@ import { Favorites } from './dashboard/user-dashboard/favorites/favorites';
 import { Applications } from './dashboard/user-dashboard/applications/applications';
 import { Bookings } from './dashboard/user-dashboard/bookings/bookings';
 import { Profile } from './dashboard/user-dashboard/profile/profile';
+import { MyProperties } from './dashboard/seller-dashboard/my-properties/my-properties';
+import { EditProperty } from './dashboard/seller-dashboard/edit-property/edit-property';
+import { Users } from './dashboard/admin-dashboard/users/users';
+import { Seller } from './dashboard/admin-dashboard/seller/seller';
+import { Property } from './dashboard/admin-dashboard/property/property';
+import { Auction } from './dashboard/admin-dashboard/auction/auction';
+import { Winner } from './dashboard/admin-dashboard/winner/winner';
+
+
 
 export const routes: Routes = [
   // Authentication
@@ -103,5 +112,35 @@ export const routes: Routes = [
 {
   path:'user-dashboard/profile',
   component:Profile
+},
+{
+  path: 'seller-dashboard/my-properties',
+  component: MyProperties
+},
+  {
+  path: 'seller-dashboard/edit-property/:id',
+  component: EditProperty
+},
+{
+  path: 'admin-dashboard/users',
+  component: Users
+},
+{
+  path: 'admin-dashboard/seller',
+  component: Seller
+},
+{
+  path: 'admin-dashboard/property',
+  component: Property
+},
+{
+  path: 'admin-dashboard/auction',
+  component: Auction
+},
+{
+  path: 'admin-dashboard/winner',
+  component: Winner
 }
+
+
 ];

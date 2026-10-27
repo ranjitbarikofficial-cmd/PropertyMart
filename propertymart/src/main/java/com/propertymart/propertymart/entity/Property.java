@@ -31,6 +31,9 @@ public class Property {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
+
     public Property() {
     }
 
@@ -120,5 +123,13 @@ public class Property {
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public ApprovalStatus getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 }

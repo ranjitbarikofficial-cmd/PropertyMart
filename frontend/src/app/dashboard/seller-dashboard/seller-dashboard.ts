@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -26,6 +26,11 @@ interface Property {
   status: string;
 }
 
+interface Auction {
+  id: number;
+  status: string;
+}
+
 @Component({
   selector: 'app-seller-dashboard',
   imports: [RouterLink],
@@ -34,8 +39,11 @@ interface Property {
 })
 export class SellerDashboard implements OnInit {
 
+  activeAuctionsCount = 0;
+
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private cdr=inject(ChangeDetectorRef);
 
   seller: Seller | null = null;
   properties: Property[] = [];
@@ -137,30 +145,44 @@ export class SellerDashboard implements OnInit {
   }
 
   loadProperties(sellerId: number): void {
+  this.http.get<Property[]>(
+    `http://localhost:8080/api/property/seller/${sellerId}`
+  ).subscribe({
+    next: (properties) => {
+      this.properties = properties;
+      this.loading = false;
 
-    this.http.get<Property[]>(
-      `http://localhost:8080/api/property/seller/${sellerId}`
-    ).subscribe({
+      console.log('Seller ID:', sellerId);
+      console.log('Seller properties:', this.properties);
+      console.log('Total properties:', this.properties.length);
+      console.log('Active properties:', this.activeProperties.length);
 
-      next: (properties) => {
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Failed to load properties:', error);
+      this.errorMessage = 'Failed to load properties.';
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
+loadActiveAuctions(userId: number): void {
+  this.http.get<Auction[]>(
+    `http://localhost:8080/api/auction/seller/${userId}`
+  ).subscribe({
+    next: (auctions) => {
+      this.activeAuctionsCount = auctions.filter(
+        auction => auction.status === 'ACTIVE'
+      ).length;
 
-        this.properties = properties;
-
-        console.log('Seller properties:', properties);
-
-        this.loading = false;
-
-      },
-
-      error: (error) => {
-
-        console.error('Failed to load properties:', error);
-
-        this.errorMessage = 'Failed to load properties.';
-        this.loading = false;
-
-      }
-
-    });
-  }
+      console.log('Total auctions:', auctions.length);
+      console.log('Active auctions:', this.activeAuctionsCount);
+    },
+    error: (error) => {
+      console.error('Failed to load auctions:', error);
+      this.activeAuctionsCount = 0;
+    }
+  });
+}
 }

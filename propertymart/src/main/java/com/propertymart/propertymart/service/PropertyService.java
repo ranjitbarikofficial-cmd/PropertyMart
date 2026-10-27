@@ -1,8 +1,11 @@
 package com.propertymart.propertymart.service;
 
+import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.Property;
 import com.propertymart.propertymart.entity.Seller;
+import com.propertymart.propertymart.repository.AuctionRepo;
 import com.propertymart.propertymart.repository.PropertyRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +16,8 @@ public class PropertyService {
 
     private final PropertyRepo pr;
     private final SellerService ss;
+    @Autowired
+    AuctionRepo ar;
 
     public PropertyService(
             PropertyRepo propertyRepo,
@@ -27,7 +32,6 @@ public class PropertyService {
 
         if (property.getSeller() == null ||
                 property.getSeller().getId() == null) {
-
             return null;
         }
 
@@ -41,12 +45,12 @@ public class PropertyService {
 
         property.setSeller(seller.get());
 
-        // Default status
         if (property.getStatus() == null ||
                 property.getStatus().isBlank()) {
-
             property.setStatus("AVAILABLE");
         }
+
+        property.setApprovalStatus(ApprovalStatus.PENDING);
 
         return pr.save(property);
     }
@@ -89,9 +93,37 @@ public class PropertyService {
 
     // Delete property
     public void deleteProperty(Long id) {
+        if (ar.existsByPropertyId(id)) {
+            throw new IllegalStateException(
+                    "Cannot delete this property because it has an auction."
+            );
+        }
+
         pr.deleteById(id);
     }
     public List<Property> findPropertiesBySellerId(Long sellerId) {
         return pr.findBySellerId(sellerId);
+    }
+
+    public long countPendingProperties() {
+        return pr.countByApprovalStatus(ApprovalStatus.PENDING);
+    }
+
+    public Property updatePropertyApproval(Long id, ApprovalStatus approvalStatus) {
+        Optional<Property> existingProperty = pr.findById(id);
+
+        if (existingProperty.isEmpty()) {
+            return null;
+        }
+
+        if (approvalStatus == null) {
+            throw new IllegalArgumentException("Approval status is required");
+        }
+
+        Property property = existingProperty.get();
+
+        property.setApprovalStatus(approvalStatus);
+
+        return pr.save(property);
     }
 }

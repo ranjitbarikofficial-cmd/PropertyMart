@@ -1,0 +1,81 @@
+
+<div class="seller-page">
+  <div class="seller-header">
+    <div>
+      <h2>Manage Sellers</h2>
+      <p>View and manage seller accounts and verification status.</p>
+    </div>
+    <button class="refresh-btn" (click)="loadSellers()">Refresh</button>
+  </div>
+
+  <div class="seller-stats">
+    <div class="stat-card">
+      <span>Total Sellers</span>
+      <h3>{{ sellers.length }}</h3>
+    </div>
+    <div class="stat-card">
+      <span>Pending Verification</span>
+      <h3>{{ pendingSellers }}</h3>
+    </div>
+    <div class="stat-card">
+      <span>Approved Sellers</span>
+     <h3>{{ approvedSellers }}</h3>
+    </div>
+  </div>
+
+  <div class="seller-toolbar">
+    <input
+      type="text"
+      placeholder="Search sellers by name or email..."
+      [(ngModel)]="searchText"
+      (ngModelChange)="filterSellers()"
+    />
+  </div>
+
+  @if (loading) {
+    <div class="message">Loading sellers...</div>
+  } @else if (errorMessage) {
+    <div class="message error">{{ errorMessage }}</div>
+    <button class="refresh-btn" (click)="loadSellers()">Try Again</button>
+  } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Seller Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Verification Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (seller of filteredSellers; track seller.id; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>{{ seller.name ?? seller.user?.name ?? '—' }}</td>
+              <td>{{ seller.email ?? seller.user?.email ?? '—' }}</td>
+              <td>{{ seller.phone ?? seller.user?.phone ?? '—' }}</td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.status-pending]="(seller.verificationStatus ?? 'PENDING').toUpperCase() === 'PENDING'"
+                  [class.status-approved]="seller.verificationStatus?.toUpperCase() === 'APPROVED'"
+                  [class.status-rejected]="seller.verificationStatus?.toUpperCase() === 'REJECTED'"
+                >
+                  {{ seller.verificationStatus ?? 'PENDING' }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="empty-state">
+                No sellers found.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

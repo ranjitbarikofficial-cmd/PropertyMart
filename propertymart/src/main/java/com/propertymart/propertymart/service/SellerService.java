@@ -1,5 +1,6 @@
 package com.propertymart.propertymart.service;
 
+import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.Role;
 import com.propertymart.propertymart.entity.Seller;
 import com.propertymart.propertymart.entity.User;
@@ -42,6 +43,7 @@ public class SellerService {
         seller.setName(user.getName());
         seller.setEmail(user.getEmail());
         seller.setPhone(user.getPhone());
+        seller.setVerificationStatus(ApprovalStatus.PENDING);
 
         return sr.save(seller);
     }
@@ -78,5 +80,27 @@ public class SellerService {
 
     public void deleteSeller(Long id) {
         sr.deleteById(id);
+    }
+
+    public long countPendingSellers() {
+        return sr.countByVerificationStatus(ApprovalStatus.PENDING);
+    }
+
+    public Seller updateSellerVerification(Long id, ApprovalStatus verificationStatus) {
+        Optional<Seller> existingSeller = sr.findById(id);
+
+        if (existingSeller.isEmpty()) {
+            return null;
+        }
+
+        if (verificationStatus == null) {
+            throw new IllegalArgumentException("Verification status is required");
+        }
+
+        Seller seller = existingSeller.get();
+
+        seller.setVerificationStatus(verificationStatus);
+
+        return sr.save(seller);
     }
 }

@@ -2,6 +2,8 @@ package com.propertymart.propertymart.controller;
 
 
 import com.propertymart.propertymart.entity.Auction;
+import com.propertymart.propertymart.entity.Bid;
+import com.propertymart.propertymart.repository.BidRepo;
 import com.propertymart.propertymart.service.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,8 @@ public class AuctionController {
 
     @Autowired
     private AuctionService as;
+    @Autowired
+    private BidRepo br;
 
     @PostMapping("/create")
     public ResponseEntity<Auction> createAuction(@RequestBody Auction auction) {
@@ -92,5 +96,36 @@ public class AuctionController {
 
         return ResponseEntity.ok(result);
     }
+
+
+    @GetMapping("/winners")
+    public ResponseEntity<List<Map<String, Object>>> getAllAuctionWinners() {
+        List<Auction> auctions = as.findAllAuctions();
+
+        List<Map<String, Object>> result = auctions.stream()
+                .filter(auction -> auction.getStatus() == com.propertymart.propertymart.entity.AuctionStatus.ENDED)
+                .map(auction -> {
+                    Map<String, Object> item = new HashMap<>();
+
+                    item.put("id", auction.getId());
+                    item.put("property", auction.getProperty());
+                    item.put("startTime", auction.getStartTime());
+                    item.put("endTime", auction.getEndTime());
+                    item.put("status", auction.getStatus());
+                    item.put("startingPrice", auction.getStartingPrice());
+                    item.put("winner", auction.getWinner());
+
+                    item.put("winningBid", br
+                            .findTopByAuctionIdOrderByAmountDesc(auction.getId())
+                            .map(Bid::getAmount)
+                            .orElse(null));
+
+                    return item;
+                })
+                .toList();
+
+        return ResponseEntity.ok(result);
+    }
+
 
 }

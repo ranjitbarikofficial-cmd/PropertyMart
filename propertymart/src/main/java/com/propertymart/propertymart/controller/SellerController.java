@@ -1,5 +1,6 @@
 package com.propertymart.propertymart.controller;
 
+import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.Seller;
 import com.propertymart.propertymart.service.SellerService;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(
+        origins = "http://localhost:4200",
+        allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/api/seller")
 public class SellerController {
@@ -81,5 +86,34 @@ public class SellerController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/verification/{id}")
+    public ResponseEntity<Seller> updateSellerVerification(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> request) {
+
+        String status = request.get("verificationStatus");
+
+        if (status == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            ApprovalStatus verificationStatus =
+                    ApprovalStatus.valueOf(status.toUpperCase());
+
+            Seller updatedSeller =
+                    ss.updateSellerVerification(id, verificationStatus);
+
+            if (updatedSeller != null) {
+                return ResponseEntity.ok(updatedSeller);
+            }
+
+            return ResponseEntity.notFound().build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

@@ -34,6 +34,7 @@ public class BidService {
         }
         Optional<Auction> a=ar.findById(auctionId);
 
+
         if(a.isEmpty()){
             throw new BidException("Auction not found");
         }
@@ -58,14 +59,20 @@ public class BidService {
             throw new BidException("Auction not Active Yet");
         }
 
-        Bid bid = new Bid();
+        if(a.get().getStartTime().isBefore(a.get().getEndTime())) {
 
-        bid.setAmount(amount);
-        bid.setBuyer(u.get());
-        bid.setAuction(a.get());
-        bid.setBidTime(LocalDateTime.now());
+            Bid bid = new Bid();
 
-        return br.save(bid);
+            bid.setAmount(amount);
+            bid.setBuyer(u.get());
+            bid.setAuction(a.get());
+            bid.setBidTime(LocalDateTime.now());
+
+            return br.save(bid);
+        }
+        else {
+            throw new BidException("Endding time is always after Startingtime");
+        }
     }
 
     public List<Bid> getBidsByAuction(Long auctionId) {
