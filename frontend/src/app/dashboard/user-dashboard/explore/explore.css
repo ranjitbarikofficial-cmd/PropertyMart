@@ -1,217 +1,524 @@
+/* ==========================================================================
+   PropertyMart – User: Explore Properties
+   Scoped to .explore-page and its descendants
+   Card layout: image tile with overlaid type tag + favourite button,
+   spec strip, and a price / action footer.
+   ========================================================================== */
+
 .explore-page {
-  min-height: 100vh;
-  background: #f1f5f9;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  color: #0f172a;
-  padding-bottom: 40px;
-}
+  --pm-ink: #10243a;
+  --pm-text: #34475b;
+  --pm-muted: #5b6b7c;
+  --pm-primary: #0f4c81;
+  --pm-primary-hover: #0b3a64;
+  --pm-primary-soft: #eef4fa;
+  --pm-accent: #c98a2b;
+  --pm-accent-soft: #f7efe1;
+  --pm-border: #dde2e8;
+  --pm-border-strong: #b4bdc8;
+  --pm-surface: #ffffff;
+  --pm-band: #10243a;
+  --pm-danger: #b3261e;
+  --pm-danger-soft: #fdf0ef;
+  --pm-radius: 6px;
+  --pm-radius-lg: 8px;
 
-/* Gradient header */
-.explore-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 40px 32px 80px;
-  background: linear-gradient(135deg, #1d4ed8, #4f46e5);
-  color: #ffffff;
-}
-
-.page-label {
-  margin: 0 0 6px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-
-.explore-header h1 {
-  margin: 0 0 8px;
-  font-size: 34px;
-  font-weight: 800;
-}
-
-.explore-header p {
-  margin: 0;
-  font-size: 15px;
-  opacity: 0.9;
-}
-
-.property-count {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  padding: 10px 20px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-/* Search overlaps header */
-.search-section {
-  max-width: 720px;
-  margin: -28px auto 32px;
-  padding: 0 24px;
-}
-
-.search-section input {
+  display: block;
   width: 100%;
+  min-width: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--pm-text);
+}
+
+.explore-page *,
+.explore-page *::before,
+.explore-page *::after {
   box-sizing: border-box;
-  padding: 16px 22px;
-  font-size: 15px;
-  font-family: inherit;
-  background: #ffffff;
-  border: none;
-  border-radius: 999px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.explore-page .explore-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.explore-page .explore-header > div:first-child {
+  min-width: 0;
+}
+
+.explore-page .page-label {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pm-accent);
+}
+
+.explore-page .explore-header h1 {
+  margin: 0;
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--pm-ink);
+}
+
+.explore-page .explore-header h1::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 3px;
+  margin: 10px 0;
+  background: var(--pm-accent);
+  border-radius: 2px;
+}
+
+.explore-page .explore-header p:not(.page-label) {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--pm-muted);
+}
+
+.explore-page .property-count {
+  flex: none;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--pm-band);
+  border-bottom: 3px solid var(--pm-accent);
+  border-radius: var(--pm-radius);
+}
+
+/* --------------------------------------------------------------------------
+   Search bar
+   -------------------------------------------------------------------------- */
+
+.explore-page .search-section {
+  margin-bottom: 28px;
+  padding: 14px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-left: 3px solid var(--pm-primary);
+  border-radius: var(--pm-radius-lg);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.04);
+}
+
+.explore-page .search-section input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 46px;
+  padding: 0 14px 0 44px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--pm-ink);
+  background-color: #f3f5f8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%230f4c81' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 15px 50%;
+  border: 1px solid transparent;
+  border-bottom: 2px solid var(--pm-border-strong);
+  border-radius: var(--pm-radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.explore-page .search-section input[type="search"]::placeholder {
+  color: #7d8a99;
+}
+
+.explore-page .search-section input[type="search"]:hover {
+  border-bottom-color: #8593a3;
+}
+
+.explore-page .search-section input[type="search"]:focus {
   outline: none;
+  background-color: #fff;
+  border-color: var(--pm-primary);
+  border-bottom-color: var(--pm-accent);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.16);
 }
 
-.search-section input:focus {
-  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
-}
+/* --------------------------------------------------------------------------
+   Grid
+   -------------------------------------------------------------------------- */
 
-/* Grid */
-.property-grid {
+.explore-page .property-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
-  padding: 0 32px;
 }
 
-/* Card */
-.property-card {
+/* --------------------------------------------------------------------------
+   Card
+   .property-card is the positioning context for the overlaid type tag and
+   favourite button, which keeps them pinned to the image corners.
+   -------------------------------------------------------------------------- */
+
+.explore-page .property-card {
   position: relative;
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
-  transition: transform 0.25s, box-shadow 0.25s;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-lg);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.05);
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.property-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+.explore-page .property-card:hover,
+.explore-page .property-card:focus-within {
+  border-color: var(--pm-border-strong);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.06), 0 14px 30px rgba(16, 36, 58, 0.13);
+  transform: translateY(-2px);
 }
 
-.property-image {
-  height: 170px;
+/* Image tile: night skyline with lit windows, house emoji on a round badge */
+.explore-page .property-image {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 64px;
-  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+  height: 176px;
+  overflow: hidden;
+  font-size: 2rem;
+  line-height: 1;
+  background-color: var(--pm-band);
+  background-image:
+    radial-gradient(circle, rgba(232, 178, 92, 0.6) 1px, transparent 1.6px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 30px, transparent 30px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 46px, transparent 46px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 24px, transparent 24px),
+    linear-gradient(180deg, rgba(15, 76, 129, 0.7), rgba(16, 36, 58, 0) 75%);
+  background-size: 29px 23px, 61px 70px, 97px 104px, 43px 48px, 100% 100%;
+  background-position: 7px 10px, left bottom, 22px bottom, 11px bottom, 0 0;
+  background-repeat: repeat, repeat-x, repeat-x, repeat-x, no-repeat;
+  border-bottom: 3px solid var(--pm-accent);
 }
 
-/* Badge floats on the image */
-.property-type {
+/* Round badge behind the emoji */
+.explore-page .property-image::before {
+  content: "";
   position: absolute;
-  top: 14px;
-  left: 14px;
-  background: #ffffff;
-  color: #4f46e5;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: 72px;
+  height: 72px;
+  transform: translate(-50%, -50%);
+  background: var(--pm-surface);
+  border: 4px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background-clip: padding-box;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-.property-content {
-  padding: 20px;
+/* Type tag: lifted onto the image's top-left corner */
+.explore-page .property-type {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-block;
+  max-width: calc(100% - 80px);
+  overflow: hidden;
+  padding: 4px 10px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--pm-ink);
+  background: var(--pm-accent-soft);
+  border-left: 3px solid var(--pm-accent);
+  border-radius: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Card body
+   -------------------------------------------------------------------------- */
+
+.explore-page .property-content {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  padding: 18px 18px 18px;
 }
 
-.property-content h2 {
-  margin: 0 0 6px;
-  font-size: 19px;
+.explore-page .property-content h2 {
+  margin: 0;
+  font-size: 1.125rem;
   font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--pm-ink);
+  overflow-wrap: anywhere;
 }
 
-.property-location {
-  margin: 0 0 10px;
-  font-size: 14px;
-  color: #64748b;
+.explore-page .property-location {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--pm-primary);
+  overflow-wrap: anywhere;
 }
 
-.property-description {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: #64748b;
+.explore-page .property-description {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  margin: 10px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--pm-muted);
 }
 
-/* Info as plain dotted text */
-.property-info {
+/* Spec strip: area / beds / baths separated by hairlines */
+.explore-page .property-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 18px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
+  margin: 16px 0 0;
+  background: #f8f9fb;
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius);
 }
 
-.property-info span:not(:last-child)::after {
-  content: "•";
-  margin-left: 14px;
-  color: #cbd5e1;
-}
-
-/* Footer */
-.property-footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.property-footer strong {
-  font-size: 21px;
-  font-weight: 800;
-  color: #1d4ed8;
-}
-
-.property-footer button {
-  background: transparent;
-  color: #4f46e5;
-  border: 2px solid #4f46e5;
-  padding: 8px 16px;
-  font-size: 14px;
+.explore-page .property-info span {
+  flex: 1 1 auto;
+  padding: 8px 10px;
+  font-size: 0.75rem;
   font-weight: 700;
-  font-family: inherit;
-  border-radius: 999px;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--pm-ink);
+}
+
+.explore-page .property-info span + span {
+  border-left: 1px solid var(--pm-border);
+}
+
+/* --------------------------------------------------------------------------
+   Footer: price + actions
+   -------------------------------------------------------------------------- */
+
+.explore-page .property-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.explore-page .property-footer strong {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pm-ink);
+}
+
+.explore-page .property-footer strong::before {
+  content: "Base price";
+  margin-bottom: 2px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--pm-muted);
+}
+
+.explore-page .property-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* View Details button */
+.explore-page .property-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--pm-primary);
+  border: 1px solid var(--pm-primary);
+  border-radius: var(--pm-radius);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.property-footer button:hover {
-  background: #4f46e5;
-  color: #ffffff;
+.explore-page .property-actions button:not(.favorite-btn)::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
 }
 
+.explore-page .property-actions button:not(.favorite-btn):hover {
+  background: var(--pm-primary-hover);
+  border-color: var(--pm-primary-hover);
+}
+
+.explore-page .property-actions button:not(.favorite-btn):hover::after {
+  transform: translateX(3px) rotate(45deg);
+}
+
+.explore-page .property-actions button:not(.favorite-btn):active {
+  background: var(--pm-ink);
+  border-color: var(--pm-ink);
+}
+
+/* Favourite toggle: round button pinned to the image's top-right corner */
+.explore-page .property-actions .favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  padding: 0;
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--pm-muted);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(16, 36, 58, 0.12);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(16, 36, 58, 0.2);
+}
+
+.explore-page .property-actions .favorite-btn:hover {
+  color: var(--pm-danger);
+  background: #fff;
+  border-color: #d9a29d;
+}
+
+.explore-page .property-actions .favorite-btn.active {
+  color: #fff;
+  background: var(--pm-danger);
+  border-color: var(--pm-danger);
+}
+
+.explore-page .property-actions button:focus-visible {
+  outline: 2px solid var(--pm-primary);
+  outline-offset: 2px;
+}
+
+.explore-page .property-actions .favorite-btn:focus-visible {
+  outline-color: #fff;
+  box-shadow: 0 0 0 4px var(--pm-primary);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Laptop */
+@media (max-width: 1280px) {
+  .explore-page .property-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+  .explore-page .explore-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .explore-page .search-section {
+    padding: 12px;
+  }
+}
+
+/* Mobile */
 @media (max-width: 640px) {
-  .explore-header {
+  .explore-page .property-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .explore-page .property-image {
+    height: 152px;
+  }
+
+  .explore-page .search-section input[type="search"] {
+    font-size: 1rem; /* avoids iOS zoom on focus */
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .explore-page .property-content {
+    padding: 16px 14px 16px;
+  }
+
+  .explore-page .property-footer {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 28px 20px 70px;
+    align-items: stretch;
   }
 
-  .explore-header h1 {
-    font-size: 26px;
+  .explore-page .property-actions button:not(.favorite-btn) {
+    width: 100%;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .explore-page .property-card,
+  .explore-page .property-actions button,
+  .explore-page .property-actions button::after,
+  .explore-page .search-section input[type="search"] {
+    transition: none;
   }
 
-  .property-grid {
-    padding: 0 16px;
+  .explore-page .property-card:hover,
+  .explore-page .property-card:focus-within {
+    transform: none;
   }
 }

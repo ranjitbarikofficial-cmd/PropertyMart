@@ -48,7 +48,7 @@ export class Login {
         if (error.status === 401) {
           alert('Invalid email or password.');
         } else {
-          alert('Login failed. Please try again.');
+          alert('Login failed. Please try again Or Your request not Approved by admin ');
         }
       }
     });

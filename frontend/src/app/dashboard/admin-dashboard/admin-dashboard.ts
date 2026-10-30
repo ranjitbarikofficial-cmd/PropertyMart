@@ -3,10 +3,12 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { NotificationItem, NotificationService } from '../../services/notification';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [RouterLink,RouterLinkActive],
+  imports: [RouterLink,RouterLinkActive,DatePipe],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
@@ -21,14 +23,38 @@ export class AdminDashboard implements OnInit {
   processingPropertyIds: number[] = [];
   processingSellerIds: number[] = [];
 
+  
+notifications: NotificationItem[] = [];
+unreadCount = 0;
+showNotifications = false;
+private adminId: number | null = null;
+
+
   constructor(
-    private http: HttpClient,
+    private http: HttpClient,private cdr:ChangeDetectorRef, private notificationService: NotificationService
     
   ) {}
 
-  ngOnInit(): void {
-    this.loadDashboard();
+ 
+ngOnInit(): void {
+  this.loadDashboard();
+
+  const loggedInUser = localStorage.getItem('loggedInUser');
+
+  if (loggedInUser) {
+    try {
+      const user = JSON.parse(loggedInUser);
+      this.adminId = Number(user.id);
+
+      if (Number.isFinite(this.adminId) && this.adminId > 0) {
+        this.loadNotifications();
+        this.loadUnreadCount();
+      }
+    } catch (error) {
+      console.error('Unable to read logged-in user:', error);
+    }
   }
+}
 
 
 loadDashboard(): void {
@@ -59,6 +85,7 @@ loadDashboard(): void {
       this.auctions = data.auctions ?? [];
       this.sellers = data.sellers ?? [];
       this.loading = false;
+      this.cdr.detectChanges();
     },
     error: (error) => {
       console.error('Error loading dashboard:', error);
@@ -284,6 +311,97 @@ private checkLoadingComplete(): void {
     this.loading = false;
   }
 }
+
+
+loadNotifications(): void {
+  if (this.adminId === null) {
+    return;
+  }
+
+  this.notificationService.getNotifications(this.adminId).subscribe({
+    next: (data) => {
+      this.notifications = data ?? [];
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error loading notifications:', error);
+    }
+  });
+}
+
+loadUnreadCount(): void {
+  if (this.adminId === null) {
+    return;
+  }
+
+  this.notificationService.getUnreadCount(this.adminId).subscribe({
+    next: (data) => {
+      this.unreadCount = data.count;
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error loading unread count:', error);
+    }
+  });
+}
+
+toggleNotifications(): void {
+  this.showNotifications = !this.showNotifications;
+
+  if (this.showNotifications) {
+    this.loadNotifications();
+    this.loadUnreadCount();
+  }
+}
+
+markNotificationRead(notification: NotificationItem): void {
+  if (this.adminId === null) {
+    return;
+  }
+
+  if (notification.read) {
+    return;
+  }
+
+  this.notificationService
+    .markAsRead(notification.id, this.adminId)
+    .subscribe({
+      next: () => {
+        this.notifications = this.notifications.map(item =>
+          item.id === notification.id
+            ? { ...item, read: true }
+            : item
+        );
+
+        this.loadUnreadCount();
+      },
+      error: (error) => {
+        console.error('Error marking notification as read:', error);
+      }
+    });
+}
+
+markAllNotificationsRead(): void {
+  if (this.adminId === null) {
+    return;
+  }
+
+  this.notificationService.markAllAsRead(this.adminId).subscribe({
+    next: () => {
+      this.notifications = this.notifications.map(item => ({
+        ...item,
+        read: true
+      }));
+
+      this.unreadCount = 0;
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error marking all notifications as read:', error);
+    }
+  });
+}
+
 
 
 }

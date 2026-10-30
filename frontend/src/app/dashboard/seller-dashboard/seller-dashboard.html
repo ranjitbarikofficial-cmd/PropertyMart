@@ -178,15 +178,7 @@
               <td data-label="Price">₹{{ property.basePrice }}</td>
 
               <td data-label="Status">
-                @if (property.status === 'AVAILABLE') {
-                <span class="badge badge--success">● Active</span>
-                } @else if (property.status === 'SOLD') {
-                <span class="badge badge--neutral">● Sold</span>
-                } @else if (property.status === 'PENDING') {
-                <span class="badge badge--warning">● Pending</span>
-                } @else {
-                <span class="badge badge--info">● {{ property.status }}</span>
-                }
+              {{ property.status }}
               </td>
 
               <td data-label="Actions">

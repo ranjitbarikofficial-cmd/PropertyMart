@@ -30,6 +30,13 @@
             {{ auction.status }}
           </span>
 
+          
+<div class="auction-timer">
+  <span>⏱️</span>
+  <strong>{{ getAuctionTimer(auction) }}</strong>
+</div>
+
+
           <h2>
             {{ auction.property.title }}
           </h2>

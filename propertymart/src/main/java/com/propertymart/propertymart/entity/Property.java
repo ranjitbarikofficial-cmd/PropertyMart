@@ -31,6 +31,8 @@ public class Property {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
+
+
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 

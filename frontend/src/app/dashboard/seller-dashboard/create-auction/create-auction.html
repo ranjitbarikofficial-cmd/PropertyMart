@@ -183,17 +183,11 @@
           </button>
 
           <button
-            type="submit"
-            class="create-button"
-            [disabled]="loading">
-
-            @if (loading) {
-              Creating Auction...
-            } @else {
-              Create Auction
-            }
-
-          </button>
+  type="button"
+  [disabled]="property.status?.toUpperCase() === 'SOLD'"
+  (click)="createAuction()">
+  Create Auction
+</button>
 
         </div>
 

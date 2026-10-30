@@ -14,4 +14,9 @@ public interface AuctionRepo extends JpaRepository<Auction,Long> {
     );
     boolean existsByPropertyId(Long propertyId);
 
+    boolean existsByPropertyIdAndStatusIn(
+            Long propertyId,
+            List<AuctionStatus> statuses
+    );
+
 }

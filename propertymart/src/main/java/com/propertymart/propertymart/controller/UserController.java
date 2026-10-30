@@ -1,9 +1,11 @@
 package com.propertymart.propertymart.controller;
 
+import com.propertymart.propertymart.DTO.ForgotPasswordRequest;
 import com.propertymart.propertymart.entity.ApprovalStatus;
 import com.propertymart.propertymart.entity.User;
 import com.propertymart.propertymart.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +77,8 @@ public class UserController {
             @RequestBody User loginUser,
             HttpSession session) {
 
+        System.out.println();
+
         Optional<User> user = us.login(
                 loginUser.getEmail(),
                 loginUser.getPassword()
@@ -127,6 +131,22 @@ public class UserController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(
+            @RequestBody ForgotPasswordRequest request) {
+
+        String result = us.resetPassword(
+                request.getEmail(),
+                request.getNewPassword()
+        );
+
+        if (result.equals("User not found with this email.")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+        }
+
+        return ResponseEntity.ok(result);
     }
 
 }

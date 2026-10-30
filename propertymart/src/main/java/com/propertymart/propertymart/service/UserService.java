@@ -97,7 +97,7 @@ public class UserService {
         Optional<User> user = ur.findByEmail(email);
 
         if (user.isPresent()
-                && user.get().getPassword().equals(password)) {
+                && user.get().getPassword().equals(password) && user.get().getVerificationStatus()==ApprovalStatus.APPROVED) {
 
             return user;
         }
@@ -123,5 +123,23 @@ public class UserService {
 
         return ur.save(user);
     }
+
+
+    public String resetPassword(String email, String newPassword) {
+
+        Optional<User> optionalUser = ur.findByEmail(email);
+
+        if (optionalUser.isEmpty()) {
+            return "User not found with this email.";
+        }
+
+        User user = optionalUser.get();
+        user.setPassword(newPassword);
+
+        ur.save(user);
+
+        return "Password updated successfully.";
+    }
+
 
 }

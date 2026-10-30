@@ -70,7 +70,7 @@ public class Auction {
         this.id = id;
     }
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "property_id")
     private Property property;
 

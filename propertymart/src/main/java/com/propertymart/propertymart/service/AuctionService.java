@@ -28,23 +28,42 @@ public class AuctionService {
     }
 
 
+
     public Auction addAuction(Auction auction) {
 
-        if (auction.getProperty() != null) {
-
-            Long propertyId = auction.getProperty().getId();
-
-            Optional<Property> property = pr.findById(propertyId);
-
-            if (property.isPresent()) {
-                auction.setProperty(property.get());
-            } else {
-                return null;
-            }
+        if (auction.getProperty() == null ||
+                auction.getProperty().getId() == null) {
+            throw new IllegalArgumentException("Please select a valid property.");
         }
+
+        Long propertyId = auction.getProperty().getId();
+
+        Property property = pr.findById(propertyId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Property not found."));
+
+        if ("SOLD".equalsIgnoreCase(property.getStatus())) {
+            throw new IllegalArgumentException(
+                    "This property has already been sold and cannot be auctioned again."
+            );
+        }
+
+        boolean existingAuction = ar.existsByPropertyIdAndStatusIn(
+                propertyId,
+                List.of(AuctionStatus.UPCOMING, AuctionStatus.ACTIVE)
+        );
+
+        if (existingAuction) {
+            throw new IllegalArgumentException(
+                    "This property already has an active or upcoming auction."
+            );
+        }
+
+        auction.setProperty(property);
 
         return ar.save(auction);
     }
+
 
 
     public List<Auction> findAllAuctions() {
