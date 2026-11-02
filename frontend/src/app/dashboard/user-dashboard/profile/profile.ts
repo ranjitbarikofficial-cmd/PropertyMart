@@ -1,13 +1,11 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { User } from '../../../services/user';
 
 @Component({
   selector: 'app-buyer-profile',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })

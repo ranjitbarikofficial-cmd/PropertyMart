@@ -15,6 +15,9 @@ public class User {
     String password;
     String phone;
 
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus verificationStatus;
+
     public Long getId() {
         return id;
     }
@@ -65,6 +68,14 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public ApprovalStatus getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(ApprovalStatus verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
 
 
 }

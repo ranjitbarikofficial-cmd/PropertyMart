@@ -1,0 +1,160 @@
+
+<div class="winner-page">
+  <div class="winner-header">
+    <div>
+      <h2>Auction Winners</h2>
+      <p>View completed auctions, winning buyers, and final bid amounts.</p>
+    </div>
+
+    <button class="refresh-btn" (click)="loadWinners()">
+      <span class="material-icons">refresh</span>
+      Refresh
+    </button>
+  </div>
+
+  <div class="winner-stats">
+    <div class="stat-card">
+      <div class="stat-icon total-icon">
+        <span class="material-icons">gavel</span>
+      </div>
+      <div>
+        <span>Total Ended Auctions</span>
+        <h3>{{ totalEndedAuctions }}</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon winner-icon">
+        <span class="material-icons">emoji_events</span>
+      </div>
+      <div>
+        <span>Auctions With Winners</span>
+        <h3>{{ auctionsWithWinners }}</h3>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon no-winner-icon">
+        <span class="material-icons">person_off</span>
+      </div>
+      <div>
+        <span>No Winner</span>
+        <h3>{{ auctionsWithoutWinners }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="winner-toolbar">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input
+        type="text"
+        placeholder="Search by auction ID, property, winner, or email..."
+        [(ngModel)]="searchText"
+        (ngModelChange)="filterWinners()"
+      />
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="message">
+      <div class="loader"></div>
+      <p>Loading auction winners...</p>
+    </div>
+  } @else if (errorMessage) {
+    <div class="message error">
+      <span class="material-icons">error_outline</span>
+      <p>{{ errorMessage }}</p>
+      <button class="refresh-btn" (click)="loadWinners()">
+        Try Again
+      </button>
+    </div>
+  } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Auction ID</th>
+            <th>Property</th>
+            <th>Winning Buyer</th>
+            <th>Email</th>
+            <th>Starting Price</th>
+            <th>Winning Bid</th>
+            <th>End Date</th>
+            <th>Result</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (auction of filteredAuctions; track auction.id) {
+            <tr>
+              <td>#{{ auction.id }}</td>
+
+              <td>
+                <span class="property-name">
+                  {{ getPropertyName(auction) }}
+                </span>
+              </td>
+
+              <td>
+                <div class="winner-name">
+                  @if (auction.winner) {
+                    <span class="material-icons trophy-icon">emoji_events</span>
+                  }
+                  {{ getWinnerName(auction) }}
+                </div>
+              </td>
+
+              <td>{{ getWinnerEmail(auction) }}</td>
+
+              <td>{{ formatAmount(auction.startingPrice) }}</td>
+
+              <td>
+                <strong>
+                  {{ formatAmount(auction.winningBid) }}
+                </strong>
+              </td>
+
+              <td>{{ auction.endTime ?? '—' }}</td>
+
+              <td>
+                @if (auction.winner) {
+                  <span class="status-badge status-winner">
+                    Winner Declared
+                  </span>
+                } @else {
+                  <span class="status-badge status-no-winner">
+                    No Winner
+                  </span>
+                }
+              </td>
+
+              <td>
+                <button
+                  class="view-btn"
+                  (click)="viewWinner(auction)"
+                >
+                  <span class="material-icons">visibility</span>
+                  View
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="9" class="empty-state">
+                <span class="material-icons">emoji_events</span>
+                <h3>No auction results found</h3>
+                <p>Ended auctions will appear here.</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-footer">
+      Showing {{ filteredAuctions.length }} of {{ auctions.length }} ended auctions
+    </div>
+  }
+</div>

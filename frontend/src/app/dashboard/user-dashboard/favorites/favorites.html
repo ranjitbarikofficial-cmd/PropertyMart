@@ -1,4 +1,3 @@
-```html
 <div class="favorites-container">
   <div class="favorites-header">
     <div>
@@ -30,19 +29,19 @@
             <p>{{ property.location }}</p>
             <p class="property-price">₹{{ property.basePrice }}</p>
             <a
-              [routerLink]="['/user-dashboard/property-details', property.id]"
+              [routerLink]="['/user-dashboard/property', property.id]"
               class="view-btn">
               View Details
             </a>
             <button
-  type="button"
-  (click)="removeFavorite(property.id)">
-  Remove Favorite
-</button>
+              type="button"
+              (click)="removeFavorite(property.id)">
+              Remove Favorite
+            </button>
           </div>
         </div>
       }
     </div>
   }
 </div>
-```
+

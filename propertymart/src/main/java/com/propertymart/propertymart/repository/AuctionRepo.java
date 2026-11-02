@@ -6,10 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AuctionRepo extends JpaRepository<Auction,Long> {
+public interface AuctionRepo extends JpaRepository<Auction, Long> {
+
     List<Auction> findByPropertySellerUserId(Long userId);
-    List<Auction> findByWinnerIdAndStatus(
-            Long winnerId,
-            AuctionStatus status
+
+    List<Auction> findByWinnerIdAndStatus(Long winnerId, AuctionStatus status);
+
+    List<Auction> findByStatus(AuctionStatus status);
+
+    boolean existsByPropertyId(Long propertyId);
+
+    boolean existsByPropertyIdAndStatusIn(
+            Long propertyId,
+            List<AuctionStatus> statuses
     );
 }

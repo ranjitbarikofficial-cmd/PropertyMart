@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -62,12 +63,32 @@ export class CreateAuction implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
+    if (!this.property) {
+      this.errorMessage = 'Property details are not available.';
+      return;
+    }
+
+    if (this.property.status?.toUpperCase() === 'SOLD') {
+      this.errorMessage = 'Auction cannot be created for a sold property.';
+      return;
+    }
+
     if (
       !this.auction.startTime ||
       !this.auction.endTime ||
-      !this.auction.startingPrice
+      this.auction.startingPrice === null ||
+      this.auction.startingPrice <= 0
     ) {
-      this.errorMessage = 'Please fill all required fields.';
+      this.errorMessage = 'Please fill all required fields with valid values.';
+      return;
+    }
+
+    const startTime = new Date(this.auction.startTime);
+    const endTime = new Date(this.auction.endTime);
+
+    if (startTime >= endTime) {
+      this.errorMessage =
+        'Invalid auction schedule. The end date and time must be later than the start date and time. Please select a valid end date and time.';
       return;
     }
 

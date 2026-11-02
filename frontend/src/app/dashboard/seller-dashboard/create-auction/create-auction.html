@@ -1,13 +1,10 @@
-<div class="create-auction-page">
 
+<div class="create-auction-page">
   <div class="page-container">
 
     <div class="page-header">
-
       <div>
-        <a
-          routerLink="/seller-dashboard"
-          class="back-link">
+        <a routerLink="/seller-dashboard" class="back-link">
           ← Back to Dashboard
         </a>
 
@@ -17,19 +14,15 @@
           Create an auction for your property.
         </p>
       </div>
-
     </div>
 
     @if (property) {
-
       <div class="property-card">
-
         <div class="property-icon">
           🏠
         </div>
 
         <div class="property-details">
-
           <h2>{{ property.title }}</h2>
 
           <p>
@@ -37,7 +30,6 @@
           </p>
 
           <div class="property-meta">
-
             <span>
               {{ property.propertyType }}
             </span>
@@ -49,29 +41,20 @@
             <span>
               ₹{{ property.basePrice }}
             </span>
-
           </div>
-
         </div>
-
       </div>
-
     } @else if (errorMessage) {
-
       <div class="error-message">
         {{ errorMessage }}
       </div>
-
     } @else {
-
       <div class="loading-message">
         Loading property details...
       </div>
-
     }
 
     <div class="auction-form-card">
-
       <h2>Auction Details</h2>
 
       <p class="form-description">
@@ -83,7 +66,6 @@
         <div class="form-grid">
 
           <div class="form-group">
-
             <label for="startingPrice">
               Starting Price
             </label>
@@ -96,11 +78,9 @@
               [(ngModel)]="auction.startingPrice"
               required
             >
-
           </div>
 
           <div class="form-group">
-
             <label for="status">
               Auction Status
             </label>
@@ -109,8 +89,8 @@
               id="status"
               name="status"
               [(ngModel)]="auction.status"
-              required>
-
+              required
+            >
               <option value="UPCOMING">
                 Upcoming
               </option>
@@ -118,13 +98,10 @@
               <option value="ACTIVE">
                 Active
               </option>
-
             </select>
-
           </div>
 
           <div class="form-group">
-
             <label for="startTime">
               Start Time
             </label>
@@ -136,11 +113,9 @@
               [(ngModel)]="auction.startTime"
               required
             >
-
           </div>
 
           <div class="form-group">
-
             <label for="endTime">
               End Time
             </label>
@@ -152,25 +127,20 @@
               [(ngModel)]="auction.endTime"
               required
             >
-
           </div>
 
         </div>
 
         @if (errorMessage) {
-
           <div class="form-error">
             {{ errorMessage }}
           </div>
-
         }
 
         @if (successMessage) {
-
           <div class="form-success">
             {{ successMessage }}
           </div>
-
         }
 
         <div class="form-actions">
@@ -178,29 +148,27 @@
           <button
             type="button"
             class="cancel-button"
-            (click)="cancel()">
+            (click)="cancel()"
+          >
             Cancel
           </button>
 
           <button
             type="submit"
             class="create-button"
-            [disabled]="loading">
-
+            [disabled]="loading || property?.status?.toUpperCase() === 'SOLD'"
+          >
             @if (loading) {
               Creating Auction...
             } @else {
               Create Auction
             }
-
           </button>
 
         </div>
 
       </form>
-
     </div>
 
   </div>
-
 </div>

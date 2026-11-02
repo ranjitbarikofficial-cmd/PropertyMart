@@ -1,9 +1,7 @@
-<!-- src/app/dashboard/seller-dashboard/seller-dashboard.html -->
 
 <div class="dashboard-layout">
   <input type="checkbox" id="navToggle" class="nav-toggle" />
 
-  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar__left">
       <label for="navToggle" class="hamburger" aria-label="Toggle menu">
@@ -14,326 +12,221 @@
 
       <a routerLink="/seller-dashboard" class="brand">
         <span class="brand__mark" aria-hidden="true"></span>
-        <span class="brand__text"> Property<strong>Mart</strong> </span>
+        <span class="brand__text">Property<strong>Mart</strong></span>
       </a>
     </div>
 
     <div class="topbar__search">
-      <label for="topSearch" class="visually-hidden"> Search </label>
-
-      <input id="topSearch" type="search" placeholder="Search your listings..." />
+      <label for="topSearch" class="visually-hidden">Search properties</label>
+      <input
+        id="topSearch"
+        type="search"
+        placeholder="Search your listings..."
+        (input)="searchListings($any($event.target).value)"
+      />
     </div>
 
     <div class="topbar__right">
-      <button class="icon-btn" aria-label="View notifications" type="button">
-        <span class="icon-bell" aria-hidden="true"></span>
-        <span class="badge-dot" aria-hidden="true"></span>
-      </button>
-
       <div class="profile-menu">
         <button class="profile-trigger" type="button" aria-haspopup="true">
-          <span class="avatar">
-            {{ userInitials }}
-          </span>
-
-          <span class="profile-name">
-            {{ seller?.name || 'Seller' }}
-          </span>
-
-          <span class="chevron" aria-hidden="true"> </span>
+          <span class="avatar">{{ userInitials }}</span>
+          <span class="profile-name">{{ seller?.name || 'Seller' }}</span>
+          <span class="chevron" aria-hidden="true"></span>
         </button>
 
         <div class="profile-dropdown">
-          <a routerLink="/seller-dashboard/profile"> My Profile </a>
-
-          <a routerLink="/seller-dashboard/settings"> Settings </a>
-
-          <a routerLink="/login" class="danger"> Logout </a>
+          <a routerLink="/seller-dashboard/profile">My Profile</a>
+          <a routerLink="/seller-dashboard/settings">Settings</a>
+          <a routerLink="/login" (click)="logout()" class="danger">Logout</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- SIDEBAR BACKDROP -->
-  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"> </label>
+  <label for="navToggle" class="sidebar-backdrop" aria-hidden="true"></label>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" aria-label="Primary navigation">
     <nav class="sidebar__nav">
       <a routerLink="/seller-dashboard" class="nav-item nav-item--active">
-        <span class="nav-icon" aria-hidden="true"> 🏠 </span>
-
+        <span class="nav-icon" aria-hidden="true">🏠</span>
         Dashboard
       </a>
 
-      <a routerLink="/seller-dashboard/properties" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 🏢 </span>
-
+      <a routerLink="/seller-dashboard/my-properties" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🏢</span>
         My Properties
       </a>
 
-      
-<a routerLink="/seller-dashboard/auctions" class="nav-item">
-  <span class="nav-icon" aria-hidden="true"> 🔨 </span>
-  My Auctions
-</a>
+      <a routerLink="/seller-dashboard/auctions" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">🔨</span>
+        My Auctions
+      </a>
 
       <a routerLink="/seller-dashboard/add-property" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> ➕ </span>
-
+        <span class="nav-icon" aria-hidden="true">➕</span>
         Add Property
       </a>
 
-      <a routerLink="/seller-dashboard/enquiries" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 💬 </span>
-
-        Property Enquiries
-      </a>
-
-      <a routerLink="/seller-dashboard/leads" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 🎯 </span>
-
-        Leads
-      </a>
-
-      <a routerLink="/seller-dashboard/appointments" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 📅 </span>
-
-        Appointments
-      </a>
-
-      <a routerLink="/seller-dashboard/messages" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> ✉ </span>
-
-        Messages
-      </a>
-
-      <a routerLink="/seller-dashboard/analytics" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 📊 </span>
-
-        Analytics
-      </a>
-
       <a routerLink="/seller-dashboard/profile" class="nav-item">
-        <span class="nav-icon" aria-hidden="true"> 👤 </span>
-
+        <span class="nav-icon" aria-hidden="true">👤</span>
         Profile
+      </a>
+
+      <a routerLink="/seller-dashboard/settings" class="nav-item">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        Settings
       </a>
     </nav>
 
-    <a routerLink="/login" class="nav-item nav-item--logout">
-      <span class="nav-icon" aria-hidden="true"> ⏻ </span>
-
+    <a routerLink="/login" (click)="logout()" class="nav-item nav-item--logout">
+      <span class="nav-icon" aria-hidden="true">⏻</span>
       Logout
     </a>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <main class="main-content">
-    <!-- PAGE HEADER -->
     <section class="page-header">
       <div>
-        <h1>Good morning, {{ seller?.name || 'Seller' }}!</h1>
-
-        <p>Here's how your listings are performing today.</p>
+        <h1>Welcome, {{ seller?.name || 'Seller' }}!</h1>
+        <p>Manage your properties and auctions from one place.</p>
       </div>
 
-      <a routerLink="/seller-dashboard/add-property" class="btn btn--primary"> + Add Property </a>
+      <a routerLink="/seller-dashboard/add-property" class="btn btn--primary">
+        + Add Property
+      </a>
     </section>
 
-    <!-- STATISTICS -->
-    <section class="stat-grid" aria-label="Overview">
-      <!-- TOTAL PROPERTIES -->
+    <section class="stat-grid" aria-label="Property overview">
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true"> 🏢 </span>
-
+        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">🏢</span>
         <div>
-          <p class="stat-card__value">
-            {{ properties.length }}
-          </p>
-
+          <p class="stat-card__value">{{ properties.length }}</p>
           <p class="stat-card__label">Total Properties</p>
         </div>
       </div>
 
-      <!-- ACTIVE LISTINGS -->
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true"> ✅ </span>
-
+        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">✅</span>
         <div>
-          <p class="stat-card__value">
-            {{ activeProperties.length }}
-          </p>
-
+          <p class="stat-card__value">{{ activeProperties.length }}</p>
           <p class="stat-card__label">Active Listings</p>
         </div>
       </div>
 
-      <!-- VIEWS -->
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true"> 👁 </span>
-
+        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🔨</span>
         <div>
-          <p class="stat-card__value">0</p>
-
-          <p class="stat-card__label">Total Views</p>
-        </div>
-      </div>
-
-      <!-- ENQUIRIES -->
-      <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--amber" aria-hidden="true"> 💬 </span>
-
-        <div>
-          <p class="stat-card__value">0</p>
-
-          <p class="stat-card__label">Total Enquiries</p>
+          <p class="stat-card__value">{{ activeAuctionsCount }}</p>
+          <p class="stat-card__label">Active Auctions</p>
         </div>
       </div>
     </section>
 
-    <!-- MY PROPERTIES -->
     <section class="section-block">
       <div class="section-block__header">
         <h2>My Properties</h2>
-
-        <a routerLink="/seller-dashboard/add-property" class="btn btn--outline btn--sm">
-          + Add Property
+        <a routerLink="/seller-dashboard/my-properties" class="btn btn--outline btn--sm">
+          View All Properties
         </a>
       </div>
 
       <div class="table-wrap">
         <table class="data-table">
           <thead>
-            <tr>
-              <th scope="col">Property</th>
-
-              <th scope="col">Location</th>
-
-              <th scope="col">Price</th>
-
-              <th scope="col">Status</th>
-
-              <th scope="col">Views</th>
-
-              <th scope="col">Enquiries</th>
-
-              <th scope="col">Actions</th>
-            </tr>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Location</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
           </thead>
 
           <tbody>
-            <!-- LOADING -->
             @if (loading) {
               <tr>
-                <td colspan="7" style="text-align: center; padding: 30px">
+                <td colspan="5" style="text-align: center; padding: 30px">
                   Loading your properties...
                 </td>
               </tr>
-            }
-
-            <!-- ERROR -->
-            @else if (errorMessage) {
+            } @else if (errorMessage) {
               <tr>
-                <td colspan="7" style="text-align: center; padding: 30px">
+                <td colspan="5" style="text-align: center; padding: 30px">
                   {{ errorMessage }}
                 </td>
               </tr>
-            }
-
-            <!-- NO PROPERTIES -->
-            @else if (properties.length === 0) {
+            } @else if (filteredProperties.length === 0) {
               <tr>
-                <td colspan="7" style="text-align: center; padding: 30px">
-                  <strong> You haven't added any properties yet. </strong>
-
-                  <br />
-
-                  <a routerLink="/seller-dashboard/add-property"> Add your first property </a>
+                <td colspan="5" style="text-align: center; padding: 30px">
+                  @if (properties.length === 0) {
+                    <strong>You haven't added any properties yet.</strong>
+                    <p>Start by adding your first property.</p>
+                    <a routerLink="/seller-dashboard/add-property">
+                      + Add Property
+                    </a>
+                  } @else {
+                    <strong>No matching properties found.</strong>
+                  }
                 </td>
               </tr>
-            }
-
-            <!-- REAL PROPERTIES -->
-            @else {
-              @for (property of properties; track property.id) {
+            } @else {
+              @for (property of filteredProperties; track property.id) {
                 <tr>
-                  <!-- PROPERTY -->
                   <td data-label="Property">
                     <div class="table-property">
                       <span
                         class="table-property__thumb table-property__thumb--a"
                         aria-hidden="true"
-                      >
-                      </span>
-
+                      ></span>
                       {{ property.title }}
                     </div>
                   </td>
 
-                  <!-- LOCATION -->
-                  <td data-label="Location">
-                    {{ property.location }}
-                  </td>
+                  <td data-label="Location">{{ property.location }}</td>
 
-                  <!-- PRICE -->
                   <td data-label="Price">₹{{ property.basePrice }}</td>
 
-                  <!-- STATUS -->
                   <td data-label="Status">
-                    @if (property.status === 'AVAILABLE') {
-                      <span class="badge badge--success"> ● Active </span>
-
-                    } @else if (property.status === 'SOLD') {
-                      <span class="badge badge--neutral"> ● Sold </span>
-
-                    } @else if (property.status === 'PENDING') {
-                      <span class="badge badge--warning"> ● Pending </span>
-
-                    } @else {
-                      <span class="badge badge--info"> ● {{ property.status }} </span>
-                    }
+                    {{ property.status }}
                   </td>
 
-                  <!-- VIEWS -->
-                  <td data-label="Views">0</td>
-
-                  <!-- ENQUIRIES -->
-                  <td data-label="Enquiries">0</td>
-
-                  <!-- ACTIONS -->
                   <td data-label="Actions">
-  <div class="row-actions">
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="icon-action"
+                        aria-label="View property"
+                        [routerLink]="['/property-details', property.id]"
+                      >
+                        👁
+                      </button>
 
-    <button
-      type="button"
-      class="icon-action"
-      aria-label="View property">
-      👁
-    </button>
+                      <button
+                        type="button"
+                        class="icon-action"
+                        aria-label="Edit property"
+                        [routerLink]="['/seller-dashboard/edit-property', property.id]"
+                      >
+                        ✎
+                      </button>
 
-    <button
-      type="button"
-      class="icon-action"
-      aria-label="Edit property">
-      ✎
-    </button>
+                      <button
+                        type="button"
+                        class="icon-action icon-action--danger"
+                        aria-label="Delete property"
+                        (click)="deleteProperty(property.id)"
+                      >
+                        🗑
+                      </button>
 
-    <button
-      type="button"
-      class="icon-action icon-action--danger"
-      aria-label="Delete property">
-      🗑
-    </button>
-
-    <a
-      [routerLink]="['/seller-dashboard/create-auction', property.id]"
-      class="create-auction-button">
-      🔨 Create Auction
-    </a>
-
-  </div>
-</td>
+                      <a
+                        [routerLink]="['/seller-dashboard/create-auction', property.id]"
+                        class="create-auction-button"
+                      >
+                        🔨 Create Auction
+                      </a>
+                    </div>
+                  </td>
                 </tr>
               }
             }
@@ -342,99 +235,35 @@
       </div>
     </section>
 
-    <!-- ANALYTICS -->
     <section class="section-block">
       <div class="section-block__header">
-        <h2>Analytics</h2>
+        <h2>Quick Actions</h2>
       </div>
 
-      <div class="analytics-grid">
-        <!-- PROPERTY VIEWS -->
-        <div class="analytics-card">
-          <p class="analytics-card__label">Property Views</p>
-
-          <p class="analytics-card__value">0</p>
-
-          <div class="bar-chart">
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
+      <div class="stat-grid">
+        <a routerLink="/seller-dashboard/add-property" class="stat-card">
+          <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">➕</span>
+          <div>
+            <p class="stat-card__label">Add Property</p>
+            <p>Create a new property listing.</p>
           </div>
-        </div>
+        </a>
 
-        <!-- ENQUIRIES -->
-        <div class="analytics-card">
-          <p class="analytics-card__label">Enquiries</p>
-
-          <p class="analytics-card__value">0</p>
-
-          <div class="bar-chart bar-chart--blue">
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
-            <span style="--h: 20%"></span>
+        <a routerLink="/seller-dashboard/my-properties" class="stat-card">
+          <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">✎</span>
+          <div>
+            <p class="stat-card__label">Manage Properties</p>
+            <p>View, edit, or remove your listings.</p>
           </div>
-        </div>
+        </a>
 
-        <!-- LEADS -->
-        <div class="analytics-card">
-          <p class="analytics-card__label">Leads</p>
-
-          <p class="analytics-card__value">0</p>
-
-          <div class="progress-ring" style="--pct: 0">
-            <span> 0% </span>
+        <a routerLink="/seller-dashboard/auctions" class="stat-card">
+          <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🔨</span>
+          <div>
+            <p class="stat-card__label">My Auctions</p>
+            <p>Manage your property auctions.</p>
           </div>
-        </div>
-
-        <!-- CONVERSION -->
-        <div class="analytics-card">
-          <p class="analytics-card__label">Conversion</p>
-
-          <p class="analytics-card__value">0%</p>
-
-          <div class="progress-ring progress-ring--green" style="--pct: 0">
-            <span> 0% </span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RECENT ENQUIRIES -->
-    <section class="section-block">
-      <div class="section-block__header">
-        <h2>Recent Enquiries</h2>
-      </div>
-
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th scope="col">Buyer</th>
-
-              <th scope="col">Property</th>
-
-              <th scope="col">Date</th>
-
-              <th scope="col">Message</th>
-
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 30px">No enquiries yet.</td>
-            </tr>
-          </tbody>
-        </table>
+        </a>
       </div>
     </section>
   </main>

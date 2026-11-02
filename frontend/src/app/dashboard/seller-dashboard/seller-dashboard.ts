@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+
+import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 interface Seller {
   id: number;
@@ -26,6 +27,11 @@ interface Property {
   status: string;
 }
 
+interface Auction {
+  id: number;
+  status: string;
+}
+
 @Component({
   selector: 'app-seller-dashboard',
   imports: [RouterLink],
@@ -34,11 +40,16 @@ interface Property {
 })
 export class SellerDashboard implements OnInit {
 
+  activeAuctionsCount = 0;
+
   private http = inject(HttpClient);
+  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
 
   seller: Seller | null = null;
   properties: Property[] = [];
+  filteredProperties: Property[] = [];
 
   loading = true;
   errorMessage = '';
@@ -90,13 +101,14 @@ export class SellerDashboard implements OnInit {
         id: 0,
         name: user.name,
         email: user.email,
-        phone: '',
+        phone: user.phone || '',
         user: {
           id: user.id
         }
       };
 
       this.loadSeller(user.id);
+      this.loadActiveAuctions(user.id);
 
     } catch (error) {
 
@@ -130,6 +142,7 @@ export class SellerDashboard implements OnInit {
 
         this.errorMessage = 'Seller profile not found.';
         this.loading = false;
+        this.cdr.detectChanges();
 
       }
 
@@ -145,10 +158,15 @@ export class SellerDashboard implements OnInit {
       next: (properties) => {
 
         this.properties = properties;
+        this.filteredProperties = properties;
 
-        console.log('Seller properties:', properties);
+        console.log('Seller ID:', sellerId);
+        console.log('Seller properties:', this.properties);
+        console.log('Total properties:', this.properties.length);
+        console.log('Active properties:', this.activeProperties.length);
 
         this.loading = false;
+        this.cdr.detectChanges();
 
       },
 
@@ -158,9 +176,94 @@ export class SellerDashboard implements OnInit {
 
         this.errorMessage = 'Failed to load properties.';
         this.loading = false;
+        this.cdr.detectChanges();
 
       }
 
     });
   }
+
+  loadActiveAuctions(userId: number): void {
+
+    this.http.get<Auction[]>(
+      `http://localhost:8080/api/auction/seller/${userId}`
+    ).subscribe({
+
+      next: (auctions) => {
+
+        this.activeAuctionsCount = auctions.filter(
+          auction => auction.status === 'ACTIVE'
+        ).length;
+
+        console.log('Total auctions:', auctions.length);
+        console.log('Active auctions:', this.activeAuctionsCount);
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error('Failed to load auctions:', error);
+        this.activeAuctionsCount = 0;
+        this.cdr.detectChanges();
+
+      }
+
+    });
+  }
+
+  searchListings(searchText: string): void {
+
+    const text = (searchText || '').toLowerCase().trim();
+
+    if (!text) {
+      this.filteredProperties = this.properties;
+      return;
+    }
+
+    this.filteredProperties = this.properties.filter(p =>
+      (p.title || '').toLowerCase().includes(text) ||
+      (p.location || '').toLowerCase().includes(text) ||
+      (p.propertyType || '').toLowerCase().includes(text)
+    );
+  }
+
+  deleteProperty(propertyId: number): void {
+
+    if (!confirm('Are you sure you want to delete this property?')) {
+      return;
+    }
+
+    this.http.delete(
+      `http://localhost:8080/api/property/delete/${propertyId}`
+    ).subscribe({
+
+      next: () => {
+
+        this.properties = this.properties.filter(p => p.id !== propertyId);
+        this.filteredProperties = this.filteredProperties.filter(p => p.id !== propertyId);
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Delete property failed:', err);
+
+        alert('Failed to delete property. It may be linked to an active auction.');
+
+      }
+
+    });
+  }
+
+  logout(): void {
+
+    localStorage.removeItem('loggedInUser');
+    this.router.navigate(['/login']);
+
+  }
+
 }

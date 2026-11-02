@@ -1,0 +1,103 @@
+
+<div class="users-page">
+    <header class="users-header">
+        <div>
+            <a routerLink="/admin-dashboard" class="back-link">← Admin Dashboard</a>
+            <h1>User Management</h1>
+            <p>View, search, and manage registered users.</p>
+        </div>
+    </header>
+
+    <section class="users-summary">
+        <div class="summary-card">
+            <span>Total Users</span>
+            <strong>{{ users.length }}</strong>
+        </div>
+
+        <div class="summary-card">
+            <span>Pending Approvals</span>
+            <strong>
+                {{ pendingApprovals }}
+            </strong>
+        </div>
+    </section>
+
+    <section class="users-panel">
+        <div class="users-toolbar">
+            <h2>Registered Users</h2>
+
+            <input type="search" placeholder="Search by name or email..." aria-label="Search users by name or email"
+                [value]="searchText" (input)="searchText = $any($event.target).value; filterUsers()" />
+        </div>
+
+        @if (errorMessage) {
+        <p class="error-message">{{ errorMessage }}</p>
+        }
+
+        <div class="table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Approval Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (loading) {
+                    <tr>
+                        <td colspan="6" class="table-message">Loading users...</td>
+                    </tr>
+                    } @else if (filteredUsers.length === 0) {
+                    <tr>
+                        <td colspan="6" class="table-message">
+                            {{ searchText ? 'No users match your search.' : 'No users found.' }}
+                        </td>
+                    </tr>
+                    } @else {
+                    @for (user of filteredUsers; track user.id) {
+                    <tr>
+                        <td>{{ user.name || 'Unnamed User' }}</td>
+                        <td>{{ user.email || '—' }}</td>
+                        <td>{{ user.phone || '—' }}</td>
+                        <td>
+                            <span class="role-badge">{{ user.role || '—' }}</span>
+                        </td>
+                        <td>
+                            <span class="status-badge" [class.status-pending]="user.verificationStatus === 'PENDING'"
+                                [class.status-approved]="user.verificationStatus === 'APPROVED'"
+                                [class.status-rejected]="user.verificationStatus === 'REJECTED'">
+                                {{ user.verificationStatus }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button type="button" class="btn-view" (click)="viewUser(user)">
+                                    View
+                                </button>
+
+                                @if ((user.approvalStatus ?? 'PENDING') === 'PENDING') {
+                                <button type="button" class="btn-approve"
+                                    (click)="updateUserApproval(user.id, 'APPROVED')">
+                                    Approve
+                                </button>
+
+                                <button type="button" class="btn-reject"
+                                    (click)="updateUserApproval(user.id, 'REJECTED')">
+                                    Reject
+                                </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

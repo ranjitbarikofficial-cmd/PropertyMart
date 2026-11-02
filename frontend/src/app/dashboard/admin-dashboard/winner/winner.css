@@ -1,0 +1,655 @@
+/* ==========================================================================
+   PropertyMart – Admin: Auction Winners
+   Scoped to .winner-page and its descendants
+   Icons are drawn with CSS masks (inline SVG data URIs), so the page does not
+   depend on the Material Icons font. The ligature text ("gavel", "search"...)
+   is collapsed with font-size: 0 so it can never overlap other content.
+   ========================================================================== */
+
+.winner-page {
+  --pm-ink: #10243a;
+  --pm-text: #34475b;
+  --pm-muted: #5b6b7c;
+  --pm-primary: #0f4c81;
+  --pm-primary-hover: #0b3a64;
+  --pm-primary-soft: #eef4fa;
+  --pm-accent: #c98a2b;
+  --pm-accent-soft: #f7efe1;
+  --pm-border: #dde2e8;
+  --pm-border-strong: #b4bdc8;
+  --pm-surface: #ffffff;
+  --pm-danger: #b3261e;
+  --pm-danger-soft: #fdf0ef;
+  --pm-success: #2e7d4f;
+  --pm-success-soft: #e8f4ed;
+  --pm-radius: 6px;
+  --pm-radius-lg: 8px;
+
+  /* Icon shapes (24x24 viewBox) */
+  --ic-gavel: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M1 21h12v2H1zM5.245 8.07l2.83-2.827 14.14 14.142-2.828 2.828zM12.317 1l5.657 5.656-2.83 2.83-5.654-5.66zM3.825 9.485l5.657 5.657-2.828 2.828-5.657-5.657z'/%3E%3C/svg%3E");
+  --ic-trophy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z'/%3E%3C/svg%3E");
+  --ic-person-off: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.65 5.82A3.987 3.987 0 0 1 12 4c2.21 0 4 1.79 4 4 0 1.35-.67 2.54-1.69 3.27L8.65 5.82zM20 17.17c-.02-1.1-.63-2.11-1.61-2.62-.54-.28-1.13-.54-1.77-.76L20 17.17zm1.19 4.02L2.81 2.81 1.39 4.22l8.89 8.89c-1.81.23-3.39.79-4.67 1.45A2.973 2.973 0 0 0 4 17.22V20h13.17l2.61 2.61 1.41-1.42z'/%3E%3C/svg%3E");
+  --ic-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+  --ic-eye: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z'/%3E%3C/svg%3E");
+  --ic-refresh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17.65 6.35A7.958 7.958 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 1 1 0-12c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z'/%3E%3C/svg%3E");
+  --ic-error: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
+
+  display: block;
+  width: 100%;
+  min-width: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--pm-text);
+}
+
+.winner-page *,
+.winner-page *::before,
+.winner-page *::after {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Icon system
+   The ligature text is collapsed; the glyph is drawn by ::before.
+   Each icon is picked by the text it contains via its context class below.
+   -------------------------------------------------------------------------- */
+
+.winner-page .material-icons {
+  --ic-size: 20px;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--ic-size);
+  height: var(--ic-size);
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.winner-page .material-icons::before {
+  content: "";
+  display: block;
+  width: var(--ic-size);
+  height: var(--ic-size);
+  background-color: currentColor;
+  -webkit-mask: var(--ic) center / contain no-repeat;
+  mask: var(--ic) center / contain no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.winner-page .winner-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.winner-page .winner-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--pm-ink);
+}
+
+/* Short brass rule under the title */
+.winner-page .winner-header h2::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 3px;
+  margin: 10px 0;
+  background: var(--pm-accent);
+  border-radius: 2px;
+}
+
+.winner-page .winner-header p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--pm-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.winner-page .refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--pm-primary);
+  border: 1px solid var(--pm-primary);
+  border-radius: var(--pm-radius);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.winner-page .refresh-btn .material-icons {
+  --ic-size: 18px;
+  --ic: var(--ic-refresh);
+}
+
+.winner-page .refresh-btn:hover {
+  background: var(--pm-primary-hover);
+  border-color: var(--pm-primary-hover);
+}
+
+.winner-page .refresh-btn:active {
+  background: var(--pm-ink);
+  border-color: var(--pm-ink);
+}
+
+.winner-page .view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--pm-primary);
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-primary);
+  border-radius: var(--pm-radius);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.winner-page .view-btn .material-icons {
+  --ic-size: 18px;
+  --ic: var(--ic-eye);
+}
+
+.winner-page .view-btn:hover {
+  color: var(--pm-primary-hover);
+  background: var(--pm-primary-soft);
+  border-color: var(--pm-primary-hover);
+}
+
+.winner-page .refresh-btn:focus-visible,
+.winner-page .view-btn:focus-visible {
+  outline: 2px solid var(--pm-primary);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Stat cards
+   -------------------------------------------------------------------------- */
+
+.winner-page .winner-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.winner-page .winner-stats .stat-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-lg);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.04);
+}
+
+.winner-page .winner-stats .stat-card > div:last-child {
+  min-width: 0;
+}
+
+/* Icon tile: the nested .material-icons is drawn inside it */
+.winner-page .stat-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--pm-radius-lg);
+}
+
+.winner-page .stat-icon .material-icons {
+  --ic-size: 24px;
+}
+
+.winner-page .total-icon {
+  color: var(--pm-primary);
+  background: #e6eff8;
+}
+
+.winner-page .total-icon .material-icons {
+  --ic: var(--ic-gavel);
+}
+
+.winner-page .winner-icon {
+  color: #a8671a;
+  background: #f8ecd9;
+}
+
+.winner-page .winner-icon .material-icons {
+  --ic: var(--ic-trophy);
+}
+
+.winner-page .no-winner-icon {
+  color: #4d5b6c;
+  background: #eceff3;
+}
+
+.winner-page .no-winner-icon .material-icons {
+  --ic: var(--ic-person-off);
+}
+
+.winner-page .winner-stats .stat-card span:not(.material-icons) {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--pm-muted);
+}
+
+.winner-page .winner-stats .stat-card h3 {
+  margin: 2px 0 0;
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pm-ink);
+}
+
+/* --------------------------------------------------------------------------
+   Toolbar / search
+   -------------------------------------------------------------------------- */
+
+.winner-page .winner-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.winner-page .search-box {
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 520px;
+}
+
+.winner-page .search-box > .material-icons {
+  --ic: var(--ic-search);
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  transform: translateY(-50%);
+  color: var(--pm-muted);
+  pointer-events: none;
+}
+
+.winner-page .search-box input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 42px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--pm-ink);
+  background-color: #fbfcfd;
+  border: 1px solid var(--pm-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--pm-radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.winner-page .search-box input::placeholder {
+  color: #7d8a99;
+}
+
+.winner-page .search-box input:hover {
+  border-color: #8593a3;
+}
+
+.winner-page .search-box input:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: var(--pm-primary);
+  border-bottom-color: var(--pm-accent);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   Loading / error message
+   -------------------------------------------------------------------------- */
+
+.winner-page .message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 20px;
+  text-align: center;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-lg);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.04);
+}
+
+.winner-page .message p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--pm-muted);
+}
+
+.winner-page .loader {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--pm-border);
+  border-top-color: var(--pm-primary);
+  border-radius: 50%;
+  animation: winner-spin 0.8s linear infinite;
+}
+
+@keyframes winner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.winner-page .message.error {
+  background: var(--pm-danger-soft);
+  border-color: #f1c9c5;
+  border-left: 3px solid var(--pm-danger);
+}
+
+.winner-page .message.error > .material-icons {
+  --ic-size: 32px;
+  --ic: var(--ic-error);
+  color: var(--pm-danger);
+}
+
+.winner-page .message.error p {
+  max-width: 480px;
+  color: var(--pm-danger);
+}
+
+/* --------------------------------------------------------------------------
+   Table
+   -------------------------------------------------------------------------- */
+
+.winner-page .table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-lg);
+  box-shadow: 0 1px 2px rgba(16, 36, 58, 0.04);
+}
+
+.winner-page .table-wrapper table {
+  width: 100%;
+  min-width: 1080px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.winner-page .table-wrapper thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--pm-muted);
+  background: #f8f9fb;
+  border-bottom: 1px solid var(--pm-border);
+}
+
+.winner-page .table-wrapper tbody td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  color: var(--pm-text);
+  border-bottom: 1px solid var(--pm-border);
+}
+
+.winner-page .table-wrapper tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.winner-page .table-wrapper tbody tr:hover td {
+  background: #fafbfc;
+}
+
+/* Auction ID */
+.winner-page .table-wrapper tbody td:nth-child(1) {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--pm-ink);
+}
+
+/* Email */
+.winner-page .table-wrapper tbody td:nth-child(4) {
+  overflow-wrap: anywhere;
+}
+
+/* Prices + end date */
+.winner-page .table-wrapper tbody td:nth-child(5),
+.winner-page .table-wrapper tbody td:nth-child(6),
+.winner-page .table-wrapper tbody td:nth-child(7) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.winner-page .table-wrapper tbody td:nth-child(5),
+.winner-page .table-wrapper tbody td:nth-child(6) {
+  font-weight: 600;
+  color: var(--pm-ink);
+}
+
+.winner-page .table-wrapper tbody td strong {
+  font-weight: 700;
+  color: var(--pm-success);
+}
+
+.winner-page .property-name {
+  display: inline-block;
+  min-width: 150px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--pm-ink);
+}
+
+.winner-page .winner-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  font-weight: 600;
+  color: var(--pm-ink);
+}
+
+.winner-page .trophy-icon {
+  --ic-size: 18px;
+  --ic: var(--ic-trophy);
+  color: var(--pm-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Status badges
+   -------------------------------------------------------------------------- */
+
+.winner-page .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #4d5b6c;
+  background: #eceff3;
+  border-radius: 4px;
+}
+
+.winner-page .status-badge::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.winner-page .status-badge.status-winner {
+  color: var(--pm-success);
+  background: var(--pm-success-soft);
+}
+
+.winner-page .status-badge.status-no-winner {
+  color: #8f5a14;
+  background: #f8ecd9;
+}
+
+/* --------------------------------------------------------------------------
+   Empty state
+   -------------------------------------------------------------------------- */
+
+.winner-page .table-wrapper tbody td.empty-state {
+  padding: 48px 16px;
+  text-align: center;
+  font-weight: 400;
+  white-space: normal;
+  color: var(--pm-muted);
+}
+
+.winner-page .table-wrapper tbody tr:hover td.empty-state {
+  background: transparent;
+}
+
+.winner-page .empty-state .material-icons {
+  --ic-size: 40px;
+  --ic: var(--ic-trophy);
+  display: flex;
+  margin: 0 auto 10px;
+  color: var(--pm-border-strong);
+}
+
+.winner-page .empty-state h3 {
+  margin: 0 0 4px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--pm-ink);
+}
+
+.winner-page .empty-state p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   Table footer
+   -------------------------------------------------------------------------- */
+
+.winner-page .table-footer {
+  padding: 12px 4px 0;
+  font-size: 0.8125rem;
+  color: var(--pm-muted);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Tablet landscape */
+@media (max-width: 1024px) {
+  .winner-page .winner-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+  .winner-page .winner-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .winner-page .search-box {
+    max-width: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .winner-page .winner-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .winner-page .winner-header .refresh-btn {
+    width: 100%;
+  }
+
+  .winner-page .winner-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .winner-page .winner-stats .stat-card {
+    padding: 14px 16px;
+  }
+
+  .winner-page .search-box input {
+    font-size: 1rem; /* avoids iOS zoom on focus */
+  }
+
+  .winner-page .message {
+    padding: 36px 16px;
+  }
+
+  .winner-page .message .refresh-btn {
+    width: 100%;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .winner-page .refresh-btn,
+  .winner-page .view-btn,
+  .winner-page .search-box input {
+    transition: none;
+  }
+
+  .winner-page .loader {
+    animation-duration: 2.4s;
+  }
+}

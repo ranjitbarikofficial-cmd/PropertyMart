@@ -1,0 +1,154 @@
+
+<div class="edit-property-page">
+  <div class="page-header">
+    <div>
+      <h1>Edit Property</h1>
+      <p>Update your property details on PropertyMart.</p>
+    </div>
+
+    <a routerLink="/seller-dashboard/my-properties" class="back-btn">
+      Back to My Properties
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="state-message">
+      Loading property details...
+    </div>
+  } @else if (errorMessage && !property) {
+    <div class="state-message error-message">
+      {{ errorMessage }}
+    </div>
+  } @else if (property) {
+    <form class="property-form" (ngSubmit)="saveProperty()">
+      @if (errorMessage) {
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="form-group">
+        <label for="title">Property Title *</label>
+        <input
+          id="title"
+          name="title"
+          type="text"
+          [(ngModel)]="property.title"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          [(ngModel)]="property.description"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="propertyType">Property Type *</label>
+        <select
+          id="propertyType"
+          name="propertyType"
+          [(ngModel)]="property.propertyType"
+          required
+        >
+          <option value="RESIDENTIAL">Residential</option>
+          <option value="APARTMENT">Apartment</option>
+          <option value="LAND">Land</option>
+          <option value="COMMERCIAL">Commercial</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location *</label>
+        <input
+          id="location"
+          name="location"
+          type="text"
+          [(ngModel)]="property.location"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="area">Area (sq. ft.) *</label>
+          <input
+            id="area"
+            name="area"
+            type="number"
+            min="1"
+            [(ngModel)]="property.area"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="basePrice">Base Price (₹) *</label>
+          <input
+            id="basePrice"
+            name="basePrice"
+            type="number"
+            min="1"
+            [(ngModel)]="property.basePrice"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bedrooms">Bedrooms</label>
+          <input
+            id="bedrooms"
+            name="bedrooms"
+            type="number"
+            min="0"
+            [(ngModel)]="property.bedrooms"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="bathrooms">Bathrooms</label>
+          <input
+            id="bathrooms"
+            name="bathrooms"
+            type="number"
+            min="0"
+            [(ngModel)]="property.bathrooms"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Property Status</label>
+        <input
+          id="status"
+          name="status"
+          type="text"
+          [value]="property.status"
+          disabled
+        />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="save-btn" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancelEdit()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  }
+</div>

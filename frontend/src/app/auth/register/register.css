@@ -1,279 +1,720 @@
-/* src/app/auth/register/register.component.css */
-:host {
-  --pm-primary: #4338ca;
-  --pm-primary-dark: #362f9c;
-  --pm-primary-light: #eef2ff;
-  --pm-ink: #1e1b3a;
-  --pm-ink-soft: #625f79;
-  --pm-border: #e3e1f0;
-  --pm-bg: #f5f6fb;
-  --pm-danger: #dc2626;
-  display: block;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* ==========================================================================
+   PropertyMart – Auth pages (Login + Register)
+   Scoped to .auth-page and its descendants
+   ========================================================================== */
 
 .auth-page {
+  --pm-ink: #10243a;
+  --pm-text: #34475b;
+  --pm-muted: #5b6b7c;
+  --pm-primary: #0f4c81;
+  --pm-primary-hover: #0b3a64;
+  --pm-primary-soft: #eef4fa;
+  --pm-accent: #c98a2b;
+  --pm-accent-soft: #f7efe1;
+  --pm-border: #dde2e8;
+  --pm-border-strong: #b4bdc8;
+  --pm-surface: #ffffff;
+  --pm-bg: #f6f4ef;
+  --pm-band: #10243a;
+  --pm-danger: #b3261e;
+  --pm-success: #2e7d4f;
+  --pm-radius: 6px;
+  --pm-radius-lg: 8px;
+  --pm-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --pm-band-height: 280px;
+
   position: relative;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
-  background: var(--pm-bg);
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 48px 20px;
+  box-sizing: border-box;
+  background-color: var(--pm-bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(16, 36, 58, 0.07) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  font-family: var(--pm-font);
+  color: var(--pm-text);
+  overflow-x: hidden;
 }
+
+.auth-page *,
+.auth-page *::before,
+.auth-page *::after {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Backdrop: night skyline with lit windows over a blueprint grid
+   -------------------------------------------------------------------------- */
 
 .auth-page__backdrop {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(var(--pm-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--pm-border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.35;
-  mask-image: radial-gradient(circle at 50% 40%, black, transparent 75%);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
+
+/* Band + three layers of building silhouettes */
+.auth-page__backdrop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--pm-band-height);
+  background-color: var(--pm-band);
+  background-image:
+    /* near buildings */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 34px, transparent 34px),
+    /* mid buildings */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 52px, transparent 52px),
+    /* far buildings */
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 26px, transparent 26px),
+    /* soft light from the top */
+    linear-gradient(180deg, rgba(15, 76, 129, 0.55), rgba(16, 36, 58, 0) 70%);
+  background-size: 71px 96px, 113px 150px, 47px 62px, 100% 100%;
+  background-position: left bottom, 24px bottom, 11px bottom, 0 0;
+  background-repeat: repeat-x, repeat-x, repeat-x, no-repeat;
+  border-bottom: 3px solid var(--pm-accent);
+}
+
+/* Blueprint grid + warm window lights, fading out toward the card */
+.auth-page__backdrop::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--pm-band-height);
+  background-image:
+    radial-gradient(circle, rgba(232, 178, 92, 0.55) 1px, transparent 1.6px),
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 37px 29px, 32px 32px, 32px 32px;
+  background-position: 9px 14px, 0 0, 0 0;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 55%, transparent 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Card
+   -------------------------------------------------------------------------- */
 
 .auth-card {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 460px;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 40px 36px 32px;
+  max-width: 440px;
+  padding: 44px 40px 30px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-lg);
   box-shadow:
-    0 1px 2px rgba(30, 27, 58, 0.06),
-    0 24px 48px -12px rgba(67, 56, 202, 0.18);
-  border: 1px solid rgba(67, 56, 202, 0.06);
+    0 1px 2px rgba(16, 36, 58, 0.06),
+    0 14px 32px rgba(16, 36, 58, 0.14);
+  animation: pm-rise 0.35s ease-out both;
 }
 
-.brand {
+/* Two-tone top edge, like a property listing tab */
+.auth-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 5px;
+  border-radius: var(--pm-radius-lg) var(--pm-radius-lg) 0 0;
+  background: linear-gradient(90deg, var(--pm-primary) 0 72%, var(--pm-accent) 72% 100%);
+}
+
+/* Register form has more fields: a little more width.
+   :has() is progressive enhancement; older browsers keep 440px. */
+.auth-card:has(.field-row) {
+  max-width: 520px;
+}
+
+@keyframes pm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Brand
+   -------------------------------------------------------------------------- */
+
+.auth-page .brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  text-decoration: none;
   margin-bottom: 28px;
-}
-
-.brand__mark {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--pm-primary), #6d5bf5);
-  position: relative;
-  flex-shrink: 0;
-}
-
-.brand__mark::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 45%;
-  width: 12px;
-  height: 12px;
-  background: #ffffff;
-  transform: translate(-50%, -50%) rotate(45deg);
-  border-radius: 2px 0 0 0;
-}
-
-.brand__text {
-  font-size: 18px;
-  font-weight: 500;
   color: var(--pm-ink);
+  text-decoration: none;
+  border-radius: var(--pm-radius);
+}
+
+.auth-page .brand__mark {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  background: var(--pm-primary);
+  border-radius: 6px;
+  box-shadow: inset 0 -3px 0 var(--pm-accent);
+}
+
+/* Roof */
+.auth-page .brand__mark::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translateX(-50%) rotate(45deg);
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+}
+
+/* Walls */
+.auth-page .brand__mark::after {
+  content: "";
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  width: 10px;
+  height: 7px;
+  transform: translateX(-50%);
+  border: 2px solid #fff;
+  border-top: 0;
+}
+
+.auth-page .brand__text {
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1;
   letter-spacing: -0.01em;
 }
 
-.brand__text strong {
-  color: var(--pm-primary);
+.auth-page .brand__text strong {
   font-weight: 700;
+  color: var(--pm-primary);
 }
 
+/* --------------------------------------------------------------------------
+   Headings
+   -------------------------------------------------------------------------- */
+
 .auth-card__title {
-  font-size: 26px;
+  margin: 0;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--pm-ink);
-  margin: 0 0 8px;
+  line-height: 1.2;
   letter-spacing: -0.02em;
+  color: var(--pm-ink);
+}
+
+/* Short brass rule under the title */
+.auth-card__title::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 3px;
+  margin: 12px 0 14px;
+  background: var(--pm-accent);
+  border-radius: 2px;
 }
 
 .auth-card__subtitle {
-  font-size: 14.5px;
-  color: var(--pm-ink-soft);
-  line-height: 1.5;
   margin: 0 0 28px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--pm-muted);
 }
+
+/* --------------------------------------------------------------------------
+   Form
+   -------------------------------------------------------------------------- */
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.field {
+.auth-form .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
+  min-width: 0;
 }
 
-.field label {
-  font-size: 13.5px;
+.auth-form .field label {
+  font-size: 0.8125rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--pm-ink);
 }
 
-.field input,
-.field select {
-  font-family: inherit;
-  font-size: 14.5px;
-  color: var(--pm-ink);
-  padding: 11px 14px;
-  border: 1.5px solid var(--pm-border);
-  border-radius: 10px;
-  background: #fcfcfe;
-  outline: none;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
+/* Two fields side by side (password + confirm password) */
+.auth-form .field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
+}
+
+/* Text-like inputs and select */
+.auth-form .field input:not([type="checkbox"]),
+.auth-form .field select {
   width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--pm-ink);
+  background-color: #fbfcfd;
+  border: 1px solid var(--pm-border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--pm-radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
-.field select {
-  appearance: none;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--pm-ink-soft) 50%),
-    linear-gradient(135deg, var(--pm-ink-soft) 50%, transparent 50%);
-  background-position:
-    calc(100% - 18px) center,
-    calc(100% - 13px) center;
-  background-size:
-    5px 5px,
-    5px 5px;
-  background-repeat: no-repeat;
-  padding-right: 34px;
+.auth-form .field input::placeholder {
+  color: #7d8a99;
 }
 
-.field input::placeholder {
-  color: #a8a5bd;
+.auth-form .field input:not([type="checkbox"]):hover,
+.auth-form .field select:hover {
+  border-color: #8593a3;
 }
 
-.field input:focus,
-.field select:focus {
+/* Focus: blue ring plus a brass underline */
+.auth-form .field input:not([type="checkbox"]):focus,
+.auth-form .field select:focus {
+  outline: none;
+  background-color: #fff;
   border-color: var(--pm-primary);
-  background: #ffffff;
-  box-shadow: 0 0 0 4px var(--pm-primary-light);
+  border-bottom-color: var(--pm-accent);
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.16);
 }
 
-.field--checkbox {
+/* Select: CSS-drawn chevron, native arrow removed */
+.auth-form .field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--pm-muted) 50%),
+    linear-gradient(135deg, var(--pm-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 14px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Placeholder option selected looks like a placeholder */
+.auth-form .field select.ng-pristine.ng-invalid,
+.auth-form .field select:invalid {
+  color: #7d8a99;
+}
+
+.auth-form .field select option {
+  color: var(--pm-ink);
+}
+
+/* Angular validation: only after the user has interacted */
+.auth-form .field input.ng-invalid.ng-touched:not([type="checkbox"]),
+.auth-form .field select.ng-invalid.ng-touched {
+  border-color: var(--pm-danger);
+  border-bottom-color: var(--pm-danger);
+}
+
+.auth-form .field input.ng-invalid.ng-touched:not([type="checkbox"]):focus,
+.auth-form .field select.ng-invalid.ng-touched:focus {
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.16);
+}
+
+.auth-form .field input.ng-valid.ng-touched:not([type="checkbox"]):not(:focus),
+.auth-form .field select.ng-valid.ng-touched:not(:focus) {
+  border-bottom-color: var(--pm-success);
+}
+
+/* Inline error messages */
+.auth-form .error-message {
+  display: block;
+  padding-left: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--pm-danger);
+  border-left: 2px solid var(--pm-danger);
+}
+
+/* Remember me / Forgot password (login page) */
+.auth-form .field-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: -6px;
+}
+
+.auth-form .checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--pm-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-form .checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--pm-primary);
+  cursor: pointer;
+}
+
+/* Terms checkbox (register page) in a soft panel */
+.auth-form .field--checkbox {
   flex-direction: row;
   align-items: flex-start;
   gap: 10px;
+  padding: 12px 14px;
+  background: var(--pm-accent-soft);
+  border: 1px solid #ecdcbd;
+  border-radius: var(--pm-radius);
 }
 
-.field--checkbox input {
-  margin-top: 3px;
+.auth-form .field--checkbox input[type="checkbox"] {
+  flex: none;
   width: 16px;
   height: 16px;
+  margin: 3px 0 0;
   accent-color: var(--pm-primary);
-  flex-shrink: 0;
+  cursor: pointer;
 }
 
-.field--checkbox label {
+.auth-form .field--checkbox label {
+  font-size: 0.875rem;
   font-weight: 400;
-  font-size: 13.5px;
-  color: var(--pm-ink-soft);
+  letter-spacing: 0;
   line-height: 1.5;
+  color: var(--pm-text);
+  cursor: pointer;
 }
 
-.inline-link {
+.auth-form .checkbox-label input[type="checkbox"]:focus-visible,
+.auth-form .field--checkbox input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--pm-primary);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Links
+   -------------------------------------------------------------------------- */
+
+.auth-page .inline-link,
+.auth-page .footer-link {
+  font-weight: 600;
   color: var(--pm-primary);
   text-decoration: none;
-  font-weight: 600;
+  border-radius: 3px;
 }
 
-.inline-link:hover {
+.auth-page .inline-link {
+  font-size: 0.875rem;
+}
+
+.auth-page .inline-link:hover,
+.auth-page .footer-link:hover {
+  color: var(--pm-primary-hover);
   text-decoration: underline;
+  text-decoration-color: var(--pm-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
-.btn {
-  font-family: inherit;
-  font-size: 15px;
+.auth-page .brand:focus-visible,
+.auth-page .inline-link:focus-visible,
+.auth-page .footer-link:focus-visible {
+  outline: 2px solid var(--pm-primary);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.auth-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 0.9375rem;
   font-weight: 600;
-  border-radius: 10px;
-  padding: 12px 16px;
-  border: none;
+  line-height: 1.2;
+  border: 1px solid transparent;
+  border-radius: var(--pm-radius);
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    transform 0.05s ease,
-    box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.btn--primary {
-  background: var(--pm-primary);
-  color: #ffffff;
-  box-shadow: 0 8px 20px -8px rgba(67, 56, 202, 0.6);
+.auth-page .btn:focus-visible {
+  outline: 2px solid var(--pm-primary);
+  outline-offset: 2px;
+}
+
+.auth-page .btn--primary {
   margin-top: 4px;
+  color: #fff;
+  background: var(--pm-primary);
+  border-color: var(--pm-primary);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18);
 }
 
-.btn--primary:hover {
-  background: var(--pm-primary-dark);
+/* Small CSS arrow after the label */
+.auth-page .btn--primary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
 }
 
-.btn--primary:active {
-  transform: translateY(1px);
+.auth-page .btn--primary:hover:not(:disabled) {
+  background: var(--pm-primary-hover);
+  border-color: var(--pm-primary-hover);
 }
 
-.btn--primary:disabled {
-  background: #c7c4e0;
+.auth-page .btn--primary:hover:not(:disabled)::after {
+  transform: translateX(3px) rotate(45deg);
+}
+
+.auth-page .btn--primary:active:not(:disabled) {
+  background: var(--pm-ink);
+  border-color: var(--pm-ink);
+}
+
+.auth-page .btn--primary:disabled {
+  color: #6f7c8b;
+  background: #e6e9ee;
+  border-color: #e6e9ee;
   box-shadow: none;
   cursor: not-allowed;
 }
 
-.auth-card__footer {
-  text-align: center;
-  margin: 26px 0 0;
-  font-size: 14px;
-  color: var(--pm-ink-soft);
+.auth-page .btn--social {
+  font-weight: 500;
+  color: var(--pm-ink);
+  background: #fff;
+  border-color: var(--pm-border-strong);
 }
 
-.footer-link {
-  color: var(--pm-primary);
+.auth-page .btn--social:hover {
+  background: var(--pm-primary-soft);
+  border-color: var(--pm-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Divider
+   -------------------------------------------------------------------------- */
+
+.auth-page .divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px 0;
+  font-size: 0.75rem;
   font-weight: 600;
-  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: var(--pm-muted);
 }
 
-.footer-link:hover {
-  text-decoration: underline;
+.auth-page .divider::before,
+.auth-page .divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--pm-border);
 }
 
-@media (max-width: 640px) {
+/* --------------------------------------------------------------------------
+   Social buttons (login page)
+   -------------------------------------------------------------------------- */
+
+.auth-page .social-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-page .social-icon {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.auth-page .social-icon--google {
+  background: conic-gradient(#ea4335 0 25%, #fbbc05 0 50%, #34a853 0 75%, #4285f4 0 100%);
+}
+
+.auth-page .social-icon--google::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.auth-page .social-icon--github {
+  background: #1b1f24;
+}
+
+.auth-page .social-icon--github::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.auth-card__footer {
+  margin: 26px -40px 0;
+  padding: 20px 40px 0;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--pm-muted);
+  border-top: 1px dashed var(--pm-border-strong);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Tablet */
+@media (max-width: 768px) {
   .auth-page {
-    padding: 24px 16px;
+    --pm-band-height: 220px;
+    padding: 36px 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .auth-page {
+    --pm-band-height: 160px;
+    align-items: flex-start;
+    padding: 24px 12px;
   }
 
   .auth-card {
-    padding: 30px 22px 26px;
-    border-radius: 16px;
+    padding: 34px 20px 22px;
+    box-shadow:
+      0 1px 2px rgba(16, 36, 58, 0.06),
+      0 6px 16px rgba(16, 36, 58, 0.1);
   }
 
-  .field-row {
-    grid-template-columns: 1fr;
-    gap: 18px;
+  .auth-card__footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .auth-page .brand {
+    margin-bottom: 22px;
   }
 
   .auth-card__title {
-    font-size: 22px;
+    font-size: 1.5rem;
+  }
+
+  .auth-card__subtitle {
+    margin-bottom: 22px;
+  }
+
+  .auth-form .field input:not([type="checkbox"]),
+  .auth-form .field select {
+    font-size: 1rem; /* avoids iOS zoom on focus */
+  }
+
+  /* Stack password fields on small screens */
+  .auth-form .field-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .auth-form .field-inline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .auth-card {
+    padding: 30px 16px 20px;
+  }
+
+  .auth-card__footer {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .auth-page .btn {
+    font-size: 0.875rem;
+  }
+}
+
+/* Short landscape screens */
+@media (max-height: 560px) and (orientation: landscape) {
+  .auth-page {
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .auth-card {
+    animation: none;
+  }
+
+  .auth-page .btn,
+  .auth-page .btn--primary::after,
+  .auth-form .field input,
+  .auth-form .field select {
+    transition: none;
   }
 }
