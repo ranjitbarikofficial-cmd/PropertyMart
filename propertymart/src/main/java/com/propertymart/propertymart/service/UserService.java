@@ -1,3 +1,4 @@
+
 package com.propertymart.propertymart.service;
 
 import com.propertymart.propertymart.entity.ApprovalStatus;
@@ -23,16 +24,13 @@ public class UserService {
         sr = sellerRepo;
     }
 
-    // Create User
     @Transactional
     public User adduser(User u) {
 
-        // Save User first
         u.setVerificationStatus(ApprovalStatus.PENDING);
+
         User savedUser = ur.save(u);
 
-        // If registered as SELLER,
-        // automatically create Seller profile
         if (savedUser.getRole() == Role.SELLER) {
 
             Optional<Seller> existingSeller =
@@ -55,17 +53,15 @@ public class UserService {
         return savedUser;
     }
 
-    // Find all users
     public List<User> findAllUsers() {
         return ur.findAll();
     }
 
-    // Find user by ID
     public Optional<User> findUserById(Long id) {
         return ur.findById(id);
     }
 
-    // Update user
+    @Transactional
     public User updateUser(Long id, User u) {
 
         Optional<User> existingUser = ur.findById(id);
@@ -74,56 +70,49 @@ public class UserService {
 
             User user = existingUser.get();
 
-            user.setName(u.getName());
-            user.setEmail(u.getEmail());
-            user.setPassword(u.getPassword());
-            user.setPhone(u.getPhone());
-            user.setRole(u.getRole());
+            if (u.getName() != null) user.setName(u.getName());
+            if (u.getEmail() != null) user.setEmail(u.getEmail());
 
-            return ur.save(user);
+            if (u.getPassword() != null && !u.getPassword().isBlank()) {
+                user.setPassword(u.getPassword());
+            }
+
+            if (u.getPhone() != null) user.setPhone(u.getPhone());
+            if (u.getRole() != null) user.setRole(u.getRole());
+
+            User saved = ur.save(user);
+
+            if (saved.getRole() == Role.SELLER) {
+                sr.findByUserId(saved.getId()).ifPresent(seller -> {
+                    seller.setName(saved.getName());
+                    seller.setEmail(saved.getEmail());
+                    seller.setPhone(saved.getPhone());
+                    sr.save(seller);
+                });
+            }
+
+            return saved;
         }
 
         return null;
     }
 
-    // Delete user
     public void deleteUser(Long id) {
         ur.deleteById(id);
     }
 
-    // Login
     public Optional<User> login(String email, String password) {
 
         Optional<User> user = ur.findByEmail(email);
 
         if (user.isPresent()
-                && user.get().getPassword().equals(password) && user.get().getVerificationStatus()==ApprovalStatus.APPROVED) {
-
+                && user.get().getPassword().equals(password)
+                && user.get().getVerificationStatus() == ApprovalStatus.APPROVED) {
             return user;
         }
 
         return Optional.empty();
     }
-
-
-    public User updateUserApproval(Long id, ApprovalStatus approvalStatus) {
-
-        Optional<User> existingUser = ur.findById(id);
-
-        if (existingUser.isEmpty()) {
-            return null;
-        }
-
-        if (approvalStatus == null) {
-            throw new IllegalArgumentException("Approval status is required");
-        }
-
-        User user = existingUser.get();
-        user.setVerificationStatus(approvalStatus);
-
-        return ur.save(user);
-    }
-
 
     public String resetPassword(String email, String newPassword) {
 
@@ -141,5 +130,33 @@ public class UserService {
         return "Password updated successfully.";
     }
 
+    @Transactional
+    public User updateUserApproval(Long id, ApprovalStatus approvalStatus) {
 
+        Optional<User> existingUser = ur.findById(id);
+
+        if (existingUser.isEmpty()) {
+            return null;
+        }
+
+        if (approvalStatus == null) {
+            throw new IllegalArgumentException(
+                    "Approval status is required"
+            );
+        }
+
+        User user = existingUser.get();
+        user.setVerificationStatus(approvalStatus);
+
+        User savedUser = ur.save(user);
+
+        if (savedUser.getRole() == Role.SELLER) {
+            sr.findByUserId(savedUser.getId()).ifPresent(seller -> {
+                seller.setVerificationStatus(approvalStatus);
+                sr.save(seller);
+            });
+        }
+
+        return savedUser;
+    }
 }

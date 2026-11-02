@@ -1,3 +1,4 @@
+
 <div class="dashboard-layout">
   <input type="checkbox" id="navToggle" class="nav-toggle" />
 
@@ -17,7 +18,12 @@
 
     <div class="topbar__search">
       <label for="topSearch" class="visually-hidden">Search properties</label>
-      <input id="topSearch" type="search" placeholder="Search your listings..." />
+      <input
+        id="topSearch"
+        type="search"
+        placeholder="Search your listings..."
+        (input)="searchListings($any($event.target).value)"
+      />
     </div>
 
     <div class="topbar__right">
@@ -31,7 +37,7 @@
         <div class="profile-dropdown">
           <a routerLink="/seller-dashboard/profile">My Profile</a>
           <a routerLink="/seller-dashboard/settings">Settings</a>
-          <a routerLink="/login" class="danger">Logout</a>
+          <a routerLink="/login" (click)="logout()" class="danger">Logout</a>
         </div>
       </div>
     </div>
@@ -61,10 +67,7 @@
         Add Property
       </a>
 
-      
-
-
-      <a routerLink="/user-dashboard/profile" class="nav-item">
+      <a routerLink="/seller-dashboard/profile" class="nav-item">
         <span class="nav-icon" aria-hidden="true">👤</span>
         Profile
       </a>
@@ -75,7 +78,7 @@
       </a>
     </nav>
 
-    <a routerLink="/login" class="nav-item nav-item--logout">
+    <a routerLink="/login" (click)="logout()" class="nav-item nav-item--logout">
       <span class="nav-icon" aria-hidden="true">⏻</span>
       Logout
     </a>
@@ -122,7 +125,6 @@
     <section class="section-block">
       <div class="section-block__header">
         <h2>My Properties</h2>
-
         <a routerLink="/seller-dashboard/my-properties" class="btn btn--outline btn--sm">
           View All Properties
         </a>
@@ -131,79 +133,102 @@
       <div class="table-wrap">
         <table class="data-table">
           <thead>
-            <tr>
-              <th scope="col">Property</th>
-              <th scope="col">Location</th>
-              <th scope="col">Price</th>
-              <th scope="col">Status</th>
-              <th scope="col">Actions</th>
-            </tr>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Location</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
           </thead>
 
           <tbody>
             @if (loading) {
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 30px">
-                Loading your properties...
-              </td>
-            </tr>
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 30px">
+                  Loading your properties...
+                </td>
+              </tr>
             } @else if (errorMessage) {
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 30px">
-                {{ errorMessage }}
-              </td>
-            </tr>
-            } @else if (properties.length === 0) {
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 30px">
-                <strong>You haven't added any properties yet.</strong>
-                <p>Start by adding your first property.</p>
-                <a routerLink="/seller-dashboard/add-property">
-                  + Add Property
-                </a>
-              </td>
-            </tr>
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 30px">
+                  {{ errorMessage }}
+                </td>
+              </tr>
+            } @else if (filteredProperties.length === 0) {
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 30px">
+                  @if (properties.length === 0) {
+                    <strong>You haven't added any properties yet.</strong>
+                    <p>Start by adding your first property.</p>
+                    <a routerLink="/seller-dashboard/add-property">
+                      + Add Property
+                    </a>
+                  } @else {
+                    <strong>No matching properties found.</strong>
+                  }
+                </td>
+              </tr>
             } @else {
-            @for (property of properties; track property.id) {
-            <tr>
-              <td data-label="Property">
-                <div class="table-property">
-                  <span class="table-property__thumb table-property__thumb--a" aria-hidden="true"></span>
-                  {{ property.title }}
-                </div>
-              </td>
+              @for (property of filteredProperties; track property.id) {
+                <tr>
+                  <td data-label="Property">
+                    <div class="table-property">
+                      <span
+                        class="table-property__thumb table-property__thumb--a"
+                        aria-hidden="true"
+                      ></span>
+                      {{ property.title }}
+                    </div>
+                  </td>
 
-              <td data-label="Location">{{ property.location }}</td>
+                  <td data-label="Location">{{ property.location }}</td>
 
-              <td data-label="Price">₹{{ property.basePrice }}</td>
+                  <td data-label="Price">₹{{ property.basePrice }}</td>
 
-              <td data-label="Status">
-              {{ property.status }}
-              </td>
+                  <td data-label="Status">
+                    {{ property.status }}
+                  </td>
 
-              <td data-label="Actions">
-                <div class="row-actions">
-                  <button type="button" class="icon-action" aria-label="View property"
-                    [routerLink]="['/property-details', property.id]">
-                    👁
-                  </button>
+                  <td data-label="Actions">
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="icon-action"
+                        aria-label="View property"
+                        [routerLink]="['/property-details', property.id]"
+                      >
+                        👁
+                      </button>
 
-                  <button type="button" class="icon-action" aria-label="Edit property"
-                    [routerLink]="['/seller-dashboard/edit-property', property.id]">
-                    ✎
-                  </button>
+                      <button
+                        type="button"
+                        class="icon-action"
+                        aria-label="Edit property"
+                        [routerLink]="['/seller-dashboard/edit-property', property.id]"
+                      >
+                        ✎
+                      </button>
 
-                  <button type="button" class="icon-action icon-action--danger" aria-label="Delete property">
-                    🗑
-                  </button>
+                      <button
+                        type="button"
+                        class="icon-action icon-action--danger"
+                        aria-label="Delete property"
+                        (click)="deleteProperty(property.id)"
+                      >
+                        🗑
+                      </button>
 
-                  <a [routerLink]="['/seller-dashboard/create-auction', property.id]" class="create-auction-button">
-                    🔨 Create Auction
-                  </a>
-                </div>
-              </td>
-            </tr>
-            }
+                      <a
+                        [routerLink]="['/seller-dashboard/create-auction', property.id]"
+                        class="create-auction-button"
+                      >
+                        🔨 Create Auction
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              }
             }
           </tbody>
         </table>

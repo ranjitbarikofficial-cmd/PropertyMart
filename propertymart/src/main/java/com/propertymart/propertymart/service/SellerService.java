@@ -1,3 +1,4 @@
+
 package com.propertymart.propertymart.service;
 
 import com.propertymart.propertymart.entity.ApprovalStatus;
@@ -31,14 +32,10 @@ public class SellerService {
         User user = ur.findById(seller.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Only SELLER users can have a Seller profile
         if (user.getRole() != Role.SELLER) {
-            throw new RuntimeException(
-                    "User must have SELLER role"
-            );
+            throw new RuntimeException("User must have SELLER role");
         }
 
-        // Take seller information from the User
         seller.setUser(user);
         seller.setName(user.getName());
         seller.setEmail(user.getEmail());
@@ -65,7 +62,6 @@ public class SellerService {
         Optional<Seller> existingSeller = sr.findById(id);
 
         if (existingSeller.isPresent()) {
-
             Seller s = existingSeller.get();
 
             s.setName(seller.getName());
@@ -86,7 +82,10 @@ public class SellerService {
         return sr.countByVerificationStatus(ApprovalStatus.PENDING);
     }
 
-    public Seller updateSellerVerification(Long id, ApprovalStatus verificationStatus) {
+    public Seller updateSellerVerification(
+            Long id,
+            ApprovalStatus verificationStatus) {
+
         Optional<Seller> existingSeller = sr.findById(id);
 
         if (existingSeller.isEmpty()) {
@@ -94,11 +93,12 @@ public class SellerService {
         }
 
         if (verificationStatus == null) {
-            throw new IllegalArgumentException("Verification status is required");
+            throw new IllegalArgumentException(
+                    "Verification status is required"
+            );
         }
 
         Seller seller = existingSeller.get();
-
         seller.setVerificationStatus(verificationStatus);
 
         return sr.save(seller);

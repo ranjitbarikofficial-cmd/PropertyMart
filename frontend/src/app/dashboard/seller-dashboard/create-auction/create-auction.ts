@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +14,6 @@ export class CreateAuction implements OnInit {
 
   propertyId: number = 0;
   property: any = null;
-  dateTimeError = '';
 
   auction = {
     startTime: '',
@@ -59,65 +59,74 @@ export class CreateAuction implements OnInit {
     });
   }
 
- 
-createAuction(): void {
-  this.errorMessage = '';
-  this.successMessage = '';
+  createAuction(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
 
-  if (
-    !this.auction.startTime ||
-    !this.auction.endTime ||
-    !this.auction.startingPrice
-  ) {
-    this.errorMessage = 'Please fill all required fields.';
-    return;
-  }
-
-  const startTime = new Date(this.auction.startTime);
-  const endTime = new Date(this.auction.endTime);
-
-  if (startTime >= endTime) {
-    this.errorMessage =
-      'Invalid auction schedule. The end date and time must be later than the start date and time. Please select a valid end date and time.';
-    return;
-  }
-
-  const auctionData = {
-    startTime: this.auction.startTime,
-    endTime: this.auction.endTime,
-    startingPrice: this.auction.startingPrice,
-    status: this.auction.status,
-    property: {
-      id: this.propertyId
+    if (!this.property) {
+      this.errorMessage = 'Property details are not available.';
+      return;
     }
-  };
 
-  this.loading = true;
+    if (this.property.status?.toUpperCase() === 'SOLD') {
+      this.errorMessage = 'Auction cannot be created for a sold property.';
+      return;
+    }
 
-  this.http.post(
-    'http://localhost:8080/api/auction/create',
-    auctionData
-  ).subscribe({
-    next: (response) => {
-      console.log('Auction created:', response);
+    if (
+      !this.auction.startTime ||
+      !this.auction.endTime ||
+      this.auction.startingPrice === null ||
+      this.auction.startingPrice <= 0
+    ) {
+      this.errorMessage = 'Please fill all required fields with valid values.';
+      return;
+    }
 
-      this.loading = false;
-      this.successMessage = 'Auction created successfully!';
+    const startTime = new Date(this.auction.startTime);
+    const endTime = new Date(this.auction.endTime);
 
-      setTimeout(() => {
-        this.router.navigate(['/seller-dashboard']);
-      }, 1000);
-    },
-    error: (error) => {
-      console.error('Auction creation failed:', error);
-
-      this.loading = false;
+    if (startTime >= endTime) {
       this.errorMessage =
-        'Failed to create auction. Please try again.';
+        'Invalid auction schedule. The end date and time must be later than the start date and time. Please select a valid end date and time.';
+      return;
     }
-  });
-}
 
+    const auctionData = {
+      startTime: this.auction.startTime,
+      endTime: this.auction.endTime,
+      startingPrice: this.auction.startingPrice,
+      status: this.auction.status,
+      property: {
+        id: this.propertyId
+      }
+    };
+
+    this.loading = true;
+
+    this.http.post(
+      'http://localhost:8080/api/auction/create',
+      auctionData
+    ).subscribe({
+      next: (response) => {
+        console.log('Auction created:', response);
+
+        this.loading = false;
+        this.successMessage = 'Auction created successfully!';
+
+        setTimeout(() => {
+          this.router.navigate(['/seller-dashboard']);
+        }, 1000);
+      },
+      error: (error) => {
+        console.error('Auction creation failed:', error);
+
+        this.loading = false;
+        this.errorMessage =
+          'Failed to create auction. Please try again.';
+      }
+    });
+  }
 
   cancel(): void {
     this.router.navigate(['/seller-dashboard']);

@@ -1,3 +1,4 @@
+
 package com.propertymart.propertymart.entity;
 
 import jakarta.persistence.*;
@@ -11,9 +12,7 @@ public class Seller {
     private Long id;
 
     private String name;
-
     private String email;
-
     private String phone;
 
     @OneToOne

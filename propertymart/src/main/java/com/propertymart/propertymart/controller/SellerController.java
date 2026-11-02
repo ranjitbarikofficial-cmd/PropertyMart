@@ -1,3 +1,4 @@
+
 package com.propertymart.propertymart.controller;
 
 import com.propertymart.propertymart.entity.ApprovalStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(
@@ -25,33 +27,22 @@ public class SellerController {
 
     @PostMapping("/create")
     public ResponseEntity<Seller> addSeller(@RequestBody Seller seller) {
-
         Seller savedSeller = ss.addSeller(seller);
-
         return ResponseEntity.ok(savedSeller);
     }
 
     @GetMapping("/allseller")
     public ResponseEntity<List<Seller>> findAllSellers() {
-
-        List<Seller> sellers = ss.findAllSellers();
-
-        return ResponseEntity.ok(sellers);
+        return ResponseEntity.ok(ss.findAllSellers());
     }
-
 
     @GetMapping("/find/{id}")
     public ResponseEntity<Seller> findSellerById(@PathVariable Long id) {
-
         Optional<Seller> seller = ss.findSellerById(id);
 
-        if (seller.isPresent()) {
-            return ResponseEntity.ok(seller.get());
-        }
-
-        return ResponseEntity.notFound().build();
+        return seller.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Seller> updateSeller(
@@ -67,31 +58,26 @@ public class SellerController {
         return ResponseEntity.notFound().build();
     }
 
-
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteSeller(@PathVariable Long id) {
-
         ss.deleteSeller(id);
-
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<Seller> findSellerByUserId(
             @PathVariable Long userId) {
 
         Optional<Seller> seller = ss.findSellerByUserId(userId);
 
-        if (seller.isPresent()) {
-            return ResponseEntity.ok(seller.get());
-        }
-
-        return ResponseEntity.notFound().build();
+        return seller.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/verification/{id}")
     public ResponseEntity<Seller> updateSellerVerification(
             @PathVariable Long id,
-            @RequestBody java.util.Map<String, String> request) {
+            @RequestBody Map<String, String> request) {
 
         String status = request.get("verificationStatus");
 

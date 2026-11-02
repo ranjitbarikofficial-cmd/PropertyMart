@@ -6,50 +6,77 @@ import com.propertymart.propertymart.entity.AuctionStatus;
 import com.propertymart.propertymart.entity.Bid;
 import com.propertymart.propertymart.repository.AuctionRepo;
 import com.propertymart.propertymart.repository.BidRepo;
+import com.propertymart.propertymart.repository.PropertyRepo;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class AuctionScheduler {
 
-    private final AuctionRepo ar;
-    private final BidRepo br;
+    private final AuctionRepo auctionRepo;
+    private final BidRepo bidRepo;
+    private final PropertyRepo propertyRepo;
 
-    public AuctionScheduler(AuctionRepo ar, BidRepo br) {
-        this.ar = ar;
-        this.br = br;
+    public AuctionScheduler(
+            AuctionRepo auctionRepo,
+            BidRepo bidRepo,
+            PropertyRepo propertyRepo
+    ) {
+        this.auctionRepo = auctionRepo;
+        this.bidRepo = bidRepo;
+        this.propertyRepo = propertyRepo;
     }
 
     @Scheduled(fixedRate = 5000)
-    public void updateAuctionStatus() {
+    @Transactional
+    public void updateAuctionStatuses() {
+
         LocalDateTime now = LocalDateTime.now();
-        List<Auction> auctions = ar.findAll();
+        List<Auction> auctions = auctionRepo.findAll();
 
         for (Auction auction : auctions) {
+
+            if (auction.getStartTime() == null ||
+                    auction.getEndTime() == null) {
+                continue;
+            }
+
             if (now.isBefore(auction.getStartTime())) {
                 auction.setStatus(AuctionStatus.UPCOMING);
             } else if (now.isBefore(auction.getEndTime())) {
                 auction.setStatus(AuctionStatus.ACTIVE);
             } else {
+
                 if (auction.getStatus() != AuctionStatus.ENDED) {
+
+                    auction.setStatus(AuctionStatus.ENDED);
+
                     Optional<Bid> highestBid =
-                            br.findTopByAuctionIdOrderByAmountDesc(auction.getId());
+                            bidRepo.findTopByAuctionIdOrderByAmountDesc(
+                                    auction.getId()
+                            );
 
                     if (highestBid.isPresent()) {
-                        auction.setWinner(highestBid.get().getBuyer());
-                    } else {
-                        auction.setWinner(null);
+
+                        Bid winningBid = highestBid.get();
+
+                        auction.setWinner(winningBid.getBuyer());
+                        auction.setWinningBid(winningBid.getAmount());
+
+                        if (auction.getProperty() != null) {
+                            auction.getProperty().setStatus("SOLD");
+                            propertyRepo.save(auction.getProperty());
+                        }
                     }
                 }
-
-                auction.setStatus(AuctionStatus.ENDED);
             }
-        }
 
-        ar.saveAll(auctions);
+            auctionRepo.save(auction);
+        }
     }
 }

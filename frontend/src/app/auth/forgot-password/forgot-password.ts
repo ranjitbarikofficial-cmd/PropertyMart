@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -11,13 +10,13 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './forgot-password.css',
 })
 export class ForgotPassword {
-
   email = '';
   newPassword = '';
   confirmPassword = '';
 
   errorMessage = '';
   successMessage = '';
+  loading = false;
 
   private apiUrl = 'http://localhost:8080/api/user/forgot-password';
 
@@ -45,6 +44,8 @@ export class ForgotPassword {
       return;
     }
 
+    this.loading = true;
+
     this.http.put(
       this.apiUrl,
       {
@@ -57,10 +58,12 @@ export class ForgotPassword {
       }
     ).subscribe({
       next: () => {
+        this.loading = false;
         alert('Password updated successfully! Please login with your new password.');
         this.router.navigate(['/login']);
       },
       error: (error) => {
+        this.loading = false;
         this.errorMessage =
           typeof error.error === 'string'
             ? error.error

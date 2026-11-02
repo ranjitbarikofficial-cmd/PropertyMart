@@ -1,9 +1,11 @@
+
 package com.propertymart.propertymart.entity;
 
 import jakarta.persistence.*;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+
 @ToString
 @Entity
 public class Auction {
@@ -11,8 +13,23 @@ public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
+    @Enumerated(EnumType.STRING)
+    private AuctionStatus status;
+
+    private Double startingPrice;
+    private Double winningBid;
+
+    @ManyToOne
+    @JoinColumn(name = "winner_id")
+    private User winner;
+
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    private Property property;
 
     public Double getStartingPrice() {
         return startingPrice;
@@ -22,13 +39,29 @@ public class Auction {
         this.startingPrice = startingPrice;
     }
 
-    @Enumerated(EnumType.STRING)
-    private AuctionStatus status;
-    private Double startingPrice;
+    public Double getWinningBid() {
+        return winningBid;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "winner_id")
-    private User winner;
+    public void setWinningBid(Double winningBid) {
+        this.winningBid = winningBid;
+    }
+
+    public User getWinner() {
+        return winner;
+    }
+
+    public void setWinner(User winner) {
+        this.winner = winner;
+    }
+
+    public User getWinnerBuyer() {
+        return winner;
+    }
+
+    public void setWinnerBuyer(User winnerBuyer) {
+        this.winner = winnerBuyer;
+    }
 
     public Property getProperty() {
         return property;
@@ -68,17 +101,5 @@ public class Auction {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "property_id")
-    private Property property;
-
-    public User getWinner() {
-        return winner;
-    }
-
-    public void setWinner(User winner) {
-        this.winner = winner;
     }
 }

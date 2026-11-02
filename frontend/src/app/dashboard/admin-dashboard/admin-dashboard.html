@@ -5,7 +5,9 @@
   <header class="topbar">
     <div class="topbar__left">
       <label for="navToggle" class="hamburger" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </label>
 
       <a routerLink="/admin-dashboard" class="brand">
@@ -16,76 +18,81 @@
 
     <div class="topbar__search">
       <label for="topSearch" class="visually-hidden">Global search</label>
-      <input id="topSearch" type="search" placeholder="Search users, sellers, properties..." />
+      <input
+        id="topSearch"
+        type="search"
+        placeholder="Search users by name, email or role..."
+        (input)="searchGlobal($any($event.target).value)"
+      />
     </div>
 
     <div class="topbar__right">
 
-
-  <div class="notification-menu">
-    <button
-      type="button"
-      class="notification-trigger"
-      aria-label="Notifications"
-      (click)="toggleNotifications()"
-    >
-      <span class="notification-bell">🔔</span>
-
-      @if (unreadCount > 0) {
-        <span class="notification-badge">
-          {{ unreadCount }}
-        </span>
-      }
-    </button>
-
-    @if (showNotifications) {
-      <div class="notification-dropdown">
-        <div class="notification-header">
-          <h3>Notifications</h3>
+      <div class="notification-menu">
+        <button
+          type="button"
+          class="notification-trigger"
+          aria-label="Notifications"
+          (click)="toggleNotifications()"
+        >
+          <span class="notification-bell">🔔</span>
 
           @if (unreadCount > 0) {
-            <button
-              type="button"
-              (click)="markAllNotificationsRead()"
-            >
-              Mark all read
-            </button>
+            <span class="notification-badge">
+              {{ unreadCount }}
+            </span>
           }
-        </div>
+        </button>
 
-        @if (notifications.length === 0) {
-          <p class="notification-empty">No notifications yet.</p>
-        } @else {
-          @for (notification of notifications; track notification.id) {
-            <button
-              type="button"
-              class="notification-item"
-              [class.unread]="!notification.read"
-              (click)="markNotificationRead(notification)"
-            >
-              <strong>{{ notification.title }}</strong>
-              <span>{{ notification.message }}</span>
-              <small>{{ notification.createdAt | date:'medium' }}</small>
-            </button>
-          }
+        @if (showNotifications) {
+          <div class="notification-dropdown">
+            <div class="notification-header">
+              <h3>Notifications</h3>
+
+              @if (unreadCount > 0) {
+                <button
+                  type="button"
+                  (click)="markAllNotificationsRead()"
+                >
+                  Mark all read
+                </button>
+              }
+            </div>
+
+            @if (notifications.length === 0) {
+              <p class="notification-empty">No notifications yet.</p>
+            } @else {
+              @for (notification of notifications; track notification.id) {
+                <button
+                  type="button"
+                  class="notification-item"
+                  [class.unread]="!notification.read"
+                  (click)="markNotificationRead(notification)"
+                >
+                  <strong>{{ notification.title }}</strong>
+                  <span>{{ notification.message }}</span>
+                  <small>{{ notification.createdAt | date:'medium' }}</small>
+                </button>
+              }
+            }
+          </div>
         }
       </div>
-    }
-  </div>
 
       <div class="profile-menu">
         <button class="profile-trigger" type="button" aria-haspopup="true">
-          <span class="avatar">AD</span>
-          <span class="profile-name">Admin</span>
+          <span class="avatar">{{ adminInitials }}</span>
+          <span class="profile-name">{{ adminName }}</span>
           <span class="chevron" aria-hidden="true"></span>
         </button>
 
         <div class="profile-dropdown">
-          <a routerLink="/profile">My Profile</a>
+          <a routerLink="/user-dashboard/profile">My Profile</a>
           <a routerLink="/admin-dashboard/settings">Settings</a>
-          <a routerLink="/login" class="danger">Logout</a>
+          <a routerLink="/login" (click)="logout()" class="danger">Logout</a>
         </div>
       </div>
+
     </div>
   </header>
 
@@ -93,6 +100,7 @@
 
   <aside class="sidebar" aria-label="Primary navigation">
     <nav class="sidebar__nav">
+
       <a routerLink="/admin-dashboard" class="nav-item nav-item--active">
         <span class="nav-icon" aria-hidden="true">🏠</span>
         Dashboard
@@ -104,39 +112,40 @@
       </a>
 
       <a routerLink="/admin-dashboard/seller" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">🏷</span>
+        <span class="nav-icon" aria-hidden="true">🏪</span>
         Sellers
       </a>
 
       <a routerLink="/admin-dashboard/property" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">🏢</span>
+        <span class="nav-icon" aria-hidden="true">🏡</span>
         Properties
       </a>
 
-      <a routerLink="/admin-dashboard/auction" routerLinkActive="active">
-   <span class="nav-icon" aria-hidden="true">⚖️</span>
-  <span>Auctions</span>
-</a>
+      <a routerLink="/admin-dashboard/auction" class="nav-item" routerLinkActive="active">
+        <span class="nav-icon" aria-hidden="true">⚖️</span>
+        Auctions
+      </a>
 
-     
-<a routerLink="/admin-dashboard/winner" routerLinkActive="active">
-<span class="nav-icon" aria-hidden="true">🏆</span>
-  <span>Winners</span>
-</a>
+      <a routerLink="/admin-dashboard/winner" class="nav-item" routerLinkActive="active">
+        <span class="nav-icon" aria-hidden="true">🏆</span>
+        Winners
+      </a>
 
       <a routerLink="/admin-dashboard/settings" class="nav-item">
-        <span class="nav-icon" aria-hidden="true">⚙</span>
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
         Settings
       </a>
+
     </nav>
 
-    <a routerLink="/login" class="nav-item nav-item--logout">
-      <span class="nav-icon" aria-hidden="true">⏻</span>
+    <a routerLink="/login" (click)="logout()" class="nav-item nav-item--logout">
+      <span class="nav-icon" aria-hidden="true">↪</span>
       Logout
     </a>
   </aside>
 
   <main class="main-content">
+
     <section class="page-header">
       <div>
         <h1>Admin Dashboard</h1>
@@ -149,8 +158,9 @@
     }
 
     <section class="stat-grid stat-grid--6" aria-label="Platform overview">
+
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">👥</span>
+        <span class="stat-card__icon stat-card__icon--purple">👥</span>
         <div>
           <p class="stat-card__value">{{ totalUsers }}</p>
           <p class="stat-card__label">Total Users</p>
@@ -158,7 +168,7 @@
       </div>
 
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🏷</span>
+        <span class="stat-card__icon stat-card__icon--blue">🏪</span>
         <div>
           <p class="stat-card__value">{{ totalSellers }}</p>
           <p class="stat-card__label">Total Sellers</p>
@@ -166,7 +176,7 @@
       </div>
 
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">🏠</span>
+        <span class="stat-card__icon stat-card__icon--green">🏠</span>
         <div>
           <p class="stat-card__value">{{ totalProperties }}</p>
           <p class="stat-card__label">Total Properties</p>
@@ -174,15 +184,15 @@
       </div>
 
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--orange" aria-hidden="true">📈</span>
+        <span class="stat-card__icon stat-card__icon--orange">📊</span>
         <div>
-          <p class="stat-card__value">{{ activeListings }}</p>
-          <p class="stat-card__label">Active Listings</p>
+          <p class="stat-card__value">{{ activePropertiesCount }}</p>
+          <p class="stat-card__label">Available Properties</p>
         </div>
       </div>
 
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">⏳</span>
+        <span class="stat-card__icon stat-card__icon--purple">⏳</span>
         <div>
           <p class="stat-card__value">{{ totalPendingApprovals }}</p>
           <p class="stat-card__label">Pending Approvals</p>
@@ -190,12 +200,13 @@
       </div>
 
       <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🔨</span>
+        <span class="stat-card__icon stat-card__icon--blue">🔨</span>
         <div>
           <p class="stat-card__value">{{ totalAuctions }}</p>
           <p class="stat-card__label">Total Auctions</p>
         </div>
       </div>
+
     </section>
 
     <section class="section-block">
@@ -207,15 +218,15 @@
       <div class="table-wrap">
         <table class="data-table">
           <thead>
-            <tr>
-              <th scope="col">User</th>
-              <th scope="col">Email</th>
-              <th scope="col">Phone</th>
-              <th scope="col">Role</th>
-              <th scope="col">Registered</th>
-              <th scope="col">Approval Status</th>
-              <th scope="col">Actions</th>
-            </tr>
+          <tr>
+            <th scope="col">User</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Role</th>
+            <th scope="col">Registered</th>
+            <th scope="col">Approval Status</th>
+            <th scope="col">Actions</th>
+          </tr>
           </thead>
 
           <tbody>
@@ -223,16 +234,20 @@
               <tr>
                 <td colspan="7">Loading users...</td>
               </tr>
-            } @else if (users.length === 0) {
+            } @else if (filteredUsers.length === 0) {
               <tr>
-                <td colspan="7">{{ errorMessage || 'No users found.' }}</td>
+                <td colspan="7">
+                  {{ errorMessage || 'No users found.' }}
+                </td>
               </tr>
             } @else {
-              @for (user of users; track user.id) {
+              @for (user of filteredUsers; track user.id) {
                 <tr>
                   <td data-label="User">
                     <div class="table-property">
-                      <span class="avatar avatar--sm">{{ getInitials(user.name) }}</span>
+                      <span class="avatar avatar--sm">
+                        {{ getInitials(user.name) }}
+                      </span>
                       {{ user.name || 'Unnamed User' }}
                     </div>
                   </td>
@@ -241,25 +256,50 @@
                   <td data-label="Phone">{{ user.phone || '—' }}</td>
                   <td data-label="Role">{{ user.role || '—' }}</td>
                   <td data-label="Registered">—</td>
+
                   <td data-label="Approval Status">
-                     {{ user.verificationStatus }}
+                    {{ user.approvalStatus || 'PENDING' }}
                   </td>
 
                   <td data-label="Actions">
                     <div class="row-actions">
-                      <button type="button" class="icon-action" aria-label="View user" (click)="viewUser(user.id)">
+
+                      <button
+                        type="button"
+                        class="icon-action"
+                        aria-label="View user"
+                        (click)="viewUser(user.id)"
+                      >
                         👁
                       </button>
 
                       @if ((user.approvalStatus ?? 'PENDING') === 'PENDING') {
-                        <button type="button" class="btn btn--outline btn--sm" (click)="updateUserApproval(user.id, 'APPROVED')">
+                        <button
+                          type="button"
+                          class="btn btn--outline btn--sm"
+                          (click)="updateUserApproval(user.id, 'APPROVED')"
+                        >
                           Approve
                         </button>
 
-                        <button type="button" class="btn btn--outline btn--sm" (click)="updateUserApproval(user.id, 'REJECTED')">
+                        <button
+                          type="button"
+                          class="btn btn--outline btn--sm"
+                          (click)="updateUserApproval(user.id, 'REJECTED')"
+                        >
                           Reject
                         </button>
                       }
+
+                      <button
+                        type="button"
+                        class="icon-action icon-action--danger"
+                        aria-label="Delete user"
+                        (click)="deleteUser(user.id)"
+                      >
+                        🗑
+                      </button>
+
                     </div>
                   </td>
                 </tr>
@@ -273,20 +313,20 @@
     <section class="section-block">
       <div class="section-block__header">
         <h2>Seller Overview</h2>
-        <a routerLink="/admin-dashboard/sellers" class="link-more">View all</a>
+        <a routerLink="/admin-dashboard/seller" class="link-more">View all</a>
       </div>
 
       <div class="table-wrap">
         <table class="data-table">
           <thead>
-            <tr>
-              <th scope="col">Seller</th>
-              <th scope="col">Email</th>
-              <th scope="col">Properties</th>
-              <th scope="col">Verification</th>
-              <th scope="col">Registered</th>
-              <th scope="col">Actions</th>
-            </tr>
+          <tr>
+            <th scope="col">Seller</th>
+            <th scope="col">Email</th>
+            <th scope="col">Properties</th>
+            <th scope="col">Verification</th>
+            <th scope="col">Registered</th>
+            <th scope="col">Actions</th>
+          </tr>
           </thead>
 
           <tbody>
@@ -301,29 +341,53 @@
             } @else {
               @for (seller of sellers; track seller.id) {
                 <tr>
-                  <td data-label="Seller">{{ getSellerName(seller) }}</td>
-                  <td data-label="Email">{{ getSellerEmail(seller) }}</td>
-                  <td data-label="Properties">{{ getPropertiesForSeller(seller) }}</td>
-                  <td data-label="Verification Status">
-                    {{ seller.verificationStatus ?? 'PENDING' }}
+                  <td data-label="Seller">
+                    {{ getSellerName(seller) }}
                   </td>
+
+                  <td data-label="Email">
+                    {{ getSellerEmail(seller) }}
+                  </td>
+
+                  <td data-label="Properties">
+                    {{ getPropertiesForSeller(seller) }}
+                  </td>
+
+                  <td data-label="Verification">
+                    {{ seller.verificationStatus || 'PENDING' }}
+                  </td>
+
                   <td data-label="Registered">—</td>
 
                   <td data-label="Actions">
                     <div class="row-actions">
-                      <button type="button" class="btn btn--outline btn--sm" (click)="viewSeller(seller.user?.id ?? seller.id)">
+
+                      <button
+                        type="button"
+                        class="btn btn--outline btn--sm"
+                        (click)="viewSeller(seller.id)"
+                      >
                         View
                       </button>
 
                       @if ((seller.verificationStatus ?? 'PENDING') === 'PENDING') {
-                        <button type="button" class="btn btn--outline btn--sm" (click)="updateSellerVerification(seller.id, 'APPROVED')">
+                        <button
+                          type="button"
+                          class="btn btn--outline btn--sm"
+                          (click)="updateSellerVerification(seller.id, 'APPROVED')"
+                        >
                           Approve
                         </button>
 
-                        <button type="button" class="btn btn--outline btn--sm" (click)="updateSellerVerification(seller.id, 'REJECTED')">
+                        <button
+                          type="button"
+                          class="btn btn--outline btn--sm"
+                          (click)="updateSellerVerification(seller.id, 'REJECTED')"
+                        >
                           Reject
                         </button>
                       }
+
                     </div>
                   </td>
                 </tr>
@@ -333,5 +397,6 @@
         </table>
       </div>
     </section>
+
   </main>
 </div>

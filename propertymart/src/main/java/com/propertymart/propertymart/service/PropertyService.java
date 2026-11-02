@@ -1,3 +1,4 @@
+
 package com.propertymart.propertymart.service;
 
 import com.propertymart.propertymart.entity.ApprovalStatus;
@@ -5,7 +6,6 @@ import com.propertymart.propertymart.entity.Property;
 import com.propertymart.propertymart.entity.Seller;
 import com.propertymart.propertymart.repository.AuctionRepo;
 import com.propertymart.propertymart.repository.PropertyRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,18 +16,18 @@ public class PropertyService {
 
     private final PropertyRepo pr;
     private final SellerService ss;
-    @Autowired
-    AuctionRepo ar;
+    private final AuctionRepo ar;
 
     public PropertyService(
             PropertyRepo propertyRepo,
-            SellerService sellerService) {
+            SellerService sellerService,
+            AuctionRepo auctionRepo) {
 
         pr = propertyRepo;
         ss = sellerService;
+        ar = auctionRepo;
     }
 
-    // Create property
     public Property addProperty(Property property) {
 
         if (property.getSeller() == null ||
@@ -55,21 +55,17 @@ public class PropertyService {
         return pr.save(property);
     }
 
-    // Get all properties
     public List<Property> findAllProperties() {
         return pr.findAll();
     }
 
-    // Get property by ID
     public Optional<Property> findPropertyById(Long id) {
         return pr.findById(id);
     }
 
-    // Update property
     public Property updateProperty(Long id, Property property) {
 
-        Optional<Property> existingProperty =
-                pr.findById(id);
+        Optional<Property> existingProperty = pr.findById(id);
 
         if (existingProperty.isEmpty()) {
             return null;
@@ -87,12 +83,11 @@ public class PropertyService {
         p.setBasePrice(property.getBasePrice());
         p.setStatus(property.getStatus());
 
-        // Do NOT change seller during update
         return pr.save(p);
     }
 
-    // Delete property
     public void deleteProperty(Long id) {
+
         if (ar.existsByPropertyId(id)) {
             throw new IllegalStateException(
                     "Cannot delete this property because it has an auction."
@@ -101,6 +96,7 @@ public class PropertyService {
 
         pr.deleteById(id);
     }
+
     public List<Property> findPropertiesBySellerId(Long sellerId) {
         return pr.findBySellerId(sellerId);
     }
@@ -109,7 +105,10 @@ public class PropertyService {
         return pr.countByApprovalStatus(ApprovalStatus.PENDING);
     }
 
-    public Property updatePropertyApproval(Long id, ApprovalStatus approvalStatus) {
+    public Property updatePropertyApproval(
+            Long id,
+            ApprovalStatus approvalStatus) {
+
         Optional<Property> existingProperty = pr.findById(id);
 
         if (existingProperty.isEmpty()) {
@@ -117,11 +116,12 @@ public class PropertyService {
         }
 
         if (approvalStatus == null) {
-            throw new IllegalArgumentException("Approval status is required");
+            throw new IllegalArgumentException(
+                    "Approval status is required"
+            );
         }
 
         Property property = existingProperty.get();
-
         property.setApprovalStatus(approvalStatus);
 
         return pr.save(property);
