@@ -77,33 +77,30 @@ public class UserController {
             @RequestBody User loginUser,
             HttpSession session) {
 
-        System.out.println();
+        Optional<User> existingUser = us.findUserByEmail(loginUser.getEmail());
 
-        Optional<User> user = us.login(
-                loginUser.getEmail(),
-                loginUser.getPassword()
-        );
-
-        if (user.isPresent()) {
-
-            User loggedInUser = user.get();
-            session.setAttribute("id",loggedInUser.getId());
-
-
-
-            return ResponseEntity.ok().body(
-                    java.util.Map.of(
-                            "id", loggedInUser.getId(),
-                            "name", loggedInUser.getName(),
-                            "email", loggedInUser.getEmail(),
-                            "role", loggedInUser.getRole()
-                    )
+        if (existingUser.isEmpty() || !existingUser.get().getPassword().equals(loginUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    java.util.Map.of("message", "Invalid email or password.")
             );
         }
 
-        return ResponseEntity.status(401).body(
+        User loggedInUser = existingUser.get();
+
+        if (loggedInUser.getVerificationStatus() == ApprovalStatus.REJECTED) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    java.util.Map.of("message", "Your account has been rejected or blocked by administrator.")
+            );
+        }
+
+        session.setAttribute("id", loggedInUser.getId());
+
+        return ResponseEntity.ok().body(
                 java.util.Map.of(
-                        "message", "Invalid email or password"
+                        "id", loggedInUser.getId(),
+                        "name", loggedInUser.getName(),
+                        "email", loggedInUser.getEmail(),
+                        "role", loggedInUser.getRole()
                 )
         );
     }

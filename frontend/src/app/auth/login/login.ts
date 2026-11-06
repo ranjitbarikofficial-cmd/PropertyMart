@@ -45,10 +45,14 @@ export class Login {
       error: (error) => {
         console.error('Login failed:', error);
 
+        const serverMessage = error.error?.message || (typeof error.error === 'string' ? error.error : '');
+
         if (error.status === 401) {
-          alert('Invalid email or password.');
+          alert(serverMessage || 'Invalid email or password.');
+        } else if (error.status === 403) {
+          alert(serverMessage || 'Your account has been rejected or is not approved by admin.');
         } else {
-          alert('Login failed. Please try again Or Your request not Approved by admin ');
+          alert(serverMessage || 'Login failed. Please try again.');
         }
       }
     });

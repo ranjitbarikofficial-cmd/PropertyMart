@@ -27,7 +27,7 @@ public class UserService {
     @Transactional
     public User adduser(User u) {
 
-        u.setVerificationStatus(ApprovalStatus.PENDING);
+        u.setVerificationStatus(ApprovalStatus.APPROVED);
 
         User savedUser = ur.save(u);
 
@@ -101,13 +101,17 @@ public class UserService {
         ur.deleteById(id);
     }
 
+    public Optional<User> findUserByEmail(String email) {
+        return ur.findByEmail(email);
+    }
+
     public Optional<User> login(String email, String password) {
 
         Optional<User> user = ur.findByEmail(email);
 
         if (user.isPresent()
                 && user.get().getPassword().equals(password)
-                && user.get().getVerificationStatus() == ApprovalStatus.APPROVED) {
+                && user.get().getVerificationStatus() != ApprovalStatus.REJECTED) {
             return user;
         }
 
