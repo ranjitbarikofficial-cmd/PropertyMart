@@ -48,7 +48,7 @@ public class AuctionController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping({"/user/{userId}", "/seller/{userId}"})
     public ResponseEntity<List<Auction>> getAuctionsBySellerUserId(
             @PathVariable Long userId) {
 

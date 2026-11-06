@@ -96,28 +96,306 @@
       </a>
     </section>
 
-    <section class="stat-grid" aria-label="Property overview">
-      <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--purple" aria-hidden="true">🏢</span>
-        <div>
-          <p class="stat-card__value">{{ properties.length }}</p>
-          <p class="stat-card__label">Total Properties</p>
+    <section class="stat-grid" aria-label="Property and auction performance overview">
+      <div class="stat-card stat-card--indigo">
+        <div class="stat-card__icon-wrap stat-card__icon--purple">
+          <span class="stat-card__icon" aria-hidden="true">🏠</span>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Total Properties Added</p>
+          <div class="stat-card__val-row">
+            <span class="stat-card__value">{{ totalPropertiesCount }}</span>
+            <span class="stat-card__badge stat-card__badge--info">Portfolio</span>
+          </div>
+          <p class="stat-card__sub">All registered listings</p>
         </div>
       </div>
 
-      <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">✅</span>
-        <div>
-          <p class="stat-card__value">{{ activeProperties.length }}</p>
-          <p class="stat-card__label">Active Listings</p>
+      <div class="stat-card stat-card--emerald">
+        <div class="stat-card__icon-wrap stat-card__icon--green">
+          <span class="stat-card__icon" aria-hidden="true">💰</span>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Total Homes Sold</p>
+          <div class="stat-card__val-row">
+            <span class="stat-card__value">{{ soldPropertiesCount }}</span>
+            <span class="stat-card__badge stat-card__badge--success">{{ sellThroughRate }}% Sold</span>
+          </div>
+          <p class="stat-card__sub">Successfully closed sales</p>
         </div>
       </div>
 
-      <div class="stat-card">
-        <span class="stat-card__icon stat-card__icon--blue" aria-hidden="true">🔨</span>
+      <div class="stat-card stat-card--blue">
+        <div class="stat-card__icon-wrap stat-card__icon--blue">
+          <span class="stat-card__icon" aria-hidden="true">📋</span>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Available For Sale</p>
+          <div class="stat-card__val-row">
+            <span class="stat-card__value">{{ availablePropertiesCount }}</span>
+            <span class="stat-card__badge stat-card__badge--active">Active</span>
+          </div>
+          <p class="stat-card__sub">Currently on the market</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--amber">
+        <div class="stat-card__icon-wrap stat-card__icon--amber">
+          <span class="stat-card__icon" aria-hidden="true">🔨</span>
+        </div>
+        <div class="stat-card__body">
+          <p class="stat-card__label">Auction Status</p>
+          <div class="stat-card__val-row">
+            <span class="stat-card__value">{{ activeAuctionsCount }}</span>
+            <span class="stat-card__badge stat-card__badge--auction">{{ totalAuctionsCount }} Total</span>
+          </div>
+          <p class="stat-card__sub">{{ activeAuctionsCount }} live auctions running</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Property Portfolio Graphs (Homes Added vs Sold) -->
+    <section class="section-block analytics-section">
+      <div class="section-block__header">
         <div>
-          <p class="stat-card__value">{{ activeAuctionsCount }}</p>
-          <p class="stat-card__label">Active Auctions</p>
+          <h2>Property Analytics: Homes Added vs. Sold</h2>
+          <p class="section-subtext">Visual breakdown of your property inventory, sell-through conversion, and category distribution.</p>
+        </div>
+        <div class="header-metric-pill">
+          <span class="pill-title">Sell-Through Rate:</span>
+          <span class="pill-value">{{ sellThroughRate }}%</span>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <!-- Chart 1: Donut Ratio of Added vs Sold vs Pending -->
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Inventory Status Ratio</h3>
+            <span class="chart-card__tag">Real-Time Distribution</span>
+          </div>
+
+          <div class="donut-chart-container">
+            <div class="donut-chart-wrapper">
+              <svg class="donut-chart" viewBox="0 0 100 100" role="img" aria-label="Donut chart showing property inventory breakdown">
+                <circle
+                  class="donut-bg"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="transparent"
+                  stroke="currentColor"
+                  stroke-width="12"
+                ></circle>
+                <!-- Sold segment (Green) -->
+                @if (soldLength > 0) {
+                  <circle
+                    class="donut-segment donut-segment--sold"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    fill="transparent"
+                    stroke-width="12"
+                    [attr.stroke-dasharray]="soldLength + ' ' + (donutCircumference - soldLength)"
+                    [attr.stroke-dashoffset]="soldOffset"
+                  ></circle>
+                }
+                <!-- Available segment (Indigo) -->
+                @if (availableLength > 0) {
+                  <circle
+                    class="donut-segment donut-segment--available"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    fill="transparent"
+                    stroke-width="12"
+                    [attr.stroke-dasharray]="availableLength + ' ' + (donutCircumference - availableLength)"
+                    [attr.stroke-dashoffset]="availableOffset"
+                  ></circle>
+                }
+                <!-- Pending segment (Amber) -->
+                @if (pendingLength > 0) {
+                  <circle
+                    class="donut-segment donut-segment--pending"
+                    cx="50"
+                    cy="50"
+                    r="42"
+                    fill="transparent"
+                    stroke-width="12"
+                    [attr.stroke-dasharray]="pendingLength + ' ' + (donutCircumference - pendingLength)"
+                    [attr.stroke-dashoffset]="pendingOffset"
+                  ></circle>
+                }
+                <g class="donut-center-group">
+                  <text x="50" y="47" class="donut-center-val">{{ sellThroughRate }}%</text>
+                  <text x="50" y="62" class="donut-center-lbl">Sold Ratio</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="chart-legend-stack">
+              <div class="legend-row">
+                <span class="legend-indicator legend-indicator--emerald"></span>
+                <span class="legend-name">Sold Properties</span>
+                <span class="legend-val">{{ soldPropertiesCount }} ({{ sellThroughRate }}%)</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-indicator legend-indicator--indigo"></span>
+                <span class="legend-name">Available Listings</span>
+                <span class="legend-val">{{ availablePropertiesCount }} ({{ totalPropertiesCount > 0 ? Math.round((availablePropertiesCount / totalPropertiesCount) * 100) : 0 }}%)</span>
+              </div>
+              <div class="legend-row">
+                <span class="legend-indicator legend-indicator--amber"></span>
+                <span class="legend-name">Pending / In Review</span>
+                <span class="legend-val">{{ pendingPropertiesCount }} ({{ totalPropertiesCount > 0 ? Math.round((pendingPropertiesCount / totalPropertiesCount) * 100) : 0 }}%)</span>
+              </div>
+              <div class="legend-divider"></div>
+              <div class="legend-total-row">
+                <span>Total Properties Added:</span>
+                <strong>{{ totalPropertiesCount }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 2: Category Breakdown Bars (Added vs Sold) -->
+        <div class="chart-card">
+          <div class="chart-card__header">
+            <h3>Added vs. Sold by Property Type</h3>
+            <div class="mini-legend">
+              <span class="mini-swatch mini-swatch--added"></span> Added
+              <span class="mini-swatch mini-swatch--sold"></span> Sold
+            </div>
+          </div>
+
+          <div class="category-bars-list">
+            @for (cat of categoryMetrics; track cat.name) {
+              <div class="cat-bar-item">
+                <div class="cat-bar-meta">
+                  <span class="cat-bar-name">
+                    <span class="cat-bar-icon">{{ cat.icon }}</span>
+                    {{ cat.name }}
+                  </span>
+                  <span class="cat-bar-stats">
+                    <span class="count-tag count-tag--added">{{ cat.added }} Added</span>
+                    <span class="count-tag count-tag--sold">{{ cat.sold }} Sold</span>
+                  </span>
+                </div>
+                <div class="dual-track-group">
+                  <div class="bar-track" [title]="cat.added + ' ' + cat.name + ' Added'">
+                    <div class="bar-fill bar-fill--added" [style.width.%]="cat.addedPct"></div>
+                  </div>
+                  <div class="bar-track" [title]="cat.sold + ' ' + cat.name + ' Sold'">
+                    <div class="bar-fill bar-fill--sold" [style.width.%]="cat.soldPct"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: Auction Performance & Activity Graph -->
+    <section class="section-block auction-analytics-section">
+      <div class="section-block__header">
+        <div>
+          <h2>Auction Performance & Activity Graph</h2>
+          <p class="section-subtext">Visualize your auction bidding performance, starting price vs winning bid appreciation, and live status.</p>
+        </div>
+
+        <div class="auction-pills-row">
+          <span class="status-pill status-pill--active">
+            <span class="pulse-light"></span> {{ activeAuctionsCount }} Live Auctions
+          </span>
+          <span class="status-pill status-pill--upcoming">
+            ⏳ {{ upcomingAuctionsCount }} Upcoming
+          </span>
+          <span class="status-pill status-pill--ended">
+            ✓ {{ endedAuctionsCount }} Completed
+          </span>
+        </div>
+      </div>
+
+      @if (isUsingAuctionPreview) {
+        <div class="preview-callout">
+          <span class="preview-callout__badge">Interactive Preview</span>
+          <p class="preview-callout__msg">
+            You haven't published any property auctions yet. Below is a real-time preview of the bid growth and price appreciation graph!
+          </p>
+          <a routerLink="/seller-dashboard/my-properties" class="btn btn--sm btn--primary">
+            + Create Auction Now
+          </a>
+        </div>
+      }
+
+      <div class="chart-card auction-chart-card">
+        <div class="auction-chart-header">
+          <div class="auction-legend">
+            <span class="legend-chip">
+              <span class="color-dot color-dot--start"></span>
+              Starting Base Price
+            </span>
+            <span class="legend-chip">
+              <span class="color-dot color-dot--bid"></span>
+              Winning / Highest Bid
+            </span>
+            <span class="legend-chip">
+              <span class="growth-arrow">▲</span>
+              Value Appreciation %
+            </span>
+          </div>
+
+          <a routerLink="/seller-dashboard/auctions" class="auction-view-all-link">
+            Manage All Auctions &rarr;
+          </a>
+        </div>
+
+        <div class="auction-bars-stage">
+          @for (item of auctionBarItems; track item.id) {
+            <div class="auction-column-unit">
+              <!-- Appreciation tag -->
+              <div class="growth-badge-container">
+                @if (item.growthPct > 0) {
+                  <span class="growth-badge">+{{ item.growthPct }}% Growth</span>
+                } @else {
+                  <span class="growth-badge growth-badge--neutral">Base Price</span>
+                }
+              </div>
+
+              <!-- Bar group -->
+              <div class="bars-pedestal">
+                <div
+                  class="pedestal-bar pedestal-bar--start"
+                  [style.height.%]="item.startBarHeight"
+                  [title]="'Starting Price: ' + formatPrice(item.startingPrice)"
+                >
+                  <span class="bar-tooltip-val">{{ formatPrice(item.startingPrice) }}</span>
+                </div>
+
+                <div
+                  class="pedestal-bar pedestal-bar--bid"
+                  [style.height.%]="item.bidBarHeight"
+                  [title]="'Winning Bid: ' + formatPrice(item.winningBid)"
+                >
+                  <span class="bar-tooltip-val">{{ formatPrice(item.winningBid) }}</span>
+                </div>
+              </div>
+
+              <!-- Meta below bars -->
+              <div class="column-footer">
+                <span class="property-caption" [title]="item.title">{{ item.title }}</span>
+                <span
+                  class="auction-status-tag"
+                  [class.auction-status-tag--active]="item.status === 'ACTIVE'"
+                  [class.auction-status-tag--ended]="item.status === 'ENDED'"
+                  [class.auction-status-tag--upcoming]="item.status === 'UPCOMING'"
+                >
+                  {{ item.status }}
+                </span>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </section>
@@ -196,7 +474,7 @@
                         type="button"
                         class="icon-action"
                         aria-label="View property"
-                        [routerLink]="['/property-details', property.id]"
+                        [routerLink]="['/user-dashboard/property', property.id]"
                       >
                         👁
                       </button>

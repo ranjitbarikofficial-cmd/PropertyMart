@@ -27,9 +27,39 @@ interface Property {
   status: string;
 }
 
-interface Auction {
+interface AuctionItem {
   id: number;
   status: string;
+  startingPrice: number;
+  winningBid?: number | null;
+  startTime?: string;
+  endTime?: string;
+  property?: {
+    id?: number;
+    title?: string;
+    propertyType?: string;
+    basePrice?: number;
+  };
+}
+
+export interface CategoryMetric {
+  name: string;
+  icon: string;
+  added: number;
+  sold: number;
+  addedPct: number;
+  soldPct: number;
+}
+
+export interface AuctionBarItem {
+  id: number;
+  title: string;
+  status: string;
+  startingPrice: number;
+  winningBid: number;
+  growthPct: number;
+  startBarHeight: number;
+  bidBarHeight: number;
 }
 
 @Component({
@@ -40,7 +70,7 @@ interface Auction {
 })
 export class SellerDashboard implements OnInit {
 
-  activeAuctionsCount = 0;
+  readonly Math = Math;
 
   private http = inject(HttpClient);
   private router = inject(Router);
@@ -50,13 +80,40 @@ export class SellerDashboard implements OnInit {
   seller: Seller | null = null;
   properties: Property[] = [];
   filteredProperties: Property[] = [];
+  auctions: AuctionItem[] = [];
 
   loading = true;
   errorMessage = '';
 
+  // Property Metrics (Homes Added vs Sold)
+  totalPropertiesCount = 0;
+  soldPropertiesCount = 0;
+  availablePropertiesCount = 0;
+  pendingPropertiesCount = 0;
+  sellThroughRate = 0;
+
+  // Donut chart stroke dash calculations
+  donutCircumference = 263.89; // 2 * pi * 42
+  soldOffset = 0;
+  soldLength = 0;
+  availableOffset = 0;
+  availableLength = 0;
+  pendingOffset = 0;
+  pendingLength = 0;
+
+  categoryMetrics: CategoryMetric[] = [];
+
+  // Auction Metrics
+  activeAuctionsCount = 0;
+  upcomingAuctionsCount = 0;
+  endedAuctionsCount = 0;
+  totalAuctionsCount = 0;
+  auctionBarItems: AuctionBarItem[] = [];
+  isUsingAuctionPreview = false;
+
   get activeProperties(): Property[] {
     return this.properties.filter(
-      property => property.status === 'AVAILABLE'
+      property => (property.status || '').toUpperCase() === 'AVAILABLE'
     );
   }
 
@@ -74,7 +131,6 @@ export class SellerDashboard implements OnInit {
   }
 
   ngOnInit(): void {
-
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -88,7 +144,6 @@ export class SellerDashboard implements OnInit {
     }
 
     try {
-
       const user = JSON.parse(userData);
 
       if (!user.id) {
@@ -108,113 +163,255 @@ export class SellerDashboard implements OnInit {
       };
 
       this.loadSeller(user.id);
-      this.loadActiveAuctions(user.id);
+      this.loadAuctions(user.id);
 
     } catch (error) {
-
       console.error('Invalid user data:', error);
-
       this.errorMessage = 'Invalid login information.';
       this.loading = false;
-
     }
   }
 
   loadSeller(userId: number): void {
-
     this.http.get<Seller>(
       `http://localhost:8080/api/seller/user/${userId}`
     ).subscribe({
-
       next: (seller) => {
-
         this.seller = seller;
-
-        console.log('Seller loaded:', seller);
-
         this.loadProperties(seller.id);
-
       },
-
       error: (error) => {
-
         console.error('Failed to load seller:', error);
-
         this.errorMessage = 'Seller profile not found.';
         this.loading = false;
         this.cdr.detectChanges();
-
       }
-
     });
   }
 
   loadProperties(sellerId: number): void {
-
     this.http.get<Property[]>(
       `http://localhost:8080/api/property/seller/${sellerId}`
     ).subscribe({
-
       next: (properties) => {
-
-        this.properties = properties;
-        this.filteredProperties = properties;
-
-        console.log('Seller ID:', sellerId);
-        console.log('Seller properties:', this.properties);
-        console.log('Total properties:', this.properties.length);
-        console.log('Active properties:', this.activeProperties.length);
-
+        this.properties = properties || [];
+        this.filteredProperties = this.properties;
+        this.computePropertyMetrics();
         this.loading = false;
         this.cdr.detectChanges();
-
       },
-
       error: (error) => {
-
         console.error('Failed to load properties:', error);
-
         this.errorMessage = 'Failed to load properties.';
         this.loading = false;
         this.cdr.detectChanges();
-
       }
-
     });
   }
 
-  loadActiveAuctions(userId: number): void {
-
-    this.http.get<Auction[]>(
-      `http://localhost:8080/api/auction/seller/${userId}`
+  loadAuctions(userId: number): void {
+    this.http.get<AuctionItem[]>(
+      `http://localhost:8080/api/auction/user/${userId}`
     ).subscribe({
-
       next: (auctions) => {
-
-        this.activeAuctionsCount = auctions.filter(
-          auction => auction.status === 'ACTIVE'
-        ).length;
-
-        console.log('Total auctions:', auctions.length);
-        console.log('Active auctions:', this.activeAuctionsCount);
-
+        this.auctions = auctions || [];
+        this.computeAuctionMetrics();
         this.cdr.detectChanges();
-
       },
-
       error: (error) => {
-
         console.error('Failed to load auctions:', error);
-        this.activeAuctionsCount = 0;
-        this.cdr.detectChanges();
-
+        // Fallback to seller endpoint if user endpoint fails
+        this.http.get<AuctionItem[]>(`http://localhost:8080/api/auction/seller/${userId}`).subscribe({
+          next: (auctions) => {
+            this.auctions = auctions || [];
+            this.computeAuctionMetrics();
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.auctions = [];
+            this.computeAuctionMetrics();
+            this.cdr.detectChanges();
+          }
+        });
       }
-
     });
+  }
+
+  computePropertyMetrics(): void {
+    const total = this.properties.length;
+    this.totalPropertiesCount = total;
+
+    let sold = 0;
+    let available = 0;
+    let pending = 0;
+
+    for (const prop of this.properties) {
+      const status = (prop.status || '').toUpperCase();
+      if (status === 'SOLD') {
+        sold++;
+      } else if (status === 'AVAILABLE') {
+        available++;
+      } else {
+        pending++;
+      }
+    }
+
+    this.soldPropertiesCount = sold;
+    this.availablePropertiesCount = available;
+    this.pendingPropertiesCount = pending;
+
+    this.sellThroughRate = total > 0 ? Math.round((sold / total) * 100) : 0;
+
+    // SVG Donut calculation
+    const C = this.donutCircumference;
+    if (total > 0) {
+      this.soldLength = (sold / total) * C;
+      this.availableLength = (available / total) * C;
+      this.pendingLength = (pending / total) * C;
+
+      this.soldOffset = 0;
+      this.availableOffset = -this.soldLength;
+      this.pendingOffset = -(this.soldLength + this.availableLength);
+    } else {
+      this.soldLength = 0;
+      this.availableLength = 0;
+      this.pendingLength = 0;
+    }
+
+    // Category breakdown (Added vs Sold)
+    const categoryMap: { [key: string]: { icon: string; added: number; sold: number } } = {
+      'APARTMENT': { icon: '🏢', added: 0, sold: 0 },
+      'HOUSE': { icon: '🏡', added: 0, sold: 0 },
+      'VILLA': { icon: '🏰', added: 0, sold: 0 },
+      'COMMERCIAL': { icon: '🏬', added: 0, sold: 0 },
+      'LAND': { icon: '📐', added: 0, sold: 0 },
+    };
+
+    for (const prop of this.properties) {
+      const typeKey = (prop.propertyType || 'HOUSE').toUpperCase();
+      const matchedKey = Object.keys(categoryMap).find(k => typeKey.includes(k)) || 'HOUSE';
+      categoryMap[matchedKey].added++;
+      if ((prop.status || '').toUpperCase() === 'SOLD') {
+        categoryMap[matchedKey].sold++;
+      }
+    }
+
+    let maxAdded = 1;
+    for (const key of Object.keys(categoryMap)) {
+      if (categoryMap[key].added > maxAdded) {
+        maxAdded = categoryMap[key].added;
+      }
+    }
+
+    this.categoryMetrics = Object.keys(categoryMap).map(k => {
+      const item = categoryMap[k];
+      return {
+        name: k.charAt(0) + k.slice(1).toLowerCase(),
+        icon: item.icon,
+        added: item.added,
+        sold: item.sold,
+        addedPct: maxAdded > 0 ? Math.round((item.added / maxAdded) * 100) : 0,
+        soldPct: maxAdded > 0 ? Math.round((item.sold / maxAdded) * 100) : 0,
+      };
+    });
+  }
+
+  computeAuctionMetrics(): void {
+    const list = this.auctions || [];
+    this.totalAuctionsCount = list.length;
+    this.activeAuctionsCount = list.filter(a => (a.status || '').toUpperCase() === 'ACTIVE').length;
+    this.upcomingAuctionsCount = list.filter(a => (a.status || '').toUpperCase() === 'UPCOMING').length;
+    this.endedAuctionsCount = list.filter(a => (a.status || '').toUpperCase() === 'ENDED').length;
+
+    if (list.length === 0) {
+      // Demo preview for new sellers with 0 auctions
+      this.isUsingAuctionPreview = true;
+      this.auctionBarItems = [
+        {
+          id: 101,
+          title: 'Skyline Luxury Penthouse',
+          status: 'ACTIVE',
+          startingPrice: 4500000,
+          winningBid: 5600000,
+          growthPct: 24,
+          startBarHeight: 65,
+          bidBarHeight: 88,
+        },
+        {
+          id: 102,
+          title: 'Green Valley Villa',
+          status: 'ENDED',
+          startingPrice: 3200000,
+          winningBid: 3950000,
+          growthPct: 23,
+          startBarHeight: 52,
+          bidBarHeight: 74,
+        },
+        {
+          id: 103,
+          title: 'Downtown Retail Space',
+          status: 'ACTIVE',
+          startingPrice: 6000000,
+          winningBid: 7100000,
+          growthPct: 18,
+          startBarHeight: 80,
+          bidBarHeight: 100,
+        },
+        {
+          id: 104,
+          title: 'Sunset Beachfront Condo',
+          status: 'UPCOMING',
+          startingPrice: 2800000,
+          winningBid: 2800000,
+          growthPct: 0,
+          startBarHeight: 46,
+          bidBarHeight: 46,
+        },
+      ];
+      return;
+    }
+
+    this.isUsingAuctionPreview = false;
+    // Map actual auctions (up to 5 most recent)
+    const recent = list.slice(0, 5);
+    let maxVal = 1;
+    for (const a of recent) {
+      const start = Number(a.startingPrice || 0);
+      const bid = Number(a.winningBid || a.startingPrice || 0);
+      if (start > maxVal) maxVal = start;
+      if (bid > maxVal) maxVal = bid;
+    }
+
+    this.auctionBarItems = recent.map((a, idx) => {
+      const startingPrice = Number(a.startingPrice || 0);
+      const winningBid = Number(a.winningBid || a.startingPrice || 0);
+      const title = a.property?.title || `Auction #${a.id || idx + 1}`;
+      const growth = startingPrice > 0 ? Math.round(((winningBid - startingPrice) / startingPrice) * 100) : 0;
+      return {
+        id: a.id,
+        title: title.length > 18 ? title.slice(0, 16) + '...' : title,
+        status: (a.status || 'ACTIVE').toUpperCase(),
+        startingPrice,
+        winningBid,
+        growthPct: Math.max(0, growth),
+        startBarHeight: maxVal > 0 ? Math.max(12, Math.round((startingPrice / maxVal) * 100)) : 20,
+        bidBarHeight: maxVal > 0 ? Math.max(12, Math.round((winningBid / maxVal) * 100)) : 20,
+      };
+    });
+  }
+
+  formatPrice(price: number): string {
+    if (!price || isNaN(price)) return '₹0';
+    if (price >= 10000000) {
+      return `₹${(price / 10000000).toFixed(2)} Cr`;
+    }
+    if (price >= 100000) {
+      return `₹${(price / 100000).toFixed(2)} L`;
+    }
+    return `₹${price.toLocaleString('en-IN')}`;
   }
 
   searchListings(searchText: string): void {
-
     const text = (searchText || '').toLowerCase().trim();
 
     if (!text) {
@@ -230,7 +427,6 @@ export class SellerDashboard implements OnInit {
   }
 
   deleteProperty(propertyId: number): void {
-
     if (!confirm('Are you sure you want to delete this property?')) {
       return;
     }
@@ -238,32 +434,22 @@ export class SellerDashboard implements OnInit {
     this.http.delete(
       `http://localhost:8080/api/property/delete/${propertyId}`
     ).subscribe({
-
       next: () => {
-
         this.properties = this.properties.filter(p => p.id !== propertyId);
         this.filteredProperties = this.filteredProperties.filter(p => p.id !== propertyId);
-
+        this.computePropertyMetrics();
         this.cdr.detectChanges();
-
       },
-
       error: (err) => {
-
         console.error('Delete property failed:', err);
-
         alert('Failed to delete property. It may be linked to an active auction.');
-
       }
-
     });
   }
 
   logout(): void {
-
     localStorage.removeItem('loggedInUser');
     this.router.navigate(['/login']);
-
   }
-
 }
+
