@@ -9,7 +9,7 @@
           Discover properties that match your lifestyle, budget and location.
         </p>
 
-        <form class="search-box" novalidate>
+        <form class="search-box" (submit)="searchProperties($event)" novalidate>
           <div class="search-box__row">
             <div class="search-field search-field--wide">
               <label for="searchLocation">Location</label>

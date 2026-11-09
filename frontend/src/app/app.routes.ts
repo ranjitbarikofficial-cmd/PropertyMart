@@ -1,6 +1,7 @@
 
 import { Routes } from '@angular/router';
 
+import { Home } from './homepage/home/home';
 import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 import { ForgotPassword } from './auth/forgot-password/forgot-password';
@@ -34,8 +35,11 @@ import { Winner } from './dashboard/admin-dashboard/winner/winner';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
+    component: Home,
+  },
+  {
+    path: 'home',
+    component: Home,
   },
   {
     path: 'login',
