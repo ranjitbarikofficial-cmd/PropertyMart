@@ -1,63 +1,112 @@
 .add-property-page {
   min-height: 100vh;
-  background: #f7f7fc;
-  padding: 40px;
+  background: #f8fafc;
+  padding: 24px 16px 40px;
+  font-family: inherit;
+  color: #1e293b;
 }
 
 .page-container {
-  max-width: 1100px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 30px;
+  margin-bottom: 14px;
 }
 
 .back-link {
-  display: inline-block;
-  margin-bottom: 15px;
-  color: #5b35d5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  color: #4f46e5;
   text-decoration: none;
   font-weight: 600;
+  font-size: 12.5px;
+  transition: color 0.15s ease;
 }
 
-.page-header h1 {
+.back-link:hover {
+  color: #3730a3;
+  text-decoration: underline;
+}
+
+.header-titles h1 {
   margin: 0;
-  font-size: 32px;
-  color: #202052;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
 }
 
-.page-header p {
-  margin-top: 8px;
-  color: #77758f;
-  font-size: 16px;
+.header-titles p {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 12.5px;
 }
 
+/* Alert notifications */
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.alert-success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+/* Form Cards */
 .form-card {
-  background: white;
-  border: 1px solid #e4e2f2;
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 15px rgba(50, 40, 120, 0.04);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.card-header {
+  margin-bottom: 12px;
 }
 
 .form-card h2 {
   margin: 0;
-  color: #252553;
-  font-size: 21px;
+  color: #0f172a;
+  font-size: 14.5px;
+  font-weight: 700;
 }
 
 .section-description {
-  margin-top: 7px;
-  margin-bottom: 25px;
-  color: #88869c;
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 12px;
 }
 
+/* Grid layout */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px;
+  gap: 10px 14px;
+}
+
+.form-grid--details {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.full-width {
+  grid-column: 1 / -1;
 }
 
 .form-group {
@@ -65,15 +114,11 @@
   flex-direction: column;
 }
 
-.full-width {
-  grid-column: 1 / -1;
-}
-
 .form-group label {
-  margin-bottom: 8px;
-  color: #33315b;
+  margin-bottom: 4px;
+  color: #334155;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .form-group input,
@@ -81,100 +126,131 @@
 .form-group textarea {
   width: 100%;
   box-sizing: border-box;
-  padding: 13px 14px;
-  border: 1px solid #dddbea;
-  border-radius: 10px;
-  background: #fff;
-  color: #27254d;
-  font-size: 15px;
+  padding: 7px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13.5px;
   outline: none;
   font-family: inherit;
-  transition: 0.2s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #6538df;
-  box-shadow: 0 0 0 3px rgba(101, 56, 223, 0.08);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 64px;
+  line-height: 1.4;
 }
 
-.alert {
-  padding: 15px 18px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-.alert-error {
-  background: #fff0f0;
-  color: #c62828;
-  border: 1px solid #ffcaca;
-}
-
-.alert-success {
-  background: #effbf2;
-  color: #16803a;
-  border: 1px solid #c7efd2;
-}
-
+/* Seller ID section */
 .seller-info {
-  background: #faf9ff;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  padding: 10px 14px;
 }
 
-.seller-id {
+.seller-inline-wrap {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: white;
-  border: 1px solid #e3e0f2;
-  padding: 15px 18px;
-  border-radius: 10px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.seller-id span {
-  color: #77758f;
+.seller-inline-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.seller-id strong {
-  color: #5630ce;
-  font-size: 18px;
+.seller-icon {
+  font-size: 16px;
+  line-height: 1;
 }
 
+.seller-inline-title {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.seller-inline-sub {
+  margin: 1px 0 0;
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.seller-id-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.seller-id-chip .chip-label {
+  color: #4338ca;
+}
+
+.seller-id-chip strong {
+  color: #312e81;
+}
+
+/* Form actions */
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 14px;
-  margin-top: 10px;
-  padding-bottom: 40px;
+  gap: 10px;
+  margin-top: 14px;
+  padding-bottom: 24px;
 }
 
 .btn {
   border: none;
-  border-radius: 10px;
-  padding: 13px 25px;
-  font-size: 15px;
-  font-weight: 700;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-cancel {
-  background: white;
-  color: #55536f;
-  border: 1px solid #dddbea;
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-cancel:hover {
+  background: #f1f5f9;
+  color: #1e293b;
 }
 
 .btn-primary {
-  background: #6336df;
-  color: white;
+  background: #4f46e5;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #5228c9;
+  background: #4338ca;
 }
 
 .btn-primary:disabled {
@@ -182,17 +258,29 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 700px) {
+/* Responsive adjustments */
+@media (max-width: 640px) {
   .add-property-page {
-    padding: 20px;
+    padding: 16px 12px;
   }
 
-  .form-grid {
+  .form-grid,
+  .form-grid--details {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .full-width {
     grid-column: auto;
+  }
+
+  .seller-inline-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .seller-id-chip {
+    align-self: flex-start;
   }
 
   .form-actions {
