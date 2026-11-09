@@ -1,43 +1,231 @@
-
-<div class="bids-container">
-  <h2>Auction Bids</h2>
-
-  <p class="auction-id">Auction ID: {{ auctionId }}</p>
+<!-- src/app/dashboard/seller-dashboard/auction-bids/auction-bids.html -->
+<div class="bids-page">
+  <!-- Top Navigation -->
+  <div class="nav-breadcrumbs">
+    <a routerLink="/seller-dashboard/auctions" class="back-link">
+      ← Back to My Auctions
+    </a>
+    <span class="nav-divider">/</span>
+    <a routerLink="/seller-dashboard" class="crumb-link">Seller Dashboard</a>
+    <span class="nav-divider">/</span>
+    <span class="crumb-active">Auction #{{ auctionId }} Bids</span>
+  </div>
 
   @if (loading) {
-    <p class="message">Loading bids...</p>
+    <div class="state-card loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading auction details and live bids...</p>
+    </div>
   }
 
   @if (errorMessage) {
-    <p class="error-message">{{ errorMessage }}</p>
-  }
-
-  @if (!loading && !errorMessage && bids.length === 0) {
-    <p class="message">No bids have been placed on this auction yet.</p>
-  }
-
-  @if (!loading && !errorMessage && bids.length > 0) {
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Bid ID</th>
-            <th>Buyer</th>
-            <th>Bid Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (bid of bids; track bid.id) {
-            <tr>
-              <td>{{ bid.id }}</td>
-              <td>{{ bid.buyer?.name || 'Buyer' }}</td>
-              <td class="bid-amount">₹{{ bid.amount }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+    <div class="error-banner">
+      <span>⚠️ {{ errorMessage }}</span>
+      <button type="button" class="btn-retry" (click)="loadData()">Retry</button>
     </div>
   }
+
+  @if (!loading && auction) {
+    <!-- Auction Property Header & Overview -->
+    <header class="auction-header-card">
+      <div class="auction-header-main">
+        <div class="auction-meta-tags">
+          <span class="badge badge--id">Auction #{{ auction.id }}</span>
+          <span
+            class="badge"
+            [class.badge--active]="auction.status === 'ACTIVE'"
+            [class.badge--ended]="auction.status === 'ENDED'"
+            [class.badge--upcoming]="auction.status === 'UPCOMING'"
+          >
+            {{ auction.status }}
+          </span>
+          @if (auction.property?.propertyType) {
+            <span class="badge badge--type">{{ auction.property.propertyType }}</span>
+          }
+        </div>
+
+        <h1 class="auction-title">{{ auction.property?.title || 'Property Auction #' + auctionId }}</h1>
+        <p class="auction-location">📍 {{ auction.property?.location || 'Location Not Specified' }}</p>
+      </div>
+
+      <div class="auction-stats-bar">
+        <div class="stat-item">
+          <span class="stat-label">Starting Price</span>
+          <span class="stat-value">{{ formatPrice(auction.startingPrice) }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Bids</span>
+          <span class="stat-value highlight">{{ bids.length }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">{{ isEnded ? 'Final Winning Bid' : 'Current Highest Bid' }}</span>
+          <span class="stat-value stat-value--green">
+            {{ formatPrice(winningAmount || (highestBid ? highestBid.amount : auction.startingPrice)) }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- WINNER SPOTLIGHT CARD (When Auction is Ended) -->
+    @if (isEnded) {
+      <section class="winner-card" aria-label="Auction Winner Information">
+        <div class="winner-card__glow"></div>
+        <div class="winner-card__content">
+          <div class="winner-card__badge">
+            <span class="trophy-icon">🏆</span>
+            AUCTION WINNER DECLARED
+          </div>
+
+          <div class="winner-card__body">
+            <div class="winner-avatar">
+              {{ getInitials(winner?.name) }}
+            </div>
+
+            <div class="winner-details">
+              <span class="winner-label">Winning Buyer:</span>
+              <h2 class="winner-name">{{ winner?.name || 'Top Bidder' }}</h2>
+
+              <div class="winner-contacts">
+                @if (winner?.email) {
+                  <span class="contact-pill">📧 {{ winner.email }}</span>
+                }
+                @if (winner?.phone) {
+                  <span class="contact-pill">📞 {{ winner.phone }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="winner-amount-box">
+              <span class="amount-label">Winning Bid (Sold Price)</span>
+              <span class="amount-value">
+                {{ formatPrice(winningAmount || (highestBid ? highestBid.amount : auction.winningBid)) }}
+              </span>
+              <span class="status-pill status-pill--sold">Property Marked: SOLD</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    } @else if (isActive && highestBid) {
+      <!-- ACTIVE AUCTION LEADING BIDDER BANNER -->
+      <section class="leading-card" aria-label="Current Leading Bidder">
+        <div class="leading-card__content">
+          <div class="leading-tag">
+            <span class="flame-icon">🔥</span> CURRENT LEADING BIDDER
+          </div>
+          <div class="leading-meta">
+            <span class="leading-name">
+              <strong>{{ highestBid.buyer?.name || 'Verified Buyer' }}</strong>
+              @if (highestBid.buyer?.email) {
+                <small>({{ highestBid.buyer.email }})</small>
+              }
+            </span>
+            <span class="leading-amount">
+              Current Top Bid: <strong>{{ formatPrice(highestBid.amount) }}</strong>
+            </span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- BIDS ACTIVITY TABLE -->
+    <section class="bids-section">
+      <div class="bids-section__header">
+        <div>
+          <h2>All Bids Activity ({{ bids.length }})</h2>
+          <p class="section-subtitle">
+            Complete list of buyers who placed bids, their offered amount, contact details, and timestamp.
+          </p>
+        </div>
+        <button type="button" class="btn btn--refresh" (click)="loadData()" title="Refresh bids">
+          🔄 Refresh Bids
+        </button>
+      </div>
+
+      @if (bids.length === 0) {
+        <div class="state-card empty-state">
+          <div class="empty-icon">🔨</div>
+          <h3>No bids placed yet</h3>
+          <p>Buyers have not placed bids on this property auction yet. Check back soon!</p>
+        </div>
+      } @else {
+        <div class="table-container">
+          <table class="bids-table">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 80px;">Rank</th>
+                <th scope="col">Bidder Name</th>
+                <th scope="col">Contact Info</th>
+                <th scope="col">Bid Amount (Money)</th>
+                <th scope="col">Bid Placed At</th>
+                <th scope="col" style="text-align: center;">Outcome</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (bid of bids; track bid.id; let idx = $index) {
+                <tr [class.row--winner]="idx === 0 && isEnded" [class.row--leading]="idx === 0 && isActive">
+                  <!-- Rank -->
+                  <td class="col-rank">
+                    @if (idx === 0 && isEnded) {
+                      <span class="rank-badge rank-badge--winner">🏆 #1</span>
+                    } @else if (idx === 0 && isActive) {
+                      <span class="rank-badge rank-badge--leading">🔥 #1</span>
+                    } @else {
+                      <span class="rank-badge">#{{ idx + 1 }}</span>
+                    }
+                  </td>
+
+                  <!-- Bidder Name -->
+                  <td class="col-bidder">
+                    <div class="bidder-cell">
+                      <div class="bidder-avatar">
+                        {{ getInitials(bid.buyer?.name) }}
+                      </div>
+                      <div class="bidder-info">
+                        <strong class="bidder-name">{{ bid.buyer?.name || 'Registered Buyer' }}</strong>
+                        <span class="bid-id-text">Bid ID: #{{ bid.id }}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Contact Info -->
+                  <td class="col-contact">
+                    <div class="contact-stack">
+                      <span class="contact-item">📧 {{ bid.buyer?.email || 'N/A' }}</span>
+                      @if (bid.buyer?.phone) {
+                        <span class="contact-item">📞 {{ bid.buyer.phone }}</span>
+                      }
+                    </div>
+                  </td>
+
+                  <!-- Bid Amount -->
+                  <td class="col-amount">
+                    <div class="amount-stack">
+                      <span class="bid-currency">₹{{ (bid.amount | number:'1.0-0') || '0' }}</span>
+                      <small class="bid-short">{{ formatPrice(bid.amount) }}</small>
+                    </div>
+                  </td>
+
+                  <!-- Bid Time -->
+                  <td class="col-time">
+                    <span class="time-text">{{ (bid.bidTime | date:'medium') || 'N/A' }}</span>
+                  </td>
+
+                  <!-- Outcome / Status -->
+                  <td class="col-status" style="text-align: center;">
+                    @if (idx === 0 && isEnded) {
+                      <span class="outcome-pill outcome-pill--winner">🏆 WINNER</span>
+                    } @else if (idx === 0 && isActive) {
+                      <span class="outcome-pill outcome-pill--leading">🔥 HIGHEST</span>
+                    } @else {
+                      <span class="outcome-pill outcome-pill--outbid">Outbid</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
 </div>
-
-

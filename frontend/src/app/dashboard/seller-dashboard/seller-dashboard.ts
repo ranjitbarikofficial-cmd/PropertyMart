@@ -1,7 +1,7 @@
 
 import { Component, OnInit, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, DatePipe, DecimalPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
 interface Seller {
@@ -34,11 +34,18 @@ interface AuctionItem {
   winningBid?: number | null;
   startTime?: string;
   endTime?: string;
+  winner?: {
+    id?: number;
+    name?: string;
+    email?: string;
+    phone?: string;
+  };
   property?: {
     id?: number;
     title?: string;
     propertyType?: string;
     basePrice?: number;
+    location?: string;
   };
 }
 
@@ -64,7 +71,7 @@ export interface AuctionBarItem {
 
 @Component({
   selector: 'app-seller-dashboard',
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe, DecimalPipe],
   templateUrl: './seller-dashboard.html',
   styleUrl: './seller-dashboard.css',
 })
@@ -110,6 +117,11 @@ export class SellerDashboard implements OnInit {
   totalAuctionsCount = 0;
   auctionBarItems: AuctionBarItem[] = [];
   isUsingAuctionPreview = false;
+
+  // Live Auction Bids Inspection
+  expandedAuctionId: number | null = null;
+  auctionBidsMap: { [auctionId: number]: any[] } = {};
+  loadingBidsId: number | null = null;
 
   get activeProperties(): Property[] {
     return this.properties.filter(
@@ -398,6 +410,86 @@ export class SellerDashboard implements OnInit {
         bidBarHeight: maxVal > 0 ? Math.max(12, Math.round((winningBid / maxVal) * 100)) : 20,
       };
     });
+  }
+
+  toggleAuctionBids(auctionId: number, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    if (this.expandedAuctionId === auctionId) {
+      this.expandedAuctionId = null;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.expandedAuctionId = auctionId;
+
+    if (!this.auctionBidsMap[auctionId]) {
+      this.loadingBidsId = auctionId;
+      this.http.get<any[]>(`http://localhost:8080/api/bid/findbyauctionid/${auctionId}`, {
+        withCredentials: true,
+      }).subscribe({
+        next: (bids) => {
+          const sorted = Array.isArray(bids) ? [...bids] : [];
+          sorted.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
+          this.auctionBidsMap[auctionId] = sorted;
+          this.loadingBidsId = null;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Failed to load bids for auction:', err);
+          this.auctionBidsMap[auctionId] = [];
+          this.loadingBidsId = null;
+          this.cdr.detectChanges();
+        },
+      });
+    }
+  }
+
+  getWinnerName(auction: AuctionItem): string {
+    if (auction.winner?.name) {
+      return auction.winner.name;
+    }
+    const bids = this.auctionBidsMap[auction.id];
+    if (bids && bids.length > 0 && bids[0].buyer?.name) {
+      return bids[0].buyer.name;
+    }
+    return 'Highest Bidder';
+  }
+
+  getWinnerEmail(auction: AuctionItem): string {
+    if (auction.winner?.email) {
+      return auction.winner.email;
+    }
+    const bids = this.auctionBidsMap[auction.id];
+    if (bids && bids.length > 0 && bids[0].buyer?.email) {
+      return bids[0].buyer.email;
+    }
+    return '';
+  }
+
+  getWinnerPhone(auction: AuctionItem): string {
+    if (auction.winner?.phone) {
+      return auction.winner.phone;
+    }
+    const bids = this.auctionBidsMap[auction.id];
+    if (bids && bids.length > 0 && bids[0].buyer?.phone) {
+      return bids[0].buyer.phone;
+    }
+    return '';
+  }
+
+  getWinningBidAmount(auction: AuctionItem): number {
+    if (auction.winningBid && auction.winningBid > 0) {
+      return auction.winningBid;
+    }
+    const bids = this.auctionBidsMap[auction.id];
+    if (bids && bids.length > 0 && bids[0].amount) {
+      return bids[0].amount;
+    }
+    return auction.startingPrice || 0;
   }
 
   formatPrice(price: number): string {

@@ -1,39 +1,212 @@
-
-<h2>My Auctions</h2>
-
-@if (loading) {
-  <p>Loading your auctions...</p>
-}
-
-@if (errorMessage) {
-  <p>{{ errorMessage }}</p>
-}
-
-@if (!loading && !errorMessage && auctions.length === 0) {
-  <p>You haven't created any auctions yet.</p>
-}
-
-@if (!loading && auctions.length > 0) {
-  <div class="auction-list">
-    @for (auction of auctions; track auction.id) {
-      <div class="auction-card">
-        <h3>{{ auction.property?.title }}</h3>
-
-        <p><strong>Auction ID:</strong> {{ auction.id }}</p>
-        <p><strong>Location:</strong> {{ auction.property?.location }}</p>
-        <p><strong>Starting Price:</strong> ₹{{ auction.startingPrice }}</p>
-        <p><strong>Status:</strong> {{ auction.status }}</p>
-        <p><strong>Start Time:</strong> {{ auction.startTime }}</p>
-        <p><strong>End Time:</strong> {{ auction.endTime }}</p>
-
-          <button [routerLink]="['/seller-dashboard/auctions', auction.id, 'bids']">
-  View Bids
-  </button>
-      </div>
-    }
+<!-- src/app/dashboard/seller-dashboard/seller-auctions/seller-auctions.html -->
+<div class="seller-auctions-wrap">
+  <!-- Top Navigation & Header -->
+  <div class="page-top-nav">
+    <a routerLink="/seller-dashboard" class="back-dashboard-btn">
+      ← Back to Seller Dashboard
+    </a>
   </div>
 
+  <header class="auctions-page-header">
+    <div class="header-content">
+      <h2>My Property Auctions</h2>
+      <p>Monitor your live property auctions, view bidder details, amounts offered, and see who won.</p>
+    </div>
 
-}
+    <div class="header-stats-row">
+      <div class="header-stat-pill">
+        <span class="stat-number">{{ auctions.length }}</span>
+        <span class="stat-text">Total Auctions</span>
+      </div>
+      <div class="header-stat-pill header-stat-pill--active">
+        <span class="stat-number">{{ activeCount }}</span>
+        <span class="stat-text">Active Now</span>
+      </div>
+      <div class="header-stat-pill header-stat-pill--ended">
+        <span class="stat-number">{{ endedCount }}</span>
+        <span class="stat-text">Ended / Sold</span>
+      </div>
+    </div>
+  </header>
 
+  @if (loading) {
+    <div class="page-state loading-state">
+      <div class="spinner"></div>
+      <p>Loading your property auctions...</p>
+    </div>
+  }
 
+  @if (errorMessage) {
+    <div class="page-state error-state">
+      <p>{{ errorMessage }}</p>
+    </div>
+  }
+
+  @if (!loading && !errorMessage && auctions.length === 0) {
+    <div class="page-state empty-state">
+      <div class="empty-icon">🔨</div>
+      <h3>You haven't created any auctions yet.</h3>
+      <p>Go to your properties and start an auction to attract competitive buyers.</p>
+      <a routerLink="/seller-dashboard/my-properties" class="btn btn--primary">
+        Browse My Properties
+      </a>
+    </div>
+  }
+
+  @if (!loading && auctions.length > 0) {
+    <div class="auction-grid">
+      @for (auction of auctions; track auction.id) {
+        <article class="auction-card" [class.auction-card--ended]="auction.status === 'ENDED'" [class.auction-card--active]="auction.status === 'ACTIVE'">
+          <!-- Card Header -->
+          <div class="auction-card__header">
+            <div class="card-badges">
+              <span class="tag-id">Auction #{{ auction.id }}</span>
+              <span
+                class="tag-status"
+                [class.tag-status--active]="auction.status === 'ACTIVE'"
+                [class.tag-status--ended]="auction.status === 'ENDED'"
+                [class.tag-status--upcoming]="auction.status === 'UPCOMING'"
+              >
+                {{ auction.status }}
+              </span>
+              @if (auction.property?.propertyType) {
+                <span class="tag-type">{{ auction.property.propertyType }}</span>
+              }
+            </div>
+            <h3 class="card-title">{{ auction.property?.title || 'Property #' + auction.id }}</h3>
+            <p class="card-location">📍 {{ auction.property?.location || 'Location Not Specified' }}</p>
+          </div>
+
+          <!-- Price & Timing Meta -->
+          <div class="auction-card__meta-grid">
+            <div class="meta-item">
+              <span class="meta-label">Starting Base Price</span>
+              <span class="meta-val">{{ formatPrice(auction.startingPrice) }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">{{ auction.status === 'ENDED' ? 'Final Selling Bid' : 'Current Highest Bid' }}</span>
+              <span class="meta-val meta-val--green">
+                {{ formatPrice(auction.winningBid || auction.startingPrice) }}
+              </span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Start Time</span>
+              <span class="meta-val meta-val--sub">{{ (auction.startTime | date:'mediumDate') || 'N/A' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">End Time</span>
+              <span class="meta-val meta-val--sub">{{ (auction.endTime | date:'mediumDate') || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <!-- 🏆 WINNER ANNOUNCEMENT (When Auction ENDED) -->
+          @if (auction.status === 'ENDED') {
+            <div class="auction-winner-box">
+              <div class="winner-badge-pill">
+                <span>🏆</span> WINNER DECLARED
+              </div>
+              <div class="winner-info-row">
+                <div class="winner-person">
+                  <span class="winner-lbl">Winner Name:</span>
+                  <strong class="winner-person-name">{{ auction.winner?.name || 'Highest Bidder' }}</strong>
+                  @if (auction.winner?.email) {
+                    <span class="winner-person-email">📧 {{ auction.winner.email }}</span>
+                  }
+                  @if (auction.winner?.phone) {
+                    <span class="winner-person-phone">📞 {{ auction.winner.phone }}</span>
+                  }
+                </div>
+                <div class="winner-price-tag">
+                  <span class="winner-lbl">Sold Amount</span>
+                  <strong class="winner-price-val">{{ formatPrice(auction.winningBid || auction.startingPrice) }}</strong>
+                  <span class="sold-tag">Status: SOLD</span>
+                </div>
+              </div>
+            </div>
+          } @else if (auction.status === 'ACTIVE') {
+            <div class="auction-active-banner">
+              <span class="fire-icon">🔥</span>
+              <span><strong>Live Auction Active:</strong> Buyers can currently place bids.</span>
+            </div>
+          }
+
+          <!-- Actions -->
+          <div class="auction-card__actions">
+            <button
+              type="button"
+              class="btn-toggle-bids"
+              (click)="toggleBids(auction.id, $event)"
+            >
+              {{ expandedAuctionId === auction.id ? '▲ Hide Bids' : '👁 View Bids History' }}
+            </button>
+
+            <a
+              [routerLink]="['/seller-dashboard/auctions', auction.id, 'bids']"
+              class="btn-full-bids"
+            >
+              Full Bids Page ↗
+            </a>
+          </div>
+
+          <!-- INLINE BIDS TRAY -->
+          @if (expandedAuctionId === auction.id) {
+            <div class="inline-bids-tray">
+              <h4 class="tray-title">Bids Placed for this Auction</h4>
+
+              @if (loadingBidsId === auction.id) {
+                <div class="tray-loading">
+                  <div class="spinner-sm"></div>
+                  <span>Fetching bids...</span>
+                </div>
+              } @else if (!auctionBidsMap[auction.id] || auctionBidsMap[auction.id].length === 0) {
+                <p class="tray-empty">No bids have been placed on this auction yet.</p>
+              } @else {
+                <div class="mini-bids-table-wrap">
+                  <table class="mini-bids-table">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Bidder Name</th>
+                        <th>Contact</th>
+                        <th>Bid Amount (Money)</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (bid of auctionBidsMap[auction.id]; track bid.id; let bIdx = $index) {
+                        <tr [class.row--top]="bIdx === 0">
+                          <td>
+                            @if (bIdx === 0 && auction.status === 'ENDED') {
+                              <span class="rank-chip rank-chip--winner">🏆 #1</span>
+                            } @else if (bIdx === 0 && auction.status === 'ACTIVE') {
+                              <span class="rank-chip rank-chip--leading">🔥 #1</span>
+                            } @else {
+                              <span class="rank-chip">#{{ bIdx + 1 }}</span>
+                            }
+                          </td>
+                          <td>
+                            <strong>{{ bid.buyer?.name || 'Buyer #' + bid.id }}</strong>
+                          </td>
+                          <td class="col-contact-mini">
+                            <span>{{ bid.buyer?.email || 'N/A' }}</span>
+                          </td>
+                          <td>
+                            <strong class="money-val">₹{{ (bid.amount | number:'1.0-0') || '0' }}</strong>
+                            <small class="money-sub">({{ formatPrice(bid.amount) }})</small>
+                          </td>
+                          <td class="col-time-mini">
+                            {{ (bid.bidTime | date:'short') || 'N/A' }}
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>

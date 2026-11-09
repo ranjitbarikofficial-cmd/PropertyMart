@@ -409,6 +409,170 @@
       </div>
     </section>
 
+    <!-- SECTION: Property Auctions & Live Bidding Activity -->
+    <section class="section-block">
+      <div class="section-block__header">
+        <div>
+          <h2>Property Auctions & Live Bidding Activity</h2>
+          <p class="section-subtext">
+            See who is bidding on your properties, bid money offered, and who won the auction.
+          </p>
+        </div>
+        <a routerLink="/seller-dashboard/auctions" class="btn btn--outline btn--sm">
+          Manage All Auctions ({{ totalAuctionsCount }}) →
+        </a>
+      </div>
+
+      @if (auctions.length === 0) {
+        <div class="empty-auction-box">
+          <div class="empty-icon">🔨</div>
+          <h3>No Property Auctions Created Yet</h3>
+          <p>Create an auction for one of your listed properties to start receiving competitive buyer bids.</p>
+        </div>
+      } @else {
+        <div class="seller-auctions-grid">
+          @for (auction of auctions; track auction.id) {
+            <article class="seller-auction-card" [class.card--ended]="auction.status === 'ENDED'" [class.card--active]="auction.status === 'ACTIVE'">
+              <div class="auction-top-row">
+                <div class="badges-group">
+                  <span class="badge-auc-id">Auction #{{ auction.id }}</span>
+                  <span
+                    class="badge-auc-status"
+                    [class.badge-auc-status--active]="auction.status === 'ACTIVE'"
+                    [class.badge-auc-status--ended]="auction.status === 'ENDED'"
+                    [class.badge-auc-status--upcoming]="auction.status === 'UPCOMING'"
+                  >
+                    {{ auction.status }}
+                  </span>
+                </div>
+                <span class="auc-price-pill">
+                  Base: {{ formatPrice(auction.startingPrice) }}
+                </span>
+              </div>
+
+              <h3 class="auc-property-title">{{ auction.property?.title || 'Property #' + auction.id }}</h3>
+              <p class="auc-property-loc">📍 {{ auction.property?.location || 'Location Not Specified' }}</p>
+
+              <!-- Winner Information if Ended -->
+              @if (auction.status === 'ENDED') {
+                <div class="winner-spotlight-box">
+                  <div class="winner-tag">
+                    <span>🏆</span> AUCTION WON
+                  </div>
+                  <div class="winner-details-grid">
+                    <div>
+                      <span class="w-label">Winner Name:</span>
+                      <strong class="w-name">{{ getWinnerName(auction) }}</strong>
+                      @if (getWinnerEmail(auction)) {
+                        <small class="w-contact">📧 {{ getWinnerEmail(auction) }}</small>
+                      }
+                      @if (getWinnerPhone(auction)) {
+                        <small class="w-contact">📞 {{ getWinnerPhone(auction) }}</small>
+                      }
+                    </div>
+                    <div class="w-price-col">
+                      <span class="w-label">Winning Money:</span>
+                      <strong class="w-money">{{ formatPrice(getWinningBidAmount(auction)) }}</strong>
+                      <span class="w-sold-badge">Status: SOLD</span>
+                    </div>
+                  </div>
+                </div>
+              } @else if (auction.status === 'ACTIVE') {
+                <div class="active-auc-box">
+                  <span class="live-pulse"></span>
+                  <div class="active-text">
+                    <strong>Live Bidding Open:</strong>
+                    <span>Current Highest: {{ formatPrice(getWinningBidAmount(auction)) }}</span>
+                  </div>
+                </div>
+              }
+
+              <!-- Action Bar -->
+              <div class="auc-action-bar">
+                <button
+                  type="button"
+                  class="btn-view-bids"
+                  (click)="toggleAuctionBids(auction.id, $event)"
+                >
+                  {{ expandedAuctionId === auction.id ? '▲ Close Bids' : '👁 View Bids & Buyers' }}
+                </button>
+
+                <a
+                  [routerLink]="['/seller-dashboard/auctions', auction.id, 'bids']"
+                  class="btn-full-details"
+                >
+                  Full Bids Page ↗
+                </a>
+              </div>
+
+              <!-- Expanded Bids Table Tray -->
+              @if (expandedAuctionId === auction.id) {
+                <div class="dashboard-bids-tray">
+                  <div class="tray-header">
+                    <h4>Buyer Bids History</h4>
+                    <span class="tray-count">{{ auctionBidsMap[auction.id]?.length || 0 }} total bids</span>
+                  </div>
+
+                  @if (loadingBidsId === auction.id) {
+                    <div class="tray-loading">
+                      <div class="mini-spin"></div>
+                      <span>Loading bids...</span>
+                    </div>
+                  } @else if (!auctionBidsMap[auction.id] || auctionBidsMap[auction.id].length === 0) {
+                    <p class="tray-no-bids">No bids have been placed on this auction yet.</p>
+                  } @else {
+                    <div class="bids-mini-table-wrap">
+                      <table class="bids-mini-table">
+                        <thead>
+                          <tr>
+                            <th>Rank</th>
+                            <th>Bidder Name</th>
+                            <th>Contact</th>
+                            <th>Bid Money</th>
+                            <th>Time</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (bid of auctionBidsMap[auction.id]; track bid.id; let idx = $index) {
+                            <tr [class.highlight-winner]="idx === 0 && auction.status === 'ENDED'" [class.highlight-leading]="idx === 0 && auction.status === 'ACTIVE'">
+                              <td>
+                                @if (idx === 0 && auction.status === 'ENDED') {
+                                  <span class="rank-tag rank-tag--gold">🏆 #1 WINNER</span>
+                                } @else if (idx === 0 && auction.status === 'ACTIVE') {
+                                  <span class="rank-tag rank-tag--green">🔥 #1 TOP</span>
+                                } @else {
+                                  <span class="rank-tag">#{{ idx + 1 }}</span>
+                                }
+                              </td>
+                              <td>
+                                <strong class="bidder-bold">{{ bid.buyer?.name || 'Buyer #' + bid.id }}</strong>
+                              </td>
+                              <td class="contact-mini-cell">
+                                <div>{{ bid.buyer?.email || 'N/A' }}</div>
+                                @if (bid.buyer?.phone) {
+                                  <small class="phone-dim">{{ bid.buyer.phone }}</small>
+                                }
+                              </td>
+                              <td>
+                                <strong class="money-bold">₹{{ (bid.amount | number:'1.0-0') || '0' }}</strong>
+                              </td>
+                              <td class="time-dim">
+                                {{ (bid.bidTime | date:'short') || 'N/A' }}
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          }
+        </div>
+      }
+    </section>
+
     <section class="section-block">
       <div class="section-block__header">
         <h2>Quick Actions</h2>
