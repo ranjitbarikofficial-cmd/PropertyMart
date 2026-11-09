@@ -8,10 +8,10 @@
 
     <nav class="navbar__links" aria-label="Primary navigation">
       <a routerLink="/home" class="navbar__link">Home</a>
-      <a routerLink="/home" class="navbar__link">Buy</a>
-      <a routerLink="/home" class="navbar__link">Rent</a>
-      <a routerLink="/home" class="navbar__link">Sell</a>
-      <a routerLink="/home" class="navbar__link">About Us</a>
+      <a routerLink="/home" fragment="featured-properties" class="navbar__link">Buy</a>
+      <a routerLink="/register" class="navbar__link">Sell</a>
+      <a routerLink="/user-dashboard/auctions" class="navbar__link">Auctions</a>
+      <a routerLink="/home" fragment="why-propertymart" class="navbar__link">About Us</a>
     </nav>
 
     <div class="navbar__actions">
@@ -33,10 +33,10 @@
   <div class="navbar__mobile" [class.navbar__mobile--open]="isMobileMenuOpen">
     <nav aria-label="Mobile navigation" class="navbar__mobile-links">
       <a routerLink="/home" (click)="closeMobileMenu()">Home</a>
-      <a routerLink="/home" (click)="closeMobileMenu()">Buy</a>
-      <a routerLink="/home" (click)="closeMobileMenu()">Rent</a>
-      <a routerLink="/home" (click)="closeMobileMenu()">Sell</a>
-      <a routerLink="/home" (click)="closeMobileMenu()">About Us</a>
+      <a routerLink="/home" fragment="featured-properties" (click)="closeMobileMenu()">Buy</a>
+      <a routerLink="/register" (click)="closeMobileMenu()">Sell</a>
+      <a routerLink="/user-dashboard/auctions" (click)="closeMobileMenu()">Auctions</a>
+      <a routerLink="/home" fragment="why-propertymart" (click)="closeMobileMenu()">About Us</a>
     </nav>
     <div class="navbar__mobile-actions">
       <a routerLink="/login" class="btn btn--ghost btn--full" (click)="closeMobileMenu()">Login</a>
